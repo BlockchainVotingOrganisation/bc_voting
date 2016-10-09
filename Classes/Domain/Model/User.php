@@ -5,7 +5,7 @@ namespace Goettertz\BcVoting\Domain\Model;
  *
  *  Copyright notice
  *
- *  (c) 2016 Louis G�ttertz <info2015@goettertz.de>, goettertz.de
+ *  (c) 2016 Louis Göttertz <info2015@goettertz.de>, goettertz.de
  *
  *  All rights reserved
  *
