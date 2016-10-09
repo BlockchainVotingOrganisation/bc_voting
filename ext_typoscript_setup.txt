@@ -1,13 +1,20 @@
-config.tx_extbase.persistence.classes{
+config.tx_extbase{
+    persistence{
+        classes{
             Goettertz\BcVoting\Domain\Model\User {
                 mapping {
                     tableName = fe_users
                     columns {
                     	uid.mapOnProperty = uid
+                    	pid.mapOnProperty = pid
 						username.mapOnProperty = username
 						email.mapOnProperty = emailAddress
+						usergroup.mapOnProperty = usergroup
+						password.mapOnProperty = password
 					}
                 }
             }
-
+            
     	}
+    }
+}
