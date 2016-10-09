@@ -44,6 +44,14 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 	protected $userRepository = NULL;
 	
 	/**
+	 * projectRepository
+	 *
+	 * @var \Goettertz\BcVoting\Domain\Repository\ProjectRepository
+	 * @inject
+	 */
+	protected $projectRepository = NULL;
+	
+	/**
 	 * action list
 	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
 	 */
@@ -162,8 +170,9 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 	/**
 	 * @param array $data
 	 * @param array $fieldnames
+	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
 	 */
-	public function importAction($data, $fieldnames) {
+	public function importAction($data, $fieldnames, \Goettertz\BcVoting\Domain\Model\Project $project) {
 		if($this->request->hasArgument('process'))
 		{
 			if ($this->request->hasArgument('process') === TRUE) {	
@@ -239,20 +248,6 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 	}
 	
 
-	private function insertUser($user) {
-	
-		$table = 'fe_users';
-		$user['pid'] = $this->importPID;
-	
-		if ($this->encryptPasswords) {
-			$user['password'] = md5($user['password']);
-		}
-	
-		$user['usergroup'] = $this->userGroup;
-		$fields_values = $user;
-		$GLOBALS['TYPO3_DB']->exec_INSERTquery( $table, $fields_values, $no_quote_fields=FALSE );
-	}
-	
 	/* compare user with typo3 database */
 	private function checkUsername($username) {
 			
