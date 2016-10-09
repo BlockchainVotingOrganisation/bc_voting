@@ -28,7 +28,7 @@ namespace Goettertz\BcVoting\Domain\Model;
 
 /**
  * User - Feuser
- * Revision 86
+ * Revision 109
  *  
  * FE-User Mapping: 
  * 
@@ -47,6 +47,12 @@ class User extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject {
 	 * @var string $username
 	 */
 	protected $username = NULL;
+	
+	/**
+	 * password
+	 * @var string $password
+	 */
+	protected $password = NULL;
 
 	/**
 	 * @var string The telephone number of the contact
@@ -112,6 +118,22 @@ class User extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject {
  		$this->username = $username;
  	}
 
+ 	/**
+ 	 * Gets password
+ 	 * @return string password
+ 	 */
+ 	public function getPassword() {
+ 		return $this->password;
+ 	}
+ 	
+ 	/**
+ 	 * Sets password
+ 	 * @param string $password
+ 	 * @return void;
+ 	 */
+ 	public function setPassword($password) {
+ 		$this->password = $password;
+ 	}
  	/**
  	 * Gets email
  	 * @return string emailAddress
