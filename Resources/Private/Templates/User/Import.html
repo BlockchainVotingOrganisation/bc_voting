@@ -1,8 +1,8 @@
-<!-- Revision 109 -->
+<!-- Revision 110 -->
 <f:layout name="Default" />
 
 <f:section name="main">
-
+<f:debug>{data}</f:debug>
 <f:render partial="Project/Menu" arguments="{project : project, isAdmin:isAdmin}" />
 <f:flashMessages renderMode="div" />
 <f:render partial="FormErrors" arguments="{object:User}" />
@@ -12,7 +12,7 @@
 <f:form.submit value="{f:translate(key:'save')}" />
 </f:form>
 
-<f:form action="import" name="fieldnames" arguments="{data:data}">
+<f:form action="import" name="fieldnames" arguments="{data:data, project:project}">
 	<table>
 		<tr>
 			<th width="20%">Label local DB</th>
