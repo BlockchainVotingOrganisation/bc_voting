@@ -28,7 +28,7 @@ namespace Goettertz\BcVoting\Domain\Model;
 
 /**
  * User - Feuser
- * Revision 109
+ * Revision 110
  *  
  * FE-User Mapping: 
  * 
@@ -38,7 +38,7 @@ class User extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject {
 
 	/**
 	 * uid 	unique user id
-	 * @var string $uid
+	 * @var \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
 	 */
 	protected $uid = NULL;
 
