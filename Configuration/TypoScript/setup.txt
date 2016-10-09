@@ -1,0 +1,112 @@
+
+plugin.tx_bcvoting {
+	view {
+		templateRootPath = {$plugin.tx_bcvoting.view.templateRootPath}
+		partialRootPath = {$plugin.tx_bcvoting.view.partialRootPath}
+		layoutRootPath = {$plugin.tx_bcvoting.view.layoutRootPath}
+	}
+	persistence {
+		storagePid = {$plugin.tx_bcvoting.persistence.storagePid}
+	}
+	features {
+		# uncomment the following line to enable the new Property Mapper.
+		rewrittenPropertyMapper = 1
+	}
+}
+
+plugin.tx_bcvoting._CSS_DEFAULT_STYLE (
+
+	h5.tx-bc-voting.section {
+		font-size: 1.2em;
+	}
+
+	table { 
+    	border-spacing: 0px;
+    	border-collapse: separate;
+	}
+	
+	td {
+		padding: 10px;
+	}
+
+	textarea.f3-form-error {
+		background-color:#FF9F9F;
+		border: 1px #FF0000 solid;
+	}
+	
+	.tx-felogin-pi1 input {
+		min-width: 160px;
+	}
+	
+	.tx-felogin-pi1 input[type="submit"] {
+		min-width: 100px;
+		margin-top: 5px;
+	}
+	
+	.frame.well :first-child input[type="submit"] {
+    	margin-top: 5px;
+	}
+	
+	input.f3-form-error {
+		background-color:#FF9F9F;
+		border: 1px #FF0000 solid;
+	}
+	
+	.tx-bc-voting.period {
+		background-color: white;
+		color: black;
+	}
+	
+	.tx-bc-voting.description {
+		background-color: white;
+		color: black;
+	}
+
+	.tx-bc-voting table {
+		width: 100%;
+		border: 0px solid black;
+		border-collapse:separate;
+		border-spacing:0px;
+	}
+
+	.tx-bc-voting table th {
+		font-weight:bold;
+	}
+
+	.tx-bc-voting table td {
+		vertical-align:top;
+		padding: 2px;
+	}
+
+	.typo3-messages .message-error {
+		color:red;
+	}
+
+	.typo3-messages .message-ok {
+		color:green;
+	}
+	
+	.tx-bc-voting input {
+		font-weight:bold;
+	}
+	.tx-bc-voting_Menu {
+		margin: 10px 0px;
+		background-color: whitesmoke;
+	}
+	.tx-bc-voting_Menu input[type="submit"] {
+		width: 100px; height: 40px;
+	}
+	
+	div {
+		background-color: inherit;
+	}
+	div.tx-bc-voting {
+		padding: 5px;
+		background-color: inherit;
+	}
+	
+	div.tx-bc-voting_inner {
+		padding: 10px;
+		background-color: inherit;
+	}
+)
