@@ -5,7 +5,7 @@ ini_set("display_errors", 1);
  *
  *  Copyright notice
  *
- *  (c) 2015-2016 Louis G�ttertz <info2015@goettertz.de>, goettertz.de
+ *  (c) 2015-2016 Louis Göttertz <info2015@goettertz.de>, goettertz.de
  *
  *  All rights reserved
  *
@@ -127,9 +127,9 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 	}
 	
 	/**
-	 * 
+	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
 	 */
-	public function uploadAction(\Goettertz\BcVoting\Domain\Model\Project $project = NULL) {
+	public function uploadAction(\Goettertz\BcVoting\Domain\Model\Project $project) {
 		$this->addFlashMessage('Try upload...', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
 		if (strval($_FILES['tx_bcvoting_project']['tmp_name']['file']['csv']))
 		{
@@ -159,6 +159,9 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 		$this->view->assign('data', $records);
 	}
 	
+	/**
+	 * @param array $data
+	 */
 	public function importAction($data) {
 		if($this->request->hasArgument('process'))
 		{
@@ -198,6 +201,7 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 				}
 			}
 		}
+		$this->view->assign('project', $project);
 	}
 	
 	protected function saltedPassword($password) {		
