@@ -1,8 +1,9 @@
-<!-- Revision 109 -->
+<!-- Revision 110 -->
 <f:layout name="Default" />
 <f:section name="main">
 <f:render partial="Project/Menu" arguments="{project : project}" />
 <f:flashMessages renderMode="div" />
+<f:debug>{members}</f:debug>
 Listing for members of 
 <h3>{project.name}</h3>
 
@@ -14,16 +15,16 @@ Listing for members of
 	<f:for each="{members}" as="member">
 	
 		<tr>
-			<td>{member.user.uid}</td>
-			<td><f:link.action action="show" arguments="{user : member.user, project:project}"> {member.user.username}</f:link.action></td>
+			<td>{member.user.uid.uid}</td>
+			<td><f:link.action action="show" arguments="{user : member.user.uid, project:project}"> {member.user.username}</f:link.action></td>
 			<td>{member.user.emailAddress}</td>
-			<td><f:link.action action="edit" arguments="{user : member.user}">Edit</f:link.action></td>
-			<td><f:link.action action="delete" arguments="{user : member.user}">Delete</f:link.action></td>
+			<td><f:link.action action="edit" arguments="{user : member.user.uid}">Edit</f:link.action></td>
+			<td><f:link.action action="delete" arguments="{user : member.user.uid}">Delete</f:link.action></td>
 		</tr>
 	</f:for>
 </table>
 
 <f:link.action action="new">New User</f:link.action> |
-<f:link.action action="upload">Import</f:link.action><hr />
+<f:link.action action="upload" arguments="{project:project}">Import</f:link.action><hr />
 
 </f:section>
