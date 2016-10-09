@@ -1,0 +1,29 @@
+<!-- Revision 109 -->
+<f:layout name="Default" />
+<f:section name="main">
+<f:render partial="Project/Menu" arguments="{project : project}" />
+<f:flashMessages renderMode="div" />
+Listing for members of 
+<h3>{project.name}</h3>
+
+<table  class="tx_bcvoting" >
+	<tr>
+		<th colspan="5"><f:translate key="tx_bcvoting_domain_model_user.voter_id" /></th>
+	</tr>
+
+	<f:for each="{members}" as="member">
+	
+		<tr>
+			<td>{member.user.uid}</td>
+			<td><f:link.action action="show" arguments="{user : member.user, project:project}"> {member.user.username}</f:link.action></td>
+			<td>{member.user.emailAddress}</td>
+			<td><f:link.action action="edit" arguments="{user : member.user}">Edit</f:link.action></td>
+			<td><f:link.action action="delete" arguments="{user : member.user}">Delete</f:link.action></td>
+		</tr>
+	</f:for>
+</table>
+
+<f:link.action action="new">New User</f:link.action> |
+<f:link.action action="showImportForm">Import</f:link.action><hr />
+
+</f:section>
