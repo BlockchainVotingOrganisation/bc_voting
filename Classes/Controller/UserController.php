@@ -188,7 +188,7 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 						$user = new \Goettertz\BcVoting\Domain\Model\User();
 					
 						// Titel
-						$user->setUsername('test');
+						$user->setUsername($records[$i]['username']);
 					
 						// Description
 						$user->setPassword($this->saltedPassword($records[$i]['password']));
