@@ -161,13 +161,20 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 	
 	/**
 	 * @param array $data
+	 * @param array $fieldnames
 	 */
-	public function importAction($data) {
+	public function importAction($data, $fieldnames) {
 		if($this->request->hasArgument('process'))
 		{
 			if ($this->request->hasArgument('process') === TRUE) {	
-				if ($options  = $this->getColumnNames($data)) {
-					$this->addFlashMessage('Process...', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+				if (is_array($fieldnames)) {
+					if (count($fieldnames) > 0) {
+						$this->addFlashMessage('Process...', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+					}
+					else {
+						$this->addFlashMessage('No fieldnames!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+					}
+					
 					// Process Data
 					$records = array();
 					for ($i = 1; $i < count($data); $i++)
@@ -176,8 +183,7 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 						$records[$i]['username'] = $data[$i][$fieldnames['username']];
 						$records[$i]['password'] = $data[$i][$fieldnames['password']];
 						$records[$i]['email'] = $data[$i][$fieldnames['email']];
-					
-						// $records[$i]['price'] = $data[$i][$fieldnames['price']];
+
 						// Neues Object
 						$user = new \Goettertz\BcVoting\Domain\Model\User();
 					
@@ -196,11 +202,12 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 						// now persist all to have the possibility to use the new ITEM-UID p.e. in view...
 						$persistenceManager = $this->objectManager->get('TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager');
 						$persistenceManager->persistAll();
-					}					
+					}
+
 				}
 				else {
 					$this->addFlashMessage('No input data!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
-				}
+				}	
 			}
 		}
 		$this->view->assign('project', $project);
