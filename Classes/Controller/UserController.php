@@ -27,7 +27,7 @@ ini_set("display_errors", 1);
  ***************************************************************/
 
 /**
- * Rev. 109
+ * Rev. 110
  */
 use Goettertz\BcVoting\Service\Blockchain;
 /**
@@ -165,39 +165,41 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 	public function importAction($data) {
 		if($this->request->hasArgument('process'))
 		{
-			if ($this->request->hasArgument('process') === TRUE)
-			{
-				$this->addFlashMessage('Process...', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
-				if ($options === NULL) { $options  = $this->getColumnNames($data); }
+			if ($this->request->hasArgument('process') === TRUE) {	
+				if ($options  = $this->getColumnNames($data)) {
+					$this->addFlashMessage('Process...', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+					// Process Data
+					$records = array();
+					for ($i = 1; $i < count($data); $i++)
+					{
+						// Spalten belegen (assoziatives Array anlegen)
+						$records[$i]['username'] = $data[$i][$fieldnames['username']];
+						$records[$i]['password'] = $data[$i][$fieldnames['password']];
+						$records[$i]['email'] = $data[$i][$fieldnames['email']];
 					
-				// Process Data
-				$records = array();
-				for ($i = 1; $i < count($data); $i++)
-				{
-					// Spalten belegen (assoziatives Array anlegen)
-					$records[$i]['username'] = $data[$i][$fieldnames['username']];
-					$records[$i]['password'] = $data[$i][$fieldnames['password']];
-					$records[$i]['email'] = $data[$i][$fieldnames['email']];
-		
-					// $records[$i]['price'] = $data[$i][$fieldnames['price']];
-					// Neues Object
-					$user = new \Goettertz\BcVoting\Domain\Model\User();
-		
-					// Titel
-					$user->setUsername(strval($records[$i]['username']));
-		
-					// Description
-					$user->setPassword($records[$i]['password']);
-		
-					// Quantity
-					$user->setEmailAddress($records[$i]['email']);
-		
-					// Cart-Object hinzufügen
-					$this->userRepository->add($user);
-		
-					// now persist all to have the possibility to use the new ITEM-UID p.e. in view...
-					$persistenceManager = $this->objectManager->get('TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager');
-					$persistenceManager->persistAll();
+						// $records[$i]['price'] = $data[$i][$fieldnames['price']];
+						// Neues Object
+						$user = new \Goettertz\BcVoting\Domain\Model\User();
+					
+						// Titel
+						$user->setUsername('test');
+					
+						// Description
+						$user->setPassword($this->saltedPassword($records[$i]['password']));
+					
+						// Quantity
+						$user->setEmailAddress($records[$i]['email']);
+					
+						// Cart-Object hinzufügen
+						$this->userRepository->add($user);
+					
+						// now persist all to have the possibility to use the new ITEM-UID p.e. in view...
+						$persistenceManager = $this->objectManager->get('TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager');
+						$persistenceManager->persistAll();
+					}					
+				}
+				else {
+					$this->addFlashMessage('No input data!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
 				}
 			}
 		}
