@@ -1,0 +1,33 @@
+<f:layout name="Default" />
+Rev. 58
+<f:section name="main">
+<f:translate key="tx_bcvoting_edit_project" />: Blockchain
+<f:render partial="Project/Menu" arguments="{project:project}" />
+<f:flashMessages renderMode="div" />
+<h4>{project.name}</h4>
+<f:render partial="FormErrors" arguments="{object:Project}" />
+<f:for each="{project.assignments}" as="assignment">
+	<f:if condition="{assignment.user.uid} == <bvs:GetUserId/>">
+		<f:then>
+			<f:if condition="{assignment.role.name} == 'admin'">
+				<div width="100%">
+					<f:form action="update" name="project" object="{project}">
+					<div style="width:50%; border: 0px solid black; float:left; margin:0;" class="tx-bc-voting_inner">
+						<f:render partial="Project/BlockchainParams" arguments="{action : 'update', project : project}" />
+						<f:form.submit value="Save" /><f:form.submit value="Test" />
+					</div>
+					<div style="width:50%; border: 0px solid black; margin:0; float:right" class="tx-bc-voting_inner">
+						<f:if condition="{blockchain}">
+							<f:render partial="Blockchain/Parameter" arguments="{action : 'update', project : project, blockchain: blockchain}" />	
+						</f:if>
+					</div>
+					</f:form>
+				</div>
+			</f:if>
+		</f:then>
+	</f:if>
+</f:for>
+					<f:link.action action="list" controller="Project" arguments="{project:project}">Back to list</f:link.action> |
+					<f:link.action action="show" controller="Project" arguments="{project:project}">Show</f:link.action>
+
+</f:section>
