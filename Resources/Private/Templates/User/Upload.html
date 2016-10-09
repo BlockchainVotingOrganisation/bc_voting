@@ -1,4 +1,4 @@
-<!-- Revision 109 -->
+<!-- Revision 110 -->
 <f:layout name="Default" />
 
 <f:section name="main">
@@ -7,12 +7,12 @@
 <f:flashMessages renderMode="div" />
 <f:render partial="FormErrors" arguments="{object:User}" />
 <h4>Import</h4>
-<f:form action="upload" controller="User" name="file" enctype="multipart/form-data">
+<f:form action="upload" controller="User" name="file" enctype="multipart/form-data" arguments="{project:project}">
 <f:form.upload property="csv" style="display:inline;" />
 <f:form.submit value="{f:translate(key:'save')}" />
 </f:form>
 
-<f:form action="import" name="fieldnames" arguments="{data:data}">
+<f:form action="import" name="fieldnames" arguments="{data:data, project:project}" object="{fieldnames}">
 	<table>
 		<tr>
 			<th width="20%">Label local DB</th>
