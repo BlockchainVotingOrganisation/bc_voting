@@ -1,5 +1,5 @@
 <?php
-// Rev. 93
+// Rev. 109
 if (!defined('TYPO3_MODE')) {
 	die('Access denied.');
 }
@@ -11,7 +11,7 @@ if (!defined('TYPO3_MODE')) {
  		'Project' => 'list, show, new, create, edit, editbcparams, update, delete, assign, evaluation, arguments, settings, createSettings, removeLogo, checkVoting, execute',
  		'Option' => 'list, show, new, create, edit, update, delete, vote, removeLogo',
  		'Wallet' => 'show, sendAssets',
- 		'User' => 'list, show, new, create, edit, update, delete, import',
+ 		'User' => 'list, show, new, create, edit, update, delete, import, showImportForm',
 		'Blockchain' => 'show',
 		'Argument' => 'list, show, new, create, edit, update, delete',
 		'Ballot' => 'list, show, new, create, edit, update, delete, sealBallot, vote, removeLogo',
@@ -21,7 +21,7 @@ if (!defined('TYPO3_MODE')) {
 		'Project' => 'list, show, new, create, edit, editbcparams, update, delete, assign, evaluation, arguments, settings, createSettings, removeLogo, checkVoting, execute',
 		'Option' => 'list, show, new, create, edit, update, delete, vote, removeLogo',
 		'Wallet' => 'show, sendAssets',
- 		'User' => 'list, show, new, create, edit, update, delete, import',
+ 		'User' => 'list, show, new, create, edit, update, delete, import, showImportForm',
 		'Blockchain' => 'show',
 		'Argument' => 'list, show, new, create, edit, update, delete',
 		'Ballot' => 'list, show, new, create, edit, update, delete, sealBallot, vote, removeLogo',
