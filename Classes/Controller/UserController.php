@@ -190,7 +190,7 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 					$user->setPassword($records[$i]['password']);
 		
 					// Quantity
-					$user->setEmail($records[$i]['email']);
+					$user->setEmailAddress($records[$i]['email']);
 		
 					// Cart-Object hinzufügen
 					$this->userRepository->add($user);
