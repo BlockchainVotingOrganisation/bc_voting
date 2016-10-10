@@ -1,11 +1,12 @@
 <?php
 namespace Goettertz\BcVoting\Domain\Repository;
 
+
 /***************************************************************
  *
  *  Copyright notice
  *
- *  (c) 2016 Louis Göttertz <info2015@goettertz.de>, goettertz.de
+ *  (c) 2015-2016 Louis Göttertz <com@goettertz.de>, Louis Göttertz Internetprogrammierung
  *
  *  All rights reserved
  *
@@ -24,14 +25,16 @@ namespace Goettertz\BcVoting\Domain\Repository;
  *  GNU General Public License for more details.
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
- *  
- *  Rev. 64
- ******************************************************************/
+ ***************************************************************/
 
 /**
- * The repository for Projects
+ * Rev. 23
  */
-class ProjectRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
-	
 
+/**
+ * The repository for Roles
+ */
+class RoleRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
+
+	
 }

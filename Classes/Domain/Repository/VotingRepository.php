@@ -5,7 +5,7 @@ namespace Goettertz\BcVoting\Domain\Repository;
  *
  *  Copyright notice
  *
- *  (c) 2016 Louis Göttertz <info2015@goettertz.de>, goettertz.de
+ *  (c) 2015 Louis Göttertz <info2015@goettertz.de>, goettertz.de
  *
  *  All rights reserved
  *
@@ -24,14 +24,18 @@ namespace Goettertz\BcVoting\Domain\Repository;
  *  GNU General Public License for more details.
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
- *  
- *  Rev. 64
- ******************************************************************/
+ ***************************************************************/
+
 
 /**
- * The repository for Projects
+ * The repository for Votings
  */
-class ProjectRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
-	
+class VotingRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 
+// 	public function addVoting(\Goettertz\BcVoting\Domain\Model\Project $project) {
+		
+// 		$this->add();
+// 	}
+	
 }
+?>

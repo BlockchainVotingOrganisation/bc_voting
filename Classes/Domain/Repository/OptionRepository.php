@@ -25,13 +25,16 @@ namespace Goettertz\BcVoting\Domain\Repository;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  *  
- *  Rev. 64
- ******************************************************************/
+ *  Revision 94
+ ***************************************************************/
+
+use \Goettertz\BcVoting\Service\Blockchain;
 
 /**
- * The repository for Projects
+ * The repository for Options
  */
-class ProjectRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
+class OptionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 	
 
 }
+?>

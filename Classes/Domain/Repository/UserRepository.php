@@ -24,14 +24,34 @@ namespace Goettertz\BcVoting\Domain\Repository;
  *  GNU General Public License for more details.
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
- *  
- *  Rev. 64
- ******************************************************************/
+ ***************************************************************/
+
 
 /**
- * The repository for Projects
+ * The repository for (fe-)users
+ * 
+ * Rev. 90
  */
-class ProjectRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
-	
+class UserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository  {
 
+	/**
+	 * Gets the currently logged in frontend user, 
+	 * or NULL if no user is logged in.
+	 * 
+	 * @return \Goettertz\BcVoting\Domain\Model\User|NULL  
+	 *
+	 */
+	public Function getCurrentFeUser() {
+		try {
+			Return intval($GLOBALS['TSFE']->fe_user->user['uid']) > 0
+			? $this->findByUid(intval($GLOBALS['TSFE']->fe_user->user['uid']))
+			: NULL;
+		} catch (Exception $e) {
+	
+			# Error written to protocol
+	
+			return NULL;
+		}
+	}
 }
+?>

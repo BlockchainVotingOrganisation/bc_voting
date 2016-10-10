@@ -24,14 +24,16 @@ namespace Goettertz\BcVoting\Domain\Repository;
  *  GNU General Public License for more details.
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
- *  
- *  Rev. 64
- ******************************************************************/
+ ***************************************************************/
+
 
 /**
- * The repository for Projects
+ * The repository for Blockchain
  */
-class ProjectRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
-	
+class BlockchainRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 
+	public function getBlockchain($uri) {
+		return $blockchain = new \Goettertz\BcVoting\Service\jsonRPCClient('http://multichainrpc:2Eb5CaAm1EbxFdbjJfio5qa5PBGVUQ4VXWUGq49dGkg8@www.blockchain-voting.org:6374/');	
+	}
 }
+?>

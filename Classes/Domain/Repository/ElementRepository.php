@@ -1,6 +1,5 @@
 <?php
 namespace Goettertz\BcVoting\Domain\Repository;
-
 /***************************************************************
  *
  *  Copyright notice
@@ -24,14 +23,13 @@ namespace Goettertz\BcVoting\Domain\Repository;
  *  GNU General Public License for more details.
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
- *  
- *  Rev. 64
- ******************************************************************/
+ ***************************************************************/
+
 
 /**
- * The repository for Projects
+ * The repository for Ballot Elements
  */
-class ProjectRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
-	
+class ElementRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 
 }
+?>
