@@ -28,7 +28,7 @@ namespace Goettertz\BcVoting\Domain\Model;
 
 /**
  * User - Feuser
- * Revision 110
+ * Revision 109
  *  
  * FE-User Mapping: 
  * 

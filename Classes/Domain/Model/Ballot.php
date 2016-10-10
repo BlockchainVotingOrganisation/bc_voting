@@ -434,8 +434,6 @@ class Ballot extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 					$addresses[] = $result['ballot'][$i]['walletaddress'];
 					$result['ballot'][$i] = (array) json_decode($option);
 					
-					
-					
 					if (!empty($result['ballot'][$i]['color']))
 						$result['ballot'][$i]['color'] = str_replace("#","",$result['ballot'][$i]['color']);
 					else $result['ballot'][$i]['color'] = '000000';
