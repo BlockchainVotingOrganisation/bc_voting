@@ -1,4 +1,4 @@
-<!-- Revision 110 -->
+<!-- Revision 111 -->
 <f:layout name="Default" />
 <f:section name="main">
 <f:render partial="Project/Menu" arguments="{project : project}" />
@@ -18,7 +18,7 @@ Listing for members of
 			<td>{member.user.uid.uid}</td>
 			<td><f:link.action action="show" arguments="{user : member.user.uid, project:project}"> {member.user.username}</f:link.action></td>
 			<td>{member.user.emailAddress}</td>
-			<td><f:link.action action="edit" arguments="{user : member.user.uid}">Edit</f:link.action></td>
+			<td><f:link.action action="edit" arguments="{project:project, user : member.user.uid}">Edit</f:link.action></td>
 			<td><f:link.action action="delete" arguments="{user : member.user.uid}">Delete</f:link.action></td>
 		</tr>
 	</f:for>
