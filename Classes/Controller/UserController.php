@@ -27,7 +27,7 @@ ini_set("display_errors", 1);
  ***************************************************************/
 
 /**
- * Rev. 110
+ * Rev. 111
  */
 use Goettertz\BcVoting\Service\Blockchain;
 /**
@@ -51,6 +51,23 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 	 */
 	protected $projectRepository = NULL;
 	
+
+	/**
+	 * roleRepository
+	 *
+	 * @var \Goettertz\BcVoting\Domain\Repository\RoleRepository
+	 * @inject
+	 */
+	protected $roleRepository = NULL;
+
+	/**
+	 * assignmentRepository
+	 *
+	 * @var \Goettertz\BcVoting\Domain\Repository\AssignmentRepository
+	 * @inject
+	 */
+	protected $assignmentRepository = NULL;
+	
 	/**
 	 * action list
 	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
@@ -70,11 +87,27 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 	 * @param \Goettertz\BcVoting\Domain\Model\User $user
 	 */
 	public function editAction(\Goettertz\BcVoting\Domain\Model\User $user) {
-		if ($feuser = $this->userRepository->getCurrentFeUser()) {
-			if ($feuser === $user) {
+		# Get the user assignment and throw an exception if the current user is not a
+		# member of the selected project.
+		if ($user = $this->userRepository->getCurrentFeUser()) {
+			$isAssigned = 'false';
+			$assignment = $user ? $project->getAssignmentForUser($user,'admin') : NULL;
+			If($assignment != NULL) {
+				$isAssigned = 'true';
+				$isAdmin = 'true';
 				$this->view->assign('user', $user);
+				$this->view->assign('project', $project);
+				$this->view->assign('isAdmin', $isAdmin);
+			}
+			else {
+				die('No admin!');
 			}
 		}
+		else {
+			die('Not allowed!');
+		}
+		
+
 	}
 	
 	/**
@@ -207,10 +240,67 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 					
 						// Cart-Object hinzufügen
 						$this->userRepository->add($user);
-					
+						
 						// now persist all to have the possibility to use the new ITEM-UID p.e. in view...
 						$persistenceManager = $this->objectManager->get('TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager');
-						$persistenceManager->persistAll();
+						$persistenceManager->persistAll();						
+						
+						# Assignment hinzufügen
+						if (!$assignment = $user ? $project->getAssignmentForUser($user) : NULL) {
+						
+							# Falls noch keine Rolle member vorhanden ist
+							$roles = $this->roleRepository->findByName('Member');
+							if (count($roles) == 0) {
+								$newRole = new \Goettertz\BcVoting\Domain\Model\Role();
+								$newRole->setName('Member');
+								$this->roleRepository->add($newRole);
+								$roles[0] = $newRole;
+							}
+						
+							# Mitglied als Member registrieren
+							try {
+								$assignment = $this->addAssignment($project, $user, $roles[0]);
+									
+								$persistenceManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
+								$persistenceManager->persistAll();
+									
+								if (!empty($project->getRpcServer())) {
+									if ($assignment) {
+											
+										$newAddress = Blockchain::getRpcResult($project)->getnewaddress();
+										$assignment->setWalletAddress($newAddress);
+										$this->assignmentRepository->update($assignment);
+											
+										$persistenceManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
+										$persistenceManager->persistAll();
+											
+										$this->addFlashMessage('New Address: '.$newAddress.'.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+											
+										# Für jeden Stimmzettel Assets senden
+										foreach ($project->getBallots() as $ballot) {
+											if ($bcArray = Blockchain::getRpcResult($project)->sendassettoaddress($newAddress,$ballot->getAsset(),$ballot->getVotes())) {
+												$this->addFlashMessage($ballot->getName().': sending assets...ok '.$bcArray, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+												# VTC für Transaktionen bereitstellen ...
+												if (!$bcArray['error']) $this->addFlashMessage('Send '.$ballot->getVotes().' Asset "'.$ballot->getAsset().'" to '.$newAddress.' ... ok!','', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+												else $this->addFlashMessage($bcArray['error'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+											}
+											else {
+												$this->addFlashMessage($ballot->getName().': sending Assets...failed!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+											}
+										}
+									}
+									else {
+										$this->addFlashMessage('No Assignment!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+									}
+								}
+								else $this->addFlashMessage('No RPC-Server!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+						
+							} catch (Exception $e) {
+								$this->addFlashMessage($e, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+							}
+						}
+					
+
 					}
 
 				}
@@ -271,6 +361,26 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 		} else {
 			return false;
 		}
+	}
+	
+	/**
+	 * adds a new assignment
+	 *
+	 * @param \Goettertz\BcVoting\Domain\Model\Project $project;
+	 * @param \Goettertz\BcVoting\Domain\Model\User $user;
+	 * @param string $role
+	 *
+	 * @return \Goettertz\BcVoting\Domain\Model\Assignment
+	 */
+	protected function addAssignment(\Goettertz\BcVoting\Domain\Model\Project $project, \Goettertz\BcVoting\Domain\Model\User $user, $role) {
+		$assignment = New \Goettertz\BcVoting\Domain\Model\Assignment();
+		$assignment->setProject($project);
+		$assignment->setUser($user);
+		$assignment->setRole($role);
+		$assignment->setVotes(1);
+	
+		$this->assignmentRepository->add($assignment);
+		return $assignment;
 	}
 }
 ?>
