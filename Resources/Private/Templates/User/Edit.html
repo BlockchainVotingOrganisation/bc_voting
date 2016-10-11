@@ -1,0 +1,22 @@
+<!-- Revision 111 -->
+<f:layout name="Default" />
+<f:section name="main">
+<f:render partial="Project/Menu" arguments="{project : project, isAdmin:isAdmin}" />
+
+<h3></h3>
+
+<f:flashMessages renderMode="div" />
+
+<f:render partial="FormErrors" arguments="{object:User}" />
+
+<f:form action="update" name="user" object="{user}" >
+	<fieldset>
+		<legend>User: {user.username}</legend>
+		<dl>
+			<p class="tx-srfeuserregister-pi1-notice">* required fields</p>
+			<f:render partial="User/FormFields" arguments="{user:user}" />
+			<f:form.submit value="Save" />
+		</dl>
+	</fieldset>
+</f:form>
+</f:section>
