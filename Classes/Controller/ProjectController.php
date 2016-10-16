@@ -31,6 +31,9 @@ ini_set("display_errors", 1);
 /**
  * Revision-Log
  * 
+ * Revision 111:
+ * - Bugfix #13
+ * 
  * Revision 109:
  * - #1298012500
  * 
@@ -539,8 +542,8 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		else {
 			//Prüfen, ob bereits Mitglied
 			if (!$assignment = $user ? $project->getAssignmentForUser($user) : NULL) {
-// 				$assignment = new \Goettertz\BcVoting\Domain\Model\Assignment();
-				
+				// 				$assignment = new \Goettertz\BcVoting\Domain\Model\Assignment();
+			
 				# Falls noch keine Rolle member vorhanden ist
 				$roles = $this->roleRepository->findByName('Member');
 				if (count($roles) == 0) {
@@ -549,26 +552,26 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 					$this->roleRepository->add($newRole);
 					$roles[0] = $newRole;
 				}
-				
-				# Mitglied als Member registrieren 	
+			
+				# Mitglied als Member registrieren
 				try {
 					$assignment = $this->addAssignment($project, $user, $roles[0]);
-					
+						
 					$persistenceManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
 					$persistenceManager->persistAll();
-					
+						
 					if (!empty($project->getRpcServer())) {
 						if ($assignment) {
-							
+								
 							$newAddress = Blockchain::getRpcResult($project)->getnewaddress();
-							$assignment->setWalletAddress($newAddress);	
+							$assignment->setWalletAddress($newAddress);
 							$this->assignmentRepository->update($assignment);
-							
+								
 							$persistenceManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
 							$persistenceManager->persistAll();
-							
+								
 							$this->addFlashMessage('New Address: '.$newAddress.'.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
-							
+								
 							# Für jeden Stimmzettel Assets senden
 							foreach ($project->getBallots() as $ballot) {
 								if ($bcArray = Blockchain::getRpcResult($project)->sendassettoaddress($newAddress,$ballot->getAsset(),$ballot->getVotes())) {
@@ -580,14 +583,14 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 								else {
 									$this->addFlashMessage($ballot->getName().': sending Assets...failed!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 								}
-							}								
+							}
 						}
 						else {
 							$this->addFlashMessage('No Assignment!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 						}
 					}
 					else $this->addFlashMessage('No RPC-Server!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-						
+			
 				} catch (Exception $e) {
 					$this->addFlashMessage($e, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 				}
@@ -983,7 +986,8 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 	 */
 	private function generateCsvFromArray($array) {
 		$result = false;
-		if (!empty($filename = $this->settings['downloadpath'])) {
+		if (file_exists($this->settings['downloadpath'])) {
+			$filename = $this->settings['downloadpath'];
 			try {
 				if (!$fp = fopen($filename, 'w')) {
 					return $result['error'] = 'Can\'t open file!';
@@ -1072,5 +1076,29 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 }
 
 
+
+// 		// Do something "fun" here.. Statistic, counting, notify, etc.
+
+// 		$this->response->setHeader('Cache-control', 'public', TRUE);
+
+// 		$this->response->setHeader('Content-Description', 'File transfer', TRUE);
+
+// 		$this->response->setHeader('Content-Disposition', 'attachment; filename=FILENAME.jpg', TRUE);
+
+// 		// ATTENTION: I've hardcoded the Content-Type, you might have to change this!
+
+// 		$this->response->setHeader('Content-Type', 'image/jpeg', TRUE);
+
+// 		$this->response->setHeader('Content-Transfer-Encoding', 'binary', TRUE);
+
+// 		// As the very last thing, I send the headers to the visitor, before Extbase comes to the part, where it renders a HTML template
+
+// 		$this->response->sendHeaders();
+
+// 		// $this->media is my domain model, add you own file path here :-)
+
+// 		@readfile($this->media->getOriginalResource());
+
+// 		exit();
 
 ?>
