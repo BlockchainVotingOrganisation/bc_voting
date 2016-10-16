@@ -675,7 +675,8 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 			}
 			else {
 				if ($result['secretDB'] === $result['secretBC']) {
-					$result['decrypted'] = \Goettertz\BcVoting\Service\MCrypt::decrypt($result['secretBC']);
+					$mcrypt = new \Goettertz\BcVoting\Service\MCrypt();
+					$result['decrypted'] = $mcrypt->decrypt($result['secretBC']);
 					$this->addFlashMessage('Option: ' . $result['decrypted'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
 				}
 			}
