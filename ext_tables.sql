@@ -1,4 +1,4 @@
-# Revision 104
+# Revision 111
 
 #
 # Table structure for table 'tx_bcvoting_domain_model_asset'
@@ -118,6 +118,10 @@ CREATE TABLE tx_bcvoting_domain_model_category (
 	KEY t3ver_oid (t3ver_oid,t3ver_wsid),
  KEY language (l10n_parent,sys_language_uid)
 );
+
+# Inserts for table 'category'
+INSERT INTO `tx_bcvoting_domain_model_category` VALUES (1,61,'Closed Survey','A survey for a closed usergrroup voting results are secret till end of voting period',1474654187,1466423135,1,0,0,0,0,0,0,0,'',0,0,0,0,0,0,0,'a:8:{s:16:\"sys_language_uid\";N;s:6:\"hidden\";N;s:4:\"name\";N;s:11:\"description\";N;s:8:\"ulterior\";N;s:6:\"closed\";N;s:9:\"starttime\";N;s:7:\"endtime\";N;}',1,1),(2,61,'Election','',1466423161,1466423161,1,0,0,0,0,0,0,0,'',0,0,0,0,0,0,0,'a:6:{s:16:\"sys_language_uid\";N;s:6:\"hidden\";N;s:4:\"name\";N;s:11:\"description\";N;s:9:\"starttime\";N;s:7:\"endtime\";N;}',0,0),(3,61,'Petition','',1474654580,1466423171,1,0,0,0,0,0,0,0,'',0,0,0,0,0,0,0,'a:8:{s:16:\"sys_language_uid\";N;s:6:\"hidden\";N;s:4:\"name\";N;s:11:\"description\";N;s:8:\"ulterior\";N;s:6:\"closed\";N;s:9:\"starttime\";N;s:7:\"endtime\";N;}',0,0),(4,61,'Open Survey','An open survey: results are visible while survey period',1474654387,1466489093,1,0,0,0,0,0,0,0,'',0,0,0,0,0,0,0,'a:8:{s:16:\"sys_language_uid\";N;s:6:\"hidden\";N;s:4:\"name\";N;s:11:\"description\";N;s:8:\"ulterior\";N;s:6:\"closed\";N;s:9:\"starttime\";N;s:7:\"endtime\";N;}',0,0),(5,61,'Open Survey (Secret)','',1474654463,1466497894,1,0,0,0,0,0,0,0,'',0,0,0,0,0,0,0,'a:8:{s:16:\"sys_language_uid\";N;s:6:\"hidden\";N;s:4:\"name\";N;s:11:\"description\";N;s:8:\"ulterior\";N;s:6:\"closed\";N;s:9:\"starttime\";N;s:7:\"endtime\";N;}',1,0),(6,61,'Yes/No (Open)','Only available options are \"Yes\" or \"No\".',1474656798,1474654676,1,0,0,0,0,0,0,0,'',0,0,0,0,0,0,0,'a:8:{s:16:\"sys_language_uid\";N;s:6:\"hidden\";N;s:4:\"name\";N;s:11:\"description\";N;s:8:\"ulterior\";N;s:6:\"closed\";N;s:9:\"starttime\";N;s:7:\"endtime\";N;}',1,0),(7,61,'Yes/No (Closed)','',1474656827,1474656718,1,0,0,0,0,0,0,0,'',0,0,0,0,0,0,0,'a:8:{s:16:\"sys_language_uid\";N;s:6:\"hidden\";N;s:4:\"name\";N;s:11:\"description\";N;s:8:\"ulterior\";N;s:6:\"closed\";N;s:9:\"starttime\";N;s:7:\"endtime\";N;}',1,1);
+
 
 #
 # Table structure for table 'tx_bcvoting_domain_model_voting'
