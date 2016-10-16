@@ -27,7 +27,7 @@ ini_set("display_errors", 1);
  ***************************************************************/
 
 /**
- * Rev. 111
+ * Rev. 113
  */
 use Goettertz\BcVoting\Service\Blockchain;
 /**
@@ -85,8 +85,9 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 	/**
 	 * action edit
 	 * @param \Goettertz\BcVoting\Domain\Model\User $user
+	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
 	 */
-	public function editAction(\Goettertz\BcVoting\Domain\Model\User $user) {
+	public function editAction(\Goettertz\BcVoting\Domain\Model\User $user, \Goettertz\BcVoting\Domain\Model\Project $project) {
 		# Get the user assignment and throw an exception if the current user is not a
 		# member of the selected project.
 		if ($user = $this->userRepository->getCurrentFeUser()) {
@@ -165,6 +166,80 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 	 */
 	public function actionShowRegistration(\Goettertz\BcVoting\Domain\Model\User $newUser) {
 		$this->view->assign('user', $newUser);
+	}
+	
+	/**
+	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
+	 * @param string $toAddress
+	 * @param string $asset
+	 * @param array $redirect
+	 */
+	public function sendAssetsAction(\Goettertz\BcVoting\Domain\Model\Project $project, $toAddress, $redirect = NULL, $fromAddress = '') {
+	
+		$isAdmin = 'false';
+		# redirect default
+	
+		if ($user = $this->userRepository->getCurrentFeUser()) {
+			# default args
+			$args = array('user' => $user, 'project' => $project);
+			if (!$redirect) $redirect = array(
+					'action' => 'show',
+					'controller' => 'Wallet',
+					'pluginName' => 'Wallet',
+					'args' => $args);
+	
+			$assignment = $user ? $project->getAssignmentForUser($user, 'admin') : NULL;
+			If($assignment != NULL) {
+				$isAdmin = 'true';
+			}
+		}
+	
+		if ($isAdmin === 'false') {
+			$this->addFlashMessage('Not admin', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+			# Error handling and/or break;
+			// 			break;
+		}
+	
+		if ($project->getRpcServer() === '') {
+			$this->addFlashMessage('No rpc', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+	
+			# Error handling and/or break;
+			// 			break;
+		}
+	
+		# SendsAssets for all Ballots
+		// foreach ballots as ballot
+		foreach ($project->getBallots() AS $ballot) {
+				
+			# if asset, votes
+			if (!empty($ballot->getReference())) {
+				$assetAmount = array($ballot->getAsset() => $ballot->getVotes());
+			}
+			else {
+				$this->addFlashMessage('Ballot not complete!' . $toAddress .' ' .implode('-', $assetAmount), '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+				// 				break;
+			}
+				
+			#if walletaddress
+			if (!empty($project->getWalletAddress()))
+				$fromAddress = $project->getWalletAddress();
+				else {
+					$this->addFlashMessage('Project not complete!' . $toAddress .' ' .implode('-', $assetAmount), '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+					// 				break;
+				}
+					
+				# if checks ...
+					
+				$result[] = Blockchain::storeData($project, $fromAddress, $toAddress, $assetAmount, 'Admin: asset allocation!');
+				$this->addFlashMessage('Send Assets: ' . $toAddress .' ' .implode('-', $assetAmount), '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+		}
+	
+		// for debugging purposes
+		$this->view->assign('result', $result);
+	
+		# finally redirect
+		// 		$this->redirect($redirect['action'], $redirect['controller'], NULL, $redirect['args']);
+		$this->redirect('list',NULL,NULL, array('project' => $project));
 	}
 	
 	/**
