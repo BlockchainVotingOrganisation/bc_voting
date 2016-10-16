@@ -17,7 +17,7 @@
 			<f:link.action action="sendAssets" extensionName="BcVoting" pluginName="Project" controller="User" arguments="{project:project,toAddress:assignments.walletAddress}">[SendAssets]</f:link.action>
 		</f:then>
 		<f:else>
-			<f:link.action action="getNewAddress" extensionName="BcVoting" pluginName="Project" controller="User" arguments="{project:project,toAddress:assignments.walletAddress}">[Get new address]</f:link.action>
+			<f:link.action action="getNewAddress" extensionName="BcVoting" pluginName="Project" controller="User" arguments="{project:project}">[Get new address]</f:link.action>
 		</f:else>
 		</f:if>
 		</td>
@@ -26,7 +26,7 @@
 <h4>Assets</h4>
 
 <table border="1" style="border-spacing: 0; border-collapse: collapse;">
-	<f:groupedfor each="{assets.total}" as="asset" groupBy="project" groupKey="project">
+	<f:for each="{assets.total}" as="asset">
 		
 		<tr>
 			<td style="padding: 5px;">
@@ -43,7 +43,7 @@
 			<td>{asset.qty}</td>
 		</tr>
 		
-	</f:groupedfor>
+	</f:for>
 </table>
 <hr />
 
