@@ -1,0 +1,20 @@
+<!-- Rev 78 -->
+<div class="tx-bc-voting_Menu">
+	
+	<f:if condition="{project}">
+		<f:link.action action="show" controller="Project" arguments="{project:project}">General Information</f:link.action> |
+		<f:link.action action="evaluation" controller="Project" arguments="{project: project}">Evaluation</f:link.action>
+		
+		<f:if condition="{isAssigned} == 'false'">
+			  	| <f:link.action action="assign" controller="Project" arguments="{user:user, project:project}">Assign</f:link.action>
+		</f:if>
+		| Log
+	</f:if>
+	
+	<f:if condition="{isAdmin} == 'true'">
+		<f:if condition="{project.reference} == ''" >
+			| <f:link.action action="edit" controller="Project" arguments="{project:project}">Edit</f:link.action>
+		</f:if>
+	</f:if>
+
+</div>
