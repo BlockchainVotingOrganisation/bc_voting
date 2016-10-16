@@ -29,7 +29,8 @@ ini_set("display_errors", 1);
  ***************************************************************/
 
 /**
- * Revision 106:
+ * Revision 113:
+ * - Bugfix #15
  * 
  */
 
@@ -39,6 +40,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Goettertz\BcVoting\Service\Blockchain;
 use Goettertz\BcVoting\Service\MCrypt;
 use Goettertz\BcVoting\Service\OP_RETURN;
+use Goettertz;
 
 /**
  * BallotController
@@ -376,12 +378,12 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 						# issue asset for ballot
 						$bcArray = Blockchain::getRpcResult($project)->listpermissions('issue');
 						$issueAddress = $bcArray[0]['address'];
-						
-						try {
-							$asset = Blockchain::getRpcResult($project)->listassets($ballot->getName());
-						} catch (Exception $e) {
-							$result['error'] = $e;
-						}
+						$asset = array();
+// 						try {
+// 							$asset = Blockchain::getRpcResult($project)->listassets($ballot->getName());
+// 						} catch (Exception $e) {
+// 							$result['error'] = $e;
+// 						}
 						
 						
 						# no asset in bc
@@ -393,11 +395,9 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 							
 							if ($result = Blockchain::getRpcResult($project)->issue($issueAddress, $newAsset->getName(), $newAsset->getQuantity(), $newAsset->getDivisibility())) {
 									
-								try {
-									$asset = Blockchain::getRpcResult($project)->listassets($result);
-								} catch (Exception $e) {
-									$result['error'] = $e;
-								}
+							
+								$asset = Bockchain::getRpcResult($project)->listassets($result);
+							
 									
 								$newAsset->setAssetId($asset[0]['assetref']);
 									
@@ -472,7 +472,7 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 	 */
 	public function voteAction(\Goettertz\BcVoting\Domain\Model\Option $option, \Goettertz\BcVoting\Domain\Model\Project $project) {
 	
-		if ($project->getStart() < time() < $project->getEnd()) {
+		if ($project->getStart() < time() && time() < $project->getEnd()) {
 			if ($user = $this->userRepository->getCurrentFeUser()) {
 					
 				$votings = $this->votingRepository->findByProject($project);
@@ -554,8 +554,9 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 			# Stimmrechte Anzahl
 			
 			if ($votes > 0) {
+				$mcrypt = new \Goettertz\BcVoting\Service\MCrypt();
 				$plaintext = $option->getName().'-'.$option->getWalletAddress(); //"This string was AES-256 / CBC / ZeroBytePadding encrypted.";
-				$secret = MCrypt::encrypt($plaintext);
+				$secret = $mcrypt->encrypt($plaintext);
 			
 				$amount = array($asset => 1);
 					
