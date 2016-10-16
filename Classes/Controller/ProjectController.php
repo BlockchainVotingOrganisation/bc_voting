@@ -31,6 +31,9 @@ ini_set("display_errors", 1);
 /**
  * Revision-Log
  * 
+ * Revision 113:
+ * - Bugfix: #15
+ * 
  * Revision 111:
  * - Bugfix #13
  * 
@@ -808,9 +811,9 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 			$secretBC = Blockchain::retrieveData($project, $vote->getTxid());
 
 			if ($secretBC === $secretDB) { //Ist gültig
-				
+				$mcrypt = new \Goettertz\BcVoting\Service\MCrypt();
 				$j++;
-				$values[$i] = MCrypt::decrypt($secretBC);
+				$values[$i] = $mcrypt->decrypt($secretBC);
 				$values[$i] = explode("-", $values[$i]);
 				$values[$i] = $values[$i][0];
 				
