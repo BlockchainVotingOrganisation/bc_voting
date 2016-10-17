@@ -92,7 +92,7 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 		# member of the selected project.
 		if ($feuser = $this->userRepository->getCurrentFeUser()) {
 			$isAssigned = 'false';
-			$assignment = $feuser ? $project->getAssignmentForUser($user,'admin') : NULL;
+			$assignment = $feuser ? $project->getAssignmentForUser($feuser,'admin') : NULL;
 			If($assignment != NULL) {
 				$isAssigned = 'true';
 				$isAdmin = 'true';
