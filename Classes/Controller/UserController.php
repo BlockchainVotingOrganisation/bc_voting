@@ -27,7 +27,7 @@ ini_set("display_errors", 1);
  ***************************************************************/
 
 /**
- * Rev. 113
+ * Rev. 114
  */
 use Goettertz\BcVoting\Service\Blockchain;
 /**
@@ -90,9 +90,9 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 	public function editAction(\Goettertz\BcVoting\Domain\Model\User $user, \Goettertz\BcVoting\Domain\Model\Project $project) {
 		# Get the user assignment and throw an exception if the current user is not a
 		# member of the selected project.
-		if ($user = $this->userRepository->getCurrentFeUser()) {
+		if ($feuser = $this->userRepository->getCurrentFeUser()) {
 			$isAssigned = 'false';
-			$assignment = $user ? $project->getAssignmentForUser($user,'admin') : NULL;
+			$assignment = $feuser ? $project->getAssignmentForUser($user,'admin') : NULL;
 			If($assignment != NULL) {
 				$isAssigned = 'true';
 				$isAdmin = 'true';
@@ -152,6 +152,8 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 							$transactions = array_merge($transactions, $newtransactions);
 							$this->view->assign('transactions', $transactions);
 						}
+						
+						
 						$assets = Blockchain::getAssetBalanceFromAddress($project, $address);
 					}
 					$this->view->assign('assets', $assets);
@@ -159,6 +161,7 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 			}
 		}
 	}	
+	
 	/**
 	 * action showRegistration
 	 * @param \Goettertz\BcVoting\Domain\Model\User $newUser
