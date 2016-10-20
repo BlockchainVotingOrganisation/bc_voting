@@ -2,17 +2,15 @@
 <f:layout name="Default" />
 <f:section name="main">
 <f:render partial="Project/Menu" arguments="{project : project, isAdmin:isAdmin}" />
-
 <f:flashMessages renderMode="div" />
 
-<f:render partial="FormErrors" arguments="{object:User}" />
-
-<f:form action="delete" name="user" arguments="{user:user, project:project}">
+<f:form action="delete" name="user" object="{user}" arguments="{project:project}">
 	<fieldset>
 		<legend>Möchten Sie wirklich diesen Benutzer vollständig löschen?</legend>
 		<dl>
-			
+		{user.username}<br />
 			<f:form.hidden name="process" value="true" />
+			<f:form.hidden name="user" value="{user.uid}" />
 			<f:form.submit value="Save" />
 		</dl>
 	</fieldset>
