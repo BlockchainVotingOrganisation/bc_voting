@@ -110,8 +110,9 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 	
 	/**
 	 * @param \Goettertz\BcVoting\Domain\Model\User $user
+	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
 	 */
-	public function deleteAction(\Goettertz\BcVoting\Domain\Model\User $user) {
+	public function deleteAction(\Goettertz\BcVoting\Domain\Model\User $user, \Goettertz\BcVoting\Domain\Model\Project $project) {
 		if ($feuser = $this->userRepository->getCurrentFeUser()) {
 			$assignment = $feuser ? $project->getAssignmentForUser($feuser, 'admin') : NULL;
 			If($assignment != NULL) {
