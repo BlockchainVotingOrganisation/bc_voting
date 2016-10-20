@@ -128,7 +128,7 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 						$this->addFlashMessage('The user has been removed.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
 						
 						# redirect
-// 						$this->redirect('edit', 'Project', NULL, array('project'=>$project));
+ 						$this->redirect('list', 'User', NULL, array('project'=>$project));
 					}
 				}
 				else {
