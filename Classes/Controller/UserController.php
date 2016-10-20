@@ -83,6 +83,77 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 	}
 	
 	/**
+	 * @param \Goettertz\BcVoting\Domain\Model\User $newuser
+	 */
+	public function newAction(\Goettertz\BcVoting\Domain\Model\User $newuser = NULL) {
+		if ($user = $this->userRepository->getCurrentFeUser()) {
+			$assignment = $user ? $project->getAssignmentForUser($user, 'admin') : NULL;
+			If($assignment != NULL) {
+				$this->view->assign('newuser', $newuser);
+				$this->view->assign('project', $project);
+				$this->view->assign('redirect', $redirect);				
+			}
+		}
+	}
+	
+	/**
+	 * @param \Goettertz\BcVoting\Domain\Model\User $newuser
+	 */
+	public function createAction(\Goettertz\BcVoting\Domain\Model\User $newuser) {
+		if ($user = $this->userRepository->getCurrentFeUser()) {
+			$assignment = $user ? $project->getAssignmentForUser($user, 'admin') : NULL;
+			If($assignment != NULL) {
+				
+			}
+		}
+	}
+	
+	/**
+	 * @param \Goettertz\BcVoting\Domain\Model\User $user
+	 */
+	public function deleteAction(\Goettertz\BcVoting\Domain\Model\User $user) {
+		if ($user = $this->userRepository->getCurrentFeUser()) {
+			$assignment = $user ? $project->getAssignmentForUser($user, 'admin') : NULL;
+			If($assignment != NULL) {
+				$this->addFlashMessage('The user has been removed.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+				
+				if($this->request->hasArgument('process')) {
+					if ($this->request->hasArgument('process') === TRUE) {
+						# remove assignments 
+						// find
+						// foreach remove
+						
+						# remove user
+						$this->userRepository->remove($user);
+						
+						# redirect
+// 						$this->redirect('edit', 'Project', NULL, array('project'=>$project));
+					}
+				}
+				else {
+					$this->view->assign('user', $user);
+					$this->view->assign('project', $project);
+				}
+
+			}
+		}		
+	}
+	
+	/**
+	 * @param \Goettertz\BcVoting\Domain\Model\User $user
+	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
+	 */
+	public function removeAssignmentAction(\Goettertz\BcVoting\Domain\Model\User $user, \Goettertz\BcVoting\Domain\Model\Project $project) {
+		if ($user = $this->userRepository->getCurrentFeUser()) {
+			$assignment = $user ? $project->getAssignmentForUser($user, 'admin') : NULL;
+			If($assignment != NULL) {
+				$this->view->assign('user', $user);
+				$this->view->assign('project', $project);
+			}
+		}		
+	}
+	
+	/**
 	 * action edit
 	 * @param \Goettertz\BcVoting\Domain\Model\User $user
 	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
@@ -107,8 +178,6 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 		else {
 			die('Not allowed!');
 		}
-		
-
 	}
 	
 	/**
