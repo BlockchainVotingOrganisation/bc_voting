@@ -86,8 +86,8 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 	 * @param \Goettertz\BcVoting\Domain\Model\User $newuser
 	 */
 	public function newAction(\Goettertz\BcVoting\Domain\Model\User $newuser = NULL) {
-		if ($user = $this->userRepository->getCurrentFeUser()) {
-			$assignment = $user ? $project->getAssignmentForUser($user, 'admin') : NULL;
+		if ($feuser = $this->userRepository->getCurrentFeUser()) {
+			$assignment = $feuser ? $project->getAssignmentForUser($user, 'admin') : NULL;
 			If($assignment != NULL) {
 				$this->view->assign('newuser', $newuser);
 				$this->view->assign('project', $project);
@@ -100,8 +100,8 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 	 * @param \Goettertz\BcVoting\Domain\Model\User $newuser
 	 */
 	public function createAction(\Goettertz\BcVoting\Domain\Model\User $newuser) {
-		if ($user = $this->userRepository->getCurrentFeUser()) {
-			$assignment = $user ? $project->getAssignmentForUser($user, 'admin') : NULL;
+		if ($feuser = $this->userRepository->getCurrentFeUser()) {
+			$assignment = $user ? $project->getAssignmentForUser($feuser, 'admin') : NULL;
 			If($assignment != NULL) {
 				
 			}
@@ -112,10 +112,9 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 	 * @param \Goettertz\BcVoting\Domain\Model\User $user
 	 */
 	public function deleteAction(\Goettertz\BcVoting\Domain\Model\User $user) {
-		if ($user = $this->userRepository->getCurrentFeUser()) {
-			$assignment = $user ? $project->getAssignmentForUser($user, 'admin') : NULL;
+		if ($feuser = $this->userRepository->getCurrentFeUser()) {
+			$assignment = $user ? $project->getAssignmentForUser($feuser, 'admin') : NULL;
 			If($assignment != NULL) {
-				$this->addFlashMessage('The user has been removed.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
 				
 				if($this->request->hasArgument('process')) {
 					if ($this->request->hasArgument('process') === TRUE) {
@@ -125,6 +124,7 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 						
 						# remove user
 						$this->userRepository->remove($user);
+						$this->addFlashMessage('The user has been removed.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
 						
 						# redirect
 // 						$this->redirect('edit', 'Project', NULL, array('project'=>$project));
