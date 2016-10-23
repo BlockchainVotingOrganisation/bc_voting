@@ -1,4 +1,4 @@
-<!-- Rev. 92 -->
+<!-- Rev. 115 -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-username">
 			<f:translate key="tx_bcvoting_domain_model_user.username" /> 
@@ -19,16 +19,6 @@
 	</dd>
 	
 	<dt>
-		<label for="walletAddress">
-			<f:translate key="tx_bcvoting_domain_model_user.deposit_address" /> 
-			<span class="required">(required)</span>
-		</label>
-	</dt>
-	<dd>
-		<f:form.textfield property="depositAddress" size="50" /><br />
-	</dd>
-	
-	<dt>
 		<label for="tx-srfeuserregister-pi1-password">
 			<f:translate key="tx_bcvoting_domain_model_user.password" /> 
 			<span class="required">(required)</span>
@@ -36,7 +26,7 @@
 	</dt>
 
 	<dd>
-		<input id="tx-srfeuserregister-pi1-password" type="password" size="10" maxlength="" title="" name="" data-rsa-encryption="" value="" class="tx-srfeuserregister-pi1-password" />
+		<f:form.password size="10" property="password" class="tx-srfeuserregister-pi1-password" />
 	</dd>
 
 	<dt>
@@ -46,9 +36,5 @@
 		</label>
 	</dt>
 	<dd>
-		<input id="tx-srfeuserregister-pi1-password_again" type="password" size="10" maxlength="30" title="" name="" data-rsa-encryption="" value="" class="tx-srfeuserregister-pi1-password" />
+		<f:form.password size="10" maxlength="30" title="" name="password2" value="" class="tx-srfeuserregister-pi1-password" />
 	</dd>
-
-
-
-	
