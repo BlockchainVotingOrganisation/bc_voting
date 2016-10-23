@@ -6,7 +6,7 @@
 <f:flashMessages renderMode="div" />
 <f:render partial="FormErrors" arguments="{object:User}" />
 <h3>New User</h3>
-<f:form action="create"  name="newuser" object="{newuser}">
+<f:form action="create"  name="newuser" object="{newuser}" arguments="{project : project}">
 <f:render partial="User/FormFields" />
 	<f:form.submit value="Create new" />
 </f:form>
