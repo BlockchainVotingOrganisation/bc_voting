@@ -29,7 +29,10 @@ ini_set("display_errors", 1);
  ***************************************************************/
 
 /**
- * Revision-Log
+ * Revision-Log 116
+ * 
+ * Revision 114:
+ * - little enhancements
  * 
  * Revision 113:
  * - Bugfix: #15
@@ -211,11 +214,11 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		$amount = 0;
 		// Benutzerdaten projektbezogen laden
 		
-		if ($user = $this->userRepository->getCurrentFeUser()) {
+		if ($feuser = $this->userRepository->getCurrentFeUser()) {
 
-			$username = $user->getUsername();
+			$username = $feuser->getUsername();
 			
-			$assignment = $user ? $project->getAssignmentForUser($user) : NULL;
+			$assignment = $feuser ? $project->getAssignmentForUser($feuser) : NULL;
 			If($assignment != NULL) {
 				$isAssigned = 'true';
 				$this->view->assign('isAssigned', $isAssigned);
@@ -223,7 +226,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 			}
 
 				
-			$assignment = $user ? $project->getAssignmentForUser($user, 'admin') : NULL;
+			$assignment = $feuser ? $project->getAssignmentForUser($feuser, 'admin') : NULL;
 			If($assignment != NULL) {
 				$isAdmin = 'true';
 				$this->view->assign('isAdmin', $isAdmin);
@@ -238,19 +241,22 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 					}
 					
 					if ($assets = Blockchain::getRpcResult($project)->getmultibalances($walletAddress)) {
-						
-						foreach ($project->getBallots() AS $ballot) {
-						
-							if ($assetref = $ballot->getAsset()) {
-								foreach ($assets[$walletAddress] as $asset) {
-									
-									if ($assetref == $asset['assetref']) {
-										$ballot->setBalance($asset['qty']);
+						$ballots = $project->getBallots();
+						if (count($ballots) > 0) {
+							foreach ($ballots AS $ballot) {
+							
+								if ($assetref = $ballot->getAsset()) {
+									foreach ($assets[$walletAddress] as $asset) {
+											
+										if ($assetref == $asset['assetref']) {
+											$ballot->setBalance($asset['qty']);
+										}
+										$this->ballotRepository->update($ballot);
 									}
-									$this->ballotRepository->update($ballot);
 								}
-							}
+							}							
 						}
+
 					}
 				}
 				catch (\Exception $e) {
@@ -578,7 +584,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 							# Für jeden Stimmzettel Assets senden
 							foreach ($project->getBallots() as $ballot) {
 								if ($bcArray = Blockchain::getRpcResult($project)->sendassettoaddress($newAddress,$ballot->getAsset(),$ballot->getVotes())) {
-									$this->addFlashMessage($ballot->getName().': sending assets...ok '.$bcArray, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+									$this->addFlashMessage($ballot->getName().': sending assets...ok ', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
 									# VTC für Transaktionen bereitstellen ...
 									if (!$bcArray['error']) $this->addFlashMessage('Send '.$ballot->getVotes().' Asset "'.$ballot->getAsset().'" to '.$newAddress.' ... ok!','', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
 									else $this->addFlashMessage($bcArray['error'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
