@@ -28,17 +28,17 @@ namespace Goettertz\BcVoting\Domain\Model;
 
 /**
  * User - Feuser
- * Revision 109
+ * Revision 114 - test extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
  *  
  * FE-User Mapping: 
  * 
  * 
  */
-class User extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject {
+class User extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser {
 
 	/**
 	 * uid 	unique user id
-	 * @var \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
+	 * @var integer
 	 */
 	protected $uid = NULL;
 
