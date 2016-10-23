@@ -1,6 +1,6 @@
 <?php
 namespace Goettertz\BcVoting\Controller;
-
+ini_set("display_errors", 1);
 /***************************************************************
  *
  *  Copyright notice
@@ -84,8 +84,9 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 	
 	/**
 	 * @param \Goettertz\BcVoting\Domain\Model\User $newuser
+	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
 	 */
-	public function newAction(\Goettertz\BcVoting\Domain\Model\User $newuser = NULL) {
+	public function newAction(\Goettertz\BcVoting\Domain\Model\User $newuser = NULL, \Goettertz\BcVoting\Domain\Model\Project $project) {
 		if ($feuser = $this->userRepository->getCurrentFeUser()) {
 			$assignment = $feuser ? $project->getAssignmentForUser($user, 'admin') : NULL;
 			If($assignment != NULL) {
