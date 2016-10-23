@@ -4,15 +4,15 @@
 <f:render partial="Project/Menu" arguments="{project : project, isAdmin:isAdmin}" />
 <f:flashMessages renderMode="div" />
 
-<f:form action="delete" name="user" object="{user}" arguments="{project:project}">
+<f:form action="delete" name="user" arguments="{project:project, user:user.uid}">
 	<fieldset>
 		<legend>Möchten Sie wirklich diesen Benutzer vollständig löschen?</legend>
 		<dl>
 		{user.username}<br />
 			<f:form.hidden name="process" value="true" />
-			<f:form.hidden name="user" value="{user.uid}" />
-			<f:form.submit value="Save" />
+			
+			<f:form.submit value="Confirm" />
 		</dl>
 	</fieldset>
 </f:form>
-</f:section>>
+</f:section>
