@@ -1,6 +1,6 @@
 <?php
 namespace Goettertz\BcVoting\Controller;
-
+ini_set("display_errors", 1);
 /***************************************************************
  *
  *  Copyright notice
@@ -83,13 +83,14 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 	}
 	
 	/**
-	 * @param \Goettertz\BcVoting\Domain\Model\User $newuser
+	 * 
 	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
 	 */
-	public function newAction(\Goettertz\BcVoting\Domain\Model\User $newuser = NULL, \Goettertz\BcVoting\Domain\Model\Project $project) {
+	public function newAction(\Goettertz\BcVoting\Domain\Model\Project $project) {
 		if ($feuser = $this->userRepository->getCurrentFeUser()) {
-			$assignment = $feuser ? $project->getAssignmentForUser($user, 'admin') : NULL;
+			$assignment = $feuser ? $project->getAssignmentForUser($feuser, 'admin') : NULL;
 			If($assignment != NULL) {
+				$newuser = new \Goettertz\BcVoting\Domain\Model\User();
 				$this->view->assign('newuser', $newuser);
 				$this->view->assign('project', $project);
 				$this->view->assign('redirect', $redirect);				
@@ -99,14 +100,45 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 	
 	/**
 	 * @param \Goettertz\BcVoting\Domain\Model\User $newuser
+	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
 	 */
-	public function createAction(\Goettertz\BcVoting\Domain\Model\User $newuser) {
+	public function createAction(\Goettertz\BcVoting\Domain\Model\User $newuser, \Goettertz\BcVoting\Domain\Model\Project $project) {
+		
 		if ($feuser = $this->userRepository->getCurrentFeUser()) {
-			$assignment = $user ? $project->getAssignmentForUser($feuser, 'admin') : NULL;
+			$assignment = $feuser ? $project->getAssignmentForUser($feuser, 'admin') : NULL;
 			If($assignment != NULL) {
 				
+				#user
+				$this->userRepository->add($newuser);
+				$persistenceManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
+				$persistenceManager->persistAll();
+				$this->addFlashMessage('The user was created!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+
+				# assignment
+				$assignment = new \Goettertz\BcVoting\Domain\Model\Assignment();
+				$assignment->setUser($newuser);
+				$assignment->setProject($project);
+				
+				$roles = $this->roleRepository->findByName('Member');
+				if (count($roles) == 0) {
+					$newRole = new \Goettertz\BcVoting\Domain\Model\Role();
+					$newRole->setName('Member');
+					$this->roleRepository->add($newRole);
+					$roles[0] = $newRole;
+				}
+				$assignment->setRole($roles[0]);
+				# walletaddress;
+				$this->assignmentRepository->add($assignment);
+				
+				$this->addFlashMessage('The assignment was created!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+				
 			}
+			else die ('Not allowed!');
 		}
+		else die ('Not logged in!');
+		
+		# redirect
+		$this->redirect('list', NULL, NULL, array('project' => $project, 'feuser' => $feuser));		
 	}
 	
 	/**
@@ -145,10 +177,6 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 				}
 			}
 		}		
-	}
-	
-	private function removeAssignment() {
-		
 	}
 	
 	/**
@@ -196,16 +224,30 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 	 * action update
 	 *
 	 * @param \Goettertz\BcVoting\Domain\Model\User $user
+	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
 	 * @return void
 	 */
-	public function updateAction(\Goettertz\BcVoting\Domain\Model\User $user) {
-		$this->userRepository->update($user);
-		$this->addFlashMessage('The object was updated', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
-		$this->redirect('edit');
+	public function updateAction(\Goettertz\BcVoting\Domain\Model\User $user, \Goettertz\BcVoting\Domain\Model\Project $project) {
+		if ($feuser = $this->userRepository->getCurrentFeUser()) {
+			$assignment = $feuser ? $project->getAssignmentForUser($feuser, 'admin') : NULL;
+			If($assignment != NULL) {
+				$this->userRepository->update($user);
+				$this->addFlashMessage('The user was updated', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);	
+			}
+			else {
+				die('No admin!');
+			}
+		}
+		else {
+			die('Not logged in');
+		}
+		
+		$this->redirect('edit',NULL,NULL,array('project'=>$project,'user'=>$user));
 	}
 	/**
 	 * action show
 	 * @param \Goettertz\BcVoting\Domain\Model\User $user
+	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
 	 * @return void
 	 */
 	public function showAction(\Goettertz\BcVoting\Domain\Model\User $user, \Goettertz\BcVoting\Domain\Model\Project $project) {
