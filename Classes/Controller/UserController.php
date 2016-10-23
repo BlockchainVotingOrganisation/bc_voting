@@ -114,7 +114,9 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 	 */
 	public function deleteAction(\Goettertz\BcVoting\Domain\Model\User $user, \Goettertz\BcVoting\Domain\Model\Project $project) {
 		if ($feuser = $this->userRepository->getCurrentFeUser()) {
+			
 			$assignment = $feuser ? $project->getAssignmentForUser($feuser, 'admin') : NULL;
+			
 			If($assignment != NULL) {
 				
 				if($this->request->hasArgument('process')) {
@@ -122,22 +124,30 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 						# remove assignments 
 						// find
 						// foreach remove
-						
+						$assignments = $this->assignmentRepository->findByUser($user);
+						foreach ($assignments AS $delAssignment) {
+							$this->assignmentRepository->remove($delAssignment);
+						}
+	
 						# remove user
+						
 						$this->userRepository->remove($user);
-						$this->addFlashMessage('The user has been removed.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+						$this->addFlashMessage('The user '.$user->getUsername().' ('.$user->getUid().') has been removed.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
 						
 						# redirect
- 						$this->redirect('list', 'User', NULL, array('project'=>$project));
+ 						$this->redirect('list', NULL, NULL, array('project'=>$project));
 					}
 				}
 				else {
 					$this->view->assign('user', $user);
 					$this->view->assign('project', $project);
 				}
-
 			}
 		}		
+	}
+	
+	private function removeAssignment() {
+		
 	}
 	
 	/**
