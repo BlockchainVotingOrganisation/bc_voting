@@ -1,6 +1,6 @@
 <?php
 namespace Goettertz\BcVoting\Controller;
-ini_set("display_errors", 1);
+
 /***************************************************************
  *
  *  Copyright notice
@@ -27,7 +27,7 @@ ini_set("display_errors", 1);
  ***************************************************************/
 
 /**
- * Rev. 114
+ * Rev. 115
  */
 use Goettertz\BcVoting\Service\Blockchain;
 /**
@@ -107,7 +107,9 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 		if ($feuser = $this->userRepository->getCurrentFeUser()) {
 			$assignment = $feuser ? $project->getAssignmentForUser($feuser, 'admin') : NULL;
 			If($assignment != NULL) {
-				
+				$password = $newuser->getPassword();
+				$password = $this->saltedPassword($password);
+				$user->setPassword($password);				
 				#user
 				$this->userRepository->add($newuser);
 				$persistenceManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
@@ -231,7 +233,12 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 		if ($feuser = $this->userRepository->getCurrentFeUser()) {
 			$assignment = $feuser ? $project->getAssignmentForUser($feuser, 'admin') : NULL;
 			If($assignment != NULL) {
-				$this->userRepository->update($user);
+				if (!empty($user->getPassword())) {
+					$password = $user->getPassword();
+					$password = $this->saltedPassword($password);
+					$user->setPassword($password);
+					$this->userRepository->update($user);
+				}
 				$this->addFlashMessage('The user was updated', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);	
 			}
 			else {
