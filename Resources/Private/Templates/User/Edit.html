@@ -1,15 +1,11 @@
-<!-- Revision 111 -->
+<!-- Revision 114 -->
 <f:layout name="Default" />
 <f:section name="main">
-<f:render partial="Project/Menu" arguments="{project : project, isAdmin:isAdmin}" />
-
-<h3></h3>
-
+<f:render partial="Project/Menu" arguments="{project:project, isAdmin:isAdmin}" />
 <f:flashMessages renderMode="div" />
-
 <f:render partial="FormErrors" arguments="{object:User}" />
 
-<f:form action="update" name="user" object="{user}" >
+<f:form action="update" name="user" object="{user}" arguments="{user:user, project:project}" >
 	<fieldset>
 		<legend>User: {user.username}</legend>
 		<dl>
