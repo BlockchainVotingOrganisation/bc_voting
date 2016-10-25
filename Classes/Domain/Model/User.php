@@ -28,6 +28,7 @@ namespace Goettertz\BcVoting\Domain\Model;
 
 /**
  * User - Feuser
+ * Revision 116 - password2 for checkimg purpose
  * Revision 114 - test extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
  *  
  * FE-User Mapping: 
@@ -53,6 +54,13 @@ class User extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser {
 	 * @var string $password
 	 */
 	protected $password = NULL;
+	
+	/**
+	 * password2	Passwort wiederholen
+	 * @var string $password2
+	 *
+	 */
+	protected $password2 = NULL;
 
 	/**
 	 * @var string The telephone number of the contact
@@ -134,6 +142,25 @@ class User extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser {
  	public function setPassword($password) {
  		$this->password = $password;
  	}
+ 	
+ 	/**
+ 	 * Gets password2
+ 	 * @return password2
+ 	 */
+ 	public function getPassword2() {
+ 		return $this->password2;
+ 	}
+ 	
+ 	/**
+ 	 * Sets password2
+ 	 * @param string $password2
+ 	 * @return void;
+ 	 */
+ 	public function setPassword2($password2)
+ 	{
+ 		$this->password2 = $password2;
+ 	}
+ 	
  	/**
  	 * Gets email
  	 * @return string emailAddress
