@@ -1,6 +1,6 @@
 <?php
 namespace Goettertz\BcVoting\Controller;
-
+ini_set("display_errors", 1);
 /***************************************************************
  *
  *  Copyright notice
@@ -248,6 +248,9 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 		if ($feuser = $this->userRepository->getCurrentFeUser()) {
 			$assignment = $feuser ? $project->getAssignmentForUser($feuser, 'admin') : NULL;
 			If($assignment != NULL) {
+				
+				# javascript form check is still missing...
+				
 				if (!empty($user->getPassword())) {
 					
 					if ($user->getPassword() === $user->getPassword2()) {
@@ -551,7 +554,8 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 	 */
 	public function getNewAddressAction(\Goettertz\BcVoting\Domain\Model\Assignment $assignment, \Goettertz\BcVoting\Domain\Model\Project $project) {
 		$assignment->setWalletAddress(Blockchain::getNewAddress($project));
-		$this->view->assign('assignment', $assignment);
+		$this->assignmentRepository->update($assignment);
+		$this->redirect('show',NULL,NULL, array('project' => $project, 'user' => $assignment->getUser()));
 	}
 	
 	protected function saltedPassword($password) {		
