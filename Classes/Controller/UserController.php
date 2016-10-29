@@ -1,6 +1,6 @@
 <?php
 namespace Goettertz\BcVoting\Controller;
-
+ini_set("display_errors", 1);
 /***************************************************************
  *
  *  Copyright notice
@@ -110,8 +110,8 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 				
 				# javascript form check is still missing...
 				
-				if (!empty($user->getPassword())) {
-					if ($user->getPassword() === $user->getPassword2()) {
+				if (!empty($newuser->getPassword())) {
+					if ($newuser->getPassword() === $newuser->getPassword2()) {
 						$password = $newuser->getPassword();
 						$password = $this->saltedPassword($password);
 						$newuser->setPassword($password);					
