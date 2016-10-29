@@ -1,6 +1,6 @@
 <?php
 namespace Goettertz\BcVoting\Controller;
-
+ini_set("display_errors", 1);
 /***************************************************************
  *
  *  Copyright notice
@@ -27,7 +27,7 @@ namespace Goettertz\BcVoting\Controller;
  ***************************************************************/
 
 /**
- * Rev. 115
+ * Rev. 116
  */
 use Goettertz\BcVoting\Service\Blockchain;
 /**
@@ -107,33 +107,48 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 		if ($feuser = $this->userRepository->getCurrentFeUser()) {
 			$assignment = $feuser ? $project->getAssignmentForUser($feuser, 'admin') : NULL;
 			If($assignment != NULL) {
-				$password = $newuser->getPassword();
-				$password = $this->saltedPassword($password);
-				$user->setPassword($password);				
-				#user
-				$this->userRepository->add($newuser);
-				$persistenceManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
-				$persistenceManager->persistAll();
-				$this->addFlashMessage('The user was created!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
-
-				# assignment
-				$assignment = new \Goettertz\BcVoting\Domain\Model\Assignment();
-				$assignment->setUser($newuser);
-				$assignment->setProject($project);
 				
-				$roles = $this->roleRepository->findByName('Member');
-				if (count($roles) == 0) {
-					$newRole = new \Goettertz\BcVoting\Domain\Model\Role();
-					$newRole->setName('Member');
-					$this->roleRepository->add($newRole);
-					$roles[0] = $newRole;
+				# javascript form check is still missing...
+				
+				if (!empty($user->getPassword())) {
+					if ($user->getPassword() === $user->getPassword2()) {
+						$password = $newuser->getPassword();
+						$password = $this->saltedPassword($password);
+						$newuser->setPassword($password);					
+						
+						$this->userRepository->add($newuser);
+						$persistenceManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
+						$persistenceManager->persistAll();
+						
+						$this->addFlashMessage('The user was created!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+						
+						# assignment
+						$assignment = new \Goettertz\BcVoting\Domain\Model\Assignment();
+						$assignment->setUser($newuser);
+						$assignment->setProject($project);
+						
+						$roles = $this->roleRepository->findByName('Member');
+						if (count($roles) == 0) {
+							$newRole = new \Goettertz\BcVoting\Domain\Model\Role();
+							$newRole->setName('Member');
+							$this->roleRepository->add($newRole);
+							$roles[0] = $newRole;
+						}
+						$assignment->setRole($roles[0]);
+						
+						# walletaddress;
+						$this->assignmentRepository->add($assignment);
+						
+						$this->addFlashMessage('The assignment was created!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+						
+					}
+					else {
+						$this->addFlashMessage('ERROR: Passwords didn\'t match.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+					}
 				}
-				$assignment->setRole($roles[0]);
-				# walletaddress;
-				$this->assignmentRepository->add($assignment);
-				
-				$this->addFlashMessage('The assignment was created!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
-				
+				else {
+					$this->addFlashMessage('ERROR: No password.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+				}
 			}
 			else die ('Not allowed!');
 		}
@@ -234,12 +249,21 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 			$assignment = $feuser ? $project->getAssignmentForUser($feuser, 'admin') : NULL;
 			If($assignment != NULL) {
 				if (!empty($user->getPassword())) {
-					$password = $user->getPassword();
-					$password = $this->saltedPassword($password);
-					$user->setPassword($password);
-					$this->userRepository->update($user);
+					
+					if ($user->getPassword() === $user->getPassword2()) {
+						$password = $user->getPassword();
+						$password = $this->saltedPassword($password);
+						$user->setPassword($password);
+						$this->userRepository->update($user);
+						$this->addFlashMessage('The user was updated', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+					}
+					else {
+						$this->addFlashMessage('ERROR: Passwords didn\'t match.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+					}
 				}
-				$this->addFlashMessage('The user was updated', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);	
+				else {
+					$this->addFlashMessage('ERROR: No password.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+				}
 			}
 			else {
 				die('No admin!');
@@ -251,6 +275,7 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 		
 		$this->redirect('edit',NULL,NULL,array('project'=>$project,'user'=>$user));
 	}
+
 	/**
 	 * action show
 	 * @param \Goettertz\BcVoting\Domain\Model\User $user
@@ -518,6 +543,15 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 			}
 		}
 		$this->view->assign('project', $project);
+	}
+	
+	/**
+	 * @param \Goettertz\BcVoting\Domain\Model\Assignment $assignment
+	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
+	 */
+	public function getNewAddressAction(\Goettertz\BcVoting\Domain\Model\Assignment $assignment, \Goettertz\BcVoting\Domain\Model\Project $project) {
+		$assignment->setWalletAddress(Blockchain::getNewAddress($project));
+		$this->view->assign('assignment', $assignment);
 	}
 	
 	protected function saltedPassword($password) {		
