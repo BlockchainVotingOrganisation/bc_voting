@@ -27,7 +27,7 @@ namespace Goettertz\BcVoting\Controller;
  ***************************************************************/
 
 /**
- * Rev. 116
+ * Rev. 117
  */
 use Goettertz\BcVoting\Service\Blockchain;
 /**
@@ -109,6 +109,11 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 			If($assignment != NULL) {
 				
 				# javascript form check is still missing...
+				
+				if ($this->checkUsername($newuser->getUsername()) === false) {
+					$this->addFlashMessage('ERROR: Username check failed!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+					$this->redirect('new', NULL, NULL, array('project' => $project, 'feuser' => $feuser));
+				}
 				
 				if (!empty($newuser->getPassword())) {
 					if ($newuser->getPassword() === $newuser->getPassword2()) {
@@ -250,6 +255,10 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 			If($assignment != NULL) {
 				
 				# javascript form check is still missing...
+				if ($this->checkUsername($user->getUsername()) === false) {
+					$this->addFlashMessage('ERROR: Username check failed!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+					$this->redirect('edit', NULL, NULL, array('project' => $project, 'feuser' => $feuser, 'user' => $user));
+				}
 				
 				if (!empty($user->getPassword())) {
 					
@@ -340,16 +349,16 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 		$isAdmin = 'false';
 		# redirect default
 	
-		if ($user = $this->userRepository->getCurrentFeUser()) {
+		if ($feuser = $this->userRepository->getCurrentFeUser()) {
 			# default args
-			$args = array('user' => $user, 'project' => $project);
+			$args = array('user' => $feuser, 'project' => $project);
 			if (!$redirect) $redirect = array(
 					'action' => 'show',
 					'controller' => 'Wallet',
 					'pluginName' => 'Wallet',
 					'args' => $args);
 	
-			$assignment = $user ? $project->getAssignmentForUser($user, 'admin') : NULL;
+			$assignment = $feuser ? $project->getAssignmentForUser($feuser, 'admin') : NULL;
 			If($assignment != NULL) {
 				$isAdmin = 'true';
 			}
@@ -399,7 +408,6 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 		$this->view->assign('result', $result);
 	
 		# finally redirect
-		// 		$this->redirect($redirect['action'], $redirect['controller'], NULL, $redirect['args']);
 		$this->redirect('list',NULL,NULL, array('project' => $project));
 	}
 	
@@ -535,10 +543,7 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 								$this->addFlashMessage($e, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 							}
 						}
-					
-
 					}
-
 				}
 				else {
 					$this->addFlashMessage('No input data!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
@@ -586,27 +591,18 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 
 	/* compare user with typo3 database */
 	private function checkUsername($username) {
-			
-		$selectFields='username';
-		$fromTable='fe_users';
-		$whereClause='username="'.$username.'" and deleted=0 and pid='.$this->importPID;
-		$groupBy='';
-		$orderBy=''; // 'field(uid,' . $orderedUidList . ')';
-		$limit='1';
-	
-		$recordList=$GLOBALS['TYPO3_DB']->exec_SELECTquery( $selectFields
-				, $fromTable
-				, $whereClause
-				, $groupBy
-				, $orderBy
-				, $limit
-				);
-	
-		if ($GLOBALS['TYPO3_DB']->sql_num_rows( $recordList ) == 1) {
-			return true;
-		} else {
+		
+		$users = $this->userRepository->findByUsername($username);
+		if (count($users) > 0) {
 			return false;
 		}
+		
+		if (strlen($username) < 3) {
+			return false;
+		}
+		
+		return true;
+		
 	}
 	
 	/**
