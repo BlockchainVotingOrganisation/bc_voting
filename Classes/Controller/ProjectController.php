@@ -1,6 +1,8 @@
 <?php
 namespace Goettertz\BcVoting\Controller;
 
+ini_set("display_errors", 1);
+
 /***************************************************************
  *
  *  Copyright notice
@@ -974,19 +976,22 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 					
 				$project->setReference($ref);
 				$this->projectRepository->update($project);
-		
+				$persistenceManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
+				$persistenceManager->persistAll();
+				
 				if (!is_array($ref)) {
 					if (is_string($ref)) $this->addFlashMessage('The project was sealed. ', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
 				}
 				elseif (is_string($ref['error']))  $this->addFlashMessage('ERROR:  '.$ref['error'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 				else  $this->addFlashMessage('ERROR:  '.implode('-', $ref), '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 			}
-		
-			$this->view->assign('ref', $ref);
-			$this->view->assign('project', $project);
-			$this->view->assign('json', $json);
-			$this->view->assign('hash', $hash);
+			$this->addFlashMessage('Success:  '.$project->getName().' sealed', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
 		}
+		
+		$this->view->assign('ref', $ref);
+		$this->view->assign('project', $project);
+		$this->view->assign('json', $json);
+		$this->view->assign('hash', $hash);
 	}
 	
 	/**
@@ -1119,7 +1124,5 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		return $assignment;
 	}
 }
-
-
 
 ?>
