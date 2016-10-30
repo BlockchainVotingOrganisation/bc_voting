@@ -1,4 +1,4 @@
-# Revision 111
+# Revision 117
 
 #
 # Table structure for table 'tx_bcvoting_domain_model_asset'
@@ -230,6 +230,7 @@ CREATE TABLE tx_bcvoting_domain_model_project (
 	end int(11) unsigned DEFAULT '0' NOT NULL,
 	assignments int(11) unsigned DEFAULT '0' NOT NULL,
 	ballots int(11) unsigned DEFAULT '0' NOT NULL,
+	reference varchar(80) DEFAULT '' NOT NULL,
 	
 	blockchain_name varchar(255) DEFAULT '' NOT NULL,
 	rpc_server varchar(255) DEFAULT '' NOT NULL,
