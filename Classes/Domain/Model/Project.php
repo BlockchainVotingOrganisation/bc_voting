@@ -647,7 +647,7 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 *
 	 * @return string
 	 */
-	protected function getJson() {
+	public function getJson() {
 	
 		$returnObject = new \stdClass();
 		$returnObject->uid = $this->getUid();
