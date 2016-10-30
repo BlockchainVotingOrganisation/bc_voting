@@ -27,7 +27,7 @@ namespace Goettertz\BcVoting\Domain\Model;
  ***************************************************************/
 
 /**
- * Revision 64
+ * Revision 117
  */
 
 /**
@@ -42,6 +42,15 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @validate NotEmpty
 	 */
 	protected $name = '';
+	
+	/**
+	 * reference
+	 *
+	 * blockchain-reference
+	 *
+	 * @var string
+	 */
+	protected $reference = '';
 	
 	/**
 	 * logo
@@ -648,12 +657,31 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 		$returnObject->start = $this->getStart();
 		$returnObject->end = $this->getEnd();
 		$returnObject->walletaddress = $this->getWalletAddress();
-	
+
+		// foreach ballots
 		foreach ($this->getOptions() as $option) {
 			$returnObject->options[] = $option->getJson();
 		}	
 		return json_encode($returnObject, JSON_FORCE_OBJECT);
 	}
+	
+	/**
+	 * gets the reference id
+	 *
+	 * @return string
+	 */
+	public function getReference() {
+		return $this->reference;
+	}
+	
+	/**
+	 * @param string $reference
+	 * @return void
+	 */
+	public function setReference($reference) {
+		$this->reference = $reference;
+	}
+	
 	
 }
 ?>
