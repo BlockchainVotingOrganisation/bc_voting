@@ -1,5 +1,5 @@
 <?php
-// Rev. 109
+// Rev. 117
 if (!defined('TYPO3_MODE')) {
 	die('Access denied.');
 }
@@ -8,20 +8,20 @@ if (!defined('TYPO3_MODE')) {
 	'Goettertz.' . $_EXTKEY,
 	'Project',
 	array(
- 		'Project' => 'list, show, new, create, edit, editbcparams, update, delete, assign, evaluation, arguments, settings, createSettings, removeLogo, checkVoting, execute',
+ 		'Project' => 'list, show, new, create, edit, editbcparams, update, delete, assign, evaluation, arguments, settings, createSettings, removeLogo, checkVoting, execute, seal',
  		'Option' => 'list, show, new, create, edit, update, delete, vote, removeLogo',
- 		'Wallet' => 'show, sendAssets',
- 		'User' => 'list, show, new, create, edit, update, delete, import, upload',
+ 		'Wallet' => 'show',
+ 		'User' => 'list, show, new, create, edit, update, delete, import, upload, sendAssets, getNewAddress',
 		'Blockchain' => 'show',
 		'Argument' => 'list, show, new, create, edit, update, delete',
 		'Ballot' => 'list, show, new, create, edit, update, delete, sealBallot, vote, removeLogo',
 	),
 	// non-cacheable actions
 	array(
-		'Project' => 'list, show, new, create, edit, editbcparams, update, delete, assign, evaluation, arguments, settings, createSettings, removeLogo, checkVoting, execute',
+		'Project' => 'list, show, new, create, edit, editbcparams, update, delete, assign, evaluation, arguments, settings, createSettings, removeLogo, checkVoting, execute, seal',
 		'Option' => 'list, show, new, create, edit, update, delete, vote, removeLogo',
-		'Wallet' => 'show, sendAssets',
- 		'User' => 'list, show, new, create, edit, update, delete, import, upload',
+		'Wallet' => 'show',
+ 		'User' => 'list, show, new, create, edit, update, delete, import, upload, sendAssets, getNewAddress',
 		'Blockchain' => 'show',
 		'Argument' => 'list, show, new, create, edit, update, delete',
 		'Ballot' => 'list, show, new, create, edit, update, delete, sealBallot, vote, removeLogo',
