@@ -647,7 +647,7 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 *
 	 * @return string
 	 */
-	public function getJson() {
+	protected function getJson() {
 	
 		$returnObject = new \stdClass();
 		$returnObject->uid = $this->getUid();
@@ -658,10 +658,10 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 		$returnObject->end = $this->getEnd();
 		$returnObject->walletaddress = $this->getWalletAddress();
 
-// 		// foreach ballots
-// 		foreach ($this->getOptions() as $option) {
-// 			$returnObject->options[] = $option->getJson();
-// 		}	
+ 		foreach ($this->getBallots() AS $ballot) {
+ 			$returnObject->ballots[] = $ballot->getReference();
+ 		}
+
 		return json_encode($returnObject, JSON_FORCE_OBJECT);
 	}	
 }
