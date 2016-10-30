@@ -1,8 +1,6 @@
 <?php
 namespace Goettertz\BcVoting\Controller;
 
-
-
 /***************************************************************
  *
  *  Copyright notice
@@ -29,7 +27,8 @@ namespace Goettertz\BcVoting\Controller;
  ***************************************************************/
 
 /**
- * Revision-Log 116
+ * Revision 117:
+ * -seal project
  * 
  * Revision 114:
  * - little enhancements
@@ -909,6 +908,11 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		$this->view->assign('date_now', new \DateTime());
 	}
 
+	/**
+	 * execute votings
+	 * 
+	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
+	 */
 	public function executeAction(\Goettertz\BcVoting\Domain\Model\Project $project) {
 	
 		# Checks
@@ -951,6 +955,37 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 			$this->view->assign('result', $result);
 			$this->view->assign('isAdmin', $isAdmin);
 			$this->view->assign('project', $project);
+		}
+	}
+	
+	/**
+	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
+	 */
+	public function sealAction(\Goettertz\BcVoting\Domain\Model\Project $project) {
+		# Check if sealed
+		if ($project->getReference() === '') {
+		
+			# The data for sealing ...
+			$json = $project->getJson($project);
+			$hash = hash('sha256', $json);
+		
+			# Saving data in the blockchain ...
+			if ($ref = Blockchain::storeData($project, $project->getWalletAddress(), $project->getWalletAddress(), 0.00000001, $json)  ) {
+					
+				$project->setReference($ref);
+				$this->projectRepository->update($project);
+		
+				if (!is_array($ref)) {
+					if (is_string($ref)) $this->addFlashMessage('The project was sealed. ', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+				}
+				elseif (is_string($ref['error']))  $this->addFlashMessage('ERROR:  '.$ref['error'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+				else  $this->addFlashMessage('ERROR:  '.implode('-', $ref), '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+			}
+		
+			$this->view->assign('ref', $ref);
+			$this->view->assign('project', $project);
+			$this->view->assign('json', $json);
+			$this->view->assign('hash', $hash);
 		}
 	}
 	
@@ -1086,29 +1121,5 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 }
 
 
-
-// 		// Do something "fun" here.. Statistic, counting, notify, etc.
-
-// 		$this->response->setHeader('Cache-control', 'public', TRUE);
-
-// 		$this->response->setHeader('Content-Description', 'File transfer', TRUE);
-
-// 		$this->response->setHeader('Content-Disposition', 'attachment; filename=FILENAME.jpg', TRUE);
-
-// 		// ATTENTION: I've hardcoded the Content-Type, you might have to change this!
-
-// 		$this->response->setHeader('Content-Type', 'image/jpeg', TRUE);
-
-// 		$this->response->setHeader('Content-Transfer-Encoding', 'binary', TRUE);
-
-// 		// As the very last thing, I send the headers to the visitor, before Extbase comes to the part, where it renders a HTML template
-
-// 		$this->response->sendHeaders();
-
-// 		// $this->media is my domain model, add you own file path here :-)
-
-// 		@readfile($this->media->getOriginalResource());
-
-// 		exit();
 
 ?>
