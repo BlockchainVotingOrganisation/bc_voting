@@ -1,6 +1,6 @@
 <?php
 namespace Goettertz\BcVoting\Controller;
-
+ini_set("display_errors", 1);
 /***************************************************************
  *
  *  Copyright notice
@@ -252,13 +252,14 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 	public function updateAction(\Goettertz\BcVoting\Domain\Model\User $user, \Goettertz\BcVoting\Domain\Model\Project $project) {
 		if ($feuser = $this->userRepository->getCurrentFeUser()) {
 			$assignment = $feuser ? $project->getAssignmentForUser($feuser, 'admin') : NULL;
+			
 			If($assignment != NULL) {
 				
 				# javascript form check is still missing...
-				if ($this->checkUsername($user->getUsername()) === false) {
-					$this->addFlashMessage('ERROR: Username check failed!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-					$this->redirect('edit', NULL, NULL, array('project' => $project, 'feuser' => $feuser, 'user' => $user));
-				}
+// 				if ($this->checkUsername($user->getUsername()) === false) {
+// 					$this->addFlashMessage('ERROR: Username check failed!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+// 					$this->redirect('edit', NULL, NULL, array('project' => $project, 'feuser' => $feuser, 'user' => $user));
+// 				}
 				
 				if (!empty($user->getPassword())) {
 					
