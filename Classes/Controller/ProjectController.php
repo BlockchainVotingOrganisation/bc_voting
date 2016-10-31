@@ -974,11 +974,13 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 					
 				$project->setReference($ref);
 				$this->projectRepository->update($project);
+				$this->addFlashMessage('The project was updated.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+				
 				$persistenceManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
 				$persistenceManager->persistAll();
 				
 				if (!is_array($ref)) {
-					if (is_string($ref)) $this->addFlashMessage('The project was sealed. ', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+					if (is_string($ref)) $this->addFlashMessage('The project was sealed. TxId: '.$ref, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
 				}
 				elseif (is_string($ref['error']))  $this->addFlashMessage('ERROR:  '.$ref['error'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 				else  $this->addFlashMessage('ERROR:  '.implode('-', $ref), '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
