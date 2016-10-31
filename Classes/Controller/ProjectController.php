@@ -28,71 +28,6 @@ namespace Goettertz\BcVoting\Controller;
 
 /**
  * Revision 117:
- * -seal project
- * 
- * Revision 114:
- * - little enhancements
- * 
- * Revision 113:
- * - Bugfix: #15
- * 
- * Revision 111:
- * - Bugfix #13
- * 
- * Revision 109:
- * - #1298012500
- * 
- * Revision 108:
- * - Bugfixes
- * 
- * Revision 106
- * - minor bugfixes
- * 
- * Revision 105:
- * - consolidation
- * 
- * Revision 104: 
- *  - some little Bugfixes
- *  - New executeAction
- * 
- * Revision 103: Bugfixes
- * 
- * Revision 102:
- * - CSV-Download-Link
- * - CSV-file
- *  
- * Revision 95: Bugfix
- * 
- * Revision 94:
- * - Bugfix: checkVotings: user credentials
- * - Feature getOptions() - with balance from blockchain json
- *
- * Revision 93:
- * - Bugfix: evaluationAction: show evaluation when not logged in. (>656)
- * - separated evaluationAction from checkVotingsAction (>614)
- *
- * Revision 90:
- * - createAction: Error redirect settings (cause can't find new project)
- * 
- * Revision 89:
- * - evaluationAction option walletAdress
- * 
- * Revision 88:
- * - evaluationAction: get walletAddress from voting
- * 
- * Revision 86: 
- * - removed OP_Return
- * 
- * Revision 84: Bugfixes
- * 
- * Revision 83: evaluationAction view colors
- * 
- * 
- * Revision 82:
- * - Call OP_Return with server, user, useCmd
- * - Assign: OK-msg after sending assets
- * - Bugfix hardcoded walletaddresses in showAction
- * - Feature: view->assign(date_now)
  */
 
 use \Goettertz\BcVoting\Service\Blockchain;
@@ -401,13 +336,25 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 				$role = $assignment->getRole($assignment);
 				$roleName = $role->getName($role);
 				$categories = $this->categoryRepository->findAll();
-				$this->view->assignMultiple(array('project' => $project, 'isAssigned' => $isAssigned, 'isAdmin' => $isAdmin, 'categories' => $categories));
+				if (empty($project->getReference())) {
+					$this->view->assignMultiple(array('project' => $project, 'isAssigned' => $isAssigned, 'isAdmin' => $isAdmin, 'categories' => $categories, 'feuser' => $user));
+				}
+				else {
+					$this->addFlashMessage('Project already sealed!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+					$this->redirect('show','Project','BcVoting',array('project'=>$project));
+				}
+				
 			}
 			else {
-				die('No admin!');
+					$this->addFlashMessage('No admin!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+					$this->redirect('show','Project','BcVoting',array('project'=>$project));
+// 				die('No admin!');
 			}
 		}
 		else {
+			$this->addFlashMessage('Not allowed!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+			$this->redirect('show','Project','BcVoting',array('project'=>$project));
+				
 			die('Not allowed!');
 		}
 	}
@@ -1124,5 +1071,4 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		return $assignment;
 	}
 }
-
 ?>
