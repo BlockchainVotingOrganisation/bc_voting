@@ -46,8 +46,6 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	/**
 	 * reference
 	 *
-	 * blockchain-reference
-	 *
 	 * @var string
 	 */
 	protected $reference = '';
