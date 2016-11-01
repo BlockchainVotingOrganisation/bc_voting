@@ -118,6 +118,9 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 	public function listAction() {
 		$projects = $this->projectRepository->findAll();
 		$this->view->assign('projects', $projects);
+		if ($feuser = $this->userRepository->getCurrentFeUser()) {
+			$this->view->assign('feuser', $feuser);
+		}
 	}
 	
 	/**
@@ -149,7 +152,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		// Benutzerdaten projektbezogen laden
 		
 		if ($feuser = $this->userRepository->getCurrentFeUser()) {
-
+			$this->view->assign('feuser', $feuser);
 			$username = $feuser->getUsername();
 			
 			$assignment = $feuser ? $project->getAssignmentForUser($feuser) : NULL;
@@ -218,6 +221,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		if ($user = $this->userRepository->getCurrentFeUser()) {
 			if ($newProject == NULL) $newProject = new \Goettertz\BcVoting\Domain\Model\Project();
 			$this->view->assign('newProject', $newProject);
+			$this->view->assign('feuser', $user);
 		}
 		else {				
 			$this->addFlashMessage('You aren\'t currently logged in! Please goto <a href="/login/">login</a> or <a href="/register/">register</a>', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
@@ -720,7 +724,6 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 			if (is_string($csv['error'])) {
 				$result['error'] = $csv['error'];
 				$this->addFlashMessage($result['error'] . ' (756)', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-// 				$this->redirect('show');
 			}
 			
 			$data = array();
@@ -917,11 +920,15 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 			$hash = hash('sha256', $json);
 		
 			# Saving data in the blockchain ...
-			if ($ref = Blockchain::storeData($project, $project->getWalletAddress(), $project->getWalletAddress(), 0.00000001, $json)  ) {
+			
+			$vtc_amount = $this->settings['payment_sealing'];
+			if ($vtc_amount < 0.00000001) $vtc_amount = 0.00000001;
+			
+			if ($ref = Blockchain::storeData($project, $project->getWalletAddress(), $project->getWalletAddress(), $vtc_amount, $json)  ) {
 					
 				$project->setReference($ref);
 				$this->projectRepository->update($project);
-				$this->addFlashMessage('The project was updated.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+// 				$this->addFlashMessage('The project was updated.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
 				
 				$persistenceManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
 				$persistenceManager->persistAll();
@@ -932,7 +939,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 				elseif (is_string($ref['error']))  $this->addFlashMessage('ERROR:  '.$ref['error'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 				else  $this->addFlashMessage('ERROR:  '.implode('-', $ref), '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 			}
-			$this->addFlashMessage('Success:  '.$project->getName().' sealed', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+// 			$this->addFlashMessage('Success:  '.$project->getName().' sealed', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
 		}
 		
 		$this->view->assign('ref', $ref);
