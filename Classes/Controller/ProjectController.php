@@ -1,6 +1,8 @@
 <?php
 namespace Goettertz\BcVoting\Controller;
 
+ini_set("display_errors", 1);
+
 /***************************************************************
  *
  *  Copyright notice
@@ -923,8 +925,9 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 			
 			$vtc_amount = $this->settings['payment_sealing'];
 			if ($vtc_amount < 0.00000001) $vtc_amount = 0.00000001;
-			
-			if ($ref = Blockchain::storeData($project, $project->getWalletAddress(), $project->getWalletAddress(), $vtc_amount, $json)  ) {
+			$this->addFlashMessage('VTC: '.doubleval($vtc_amount), '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+
+			if ($ref = Blockchain::storeData($project, $project->getWalletAddress(), $project->getWalletAddress(), doubleval($vtc_amount), $json)  ) {
 					
 				$project->setReference($ref);
 				$this->projectRepository->update($project);
