@@ -1,0 +1,17 @@
+<!-- Revision 86 -->
+<f:layout name="Default" />
+<f:section name="main">
+<f:render partial="Project/Menu" arguments="{project : project}" />
+<f:flashMessages renderMode="div" />
+
+<h4>Sealed ballot</h4>
+Transaction ID (txid):<br />
+{ref}
+<hr />
+Data:<br />
+{json}
+<hr />
+Hash sha256<br />
+{hash}
+
+</f:section>

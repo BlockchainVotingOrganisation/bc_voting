@@ -1,0 +1,45 @@
+{namespace bvs=Goettertz\BcVoting\ViewHelpers}
+<f:layout name="Default" />
+Rev. 74
+<f:section name="main">
+<f:render partial="Project/Menu" arguments="{project : project}" />
+<f:flashMessages renderMode="div" />
+<h4>{project.name}</h4>
+<h5>Ballots list</h5>
+
+<f:link.action action="new" arguments="{project : project}">+ Create new ballot</f:link.action>
+
+<table>
+<f:for each="{ballots}" as="ballot">
+<f:cycle values="{0: 'whitesmoke', 1: '#fff'}" as="color">
+	<tr style="background-color: {color}">
+		<td><f:link.action action="show" controller="Ballot" arguments="{ballot:ballot}" title="id: {ballot.uid}">{ballot.name}</f:link.action></td>
+		
+		
+		<td width="2%"><f:if condition="{ballot.start}"><f:format.date format="d.m.Y">{ballot.start}</f:format.date></f:if></td>
+		<td width="1%"><f:if condition="{ballot.start}">-</f:if></td>
+		<td width="2%"><f:if condition="{ballot.end}"><f:format.date format="d.m.Y">{ballot.end}</f:format.date></f:if></td>
+	
+	<!-- Mist, muss geändert werden: isAdmin -->
+	<f:for each="{project.assignments}" as="assignment">
+		<f:if condition="{assignment.user.uid} == <bvs:GetUserId/>">
+			<f:then>
+				<f:if condition="{assignment.role.name} == 'admin'">
+					<f:then>
+						
+						<td colspan="1">										
+							<f:link.action controller="Ballot" action="edit" arguments="{ballot:ballot}">Edit</f:link.action> |
+							<f:link.action controller="Ballot" action="delete" arguments="{ballot:ballot}">Delete</f:link.action> |
+							<f:link.action controller="Ballot" action="copy" arguments="{ballot:ballot}">Copy</f:link.action>
+						</td>
+																
+					</f:then>
+				</f:if>
+			</f:then>
+		</f:if>
+	</f:for>
+	</tr>
+</f:cycle>
+</f:for>
+</table>
+</f:section>

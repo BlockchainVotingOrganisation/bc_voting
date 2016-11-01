@@ -1,1 +1,31 @@
- 
+Rev. 77
+<f:layout name="Default" />
+<f:section name="main">
+<f:render partial="Menu" arguments="{project : ballot.project, isAssigned: isAssigned, isAdmin: isAdmin}" />
+<f:flashMessages renderMode="div" />
+
+<div style="min-height:500px; background-color: white; padding: 10px; border: 1px solid red;">
+<f:form action="vote" controller="Ballot" object="voting" arguments="{ballot:ballot}">
+<f:form.hidden name="project" value="{ballot.project}" />
+	<h1><f:if condition="{ballot.logo} != 0"><f:image image="{ballot.logo}" alt="{ballot.logo.originalResource.title}" style="max-width: 100%; height: auto; padding:20px;" /></f:if> {project.name}</h1> 
+	<f:render partial="Ballot/LawDraft" arguments="{ballot:ballot,assigned:assigned,user:user}" />
+	<br />
+	<f:render partial="Ballot/Options" arguments="{ballot:ballot,isAssigned:isAssigned,isAdmin:isAdmin}" />
+	
+	<f:render partial="Ballot/Footer" arguments="{ballot:ballot,isAssigned:isAssigned}" />
+	<f:if condition="{isAssigned} == 'true'">
+	<f:then>
+		<div style="text-align:center; font-size:2em;"><f:form.submit value="Send ballot!" style="background-color:white" /></div>
+	</f:then>
+	<f:else>
+		<div style="text-align:center; font-size:0.8em;">You have to be registered, logged in and assigned to this election, to vote directly without an additional app from this website. See <f:link.page pageUid="93">help</f:link.page>.</div>
+		<div style="text-align:left;"><f:link.page pageUid="40">Register</f:link.page></div>
+		<div style="text-align:left;"><f:link.page pageUid="41">Login</f:link.page></div>
+		<div style="text-align:left;"><f:link.action action="assign" controller="Project" arguments="{project:ballot.project}">Assign</f:link.action></div>
+	</f:else>
+	</f:if>
+	
+</f:form>
+
+</div>
+</f:section>

@@ -1,0 +1,37 @@
+{namespace h=Goettertz\BcVoting\ViewHelpers}
+<f:layout name="Default" />
+<f:section name="main">
+	<!-- Rev. 78 -->
+	<f:render partial="Project/Menu" arguments="{project : ballot.project}" />
+	<f:flashMessages renderMode="div" />
+	<div style="min-height:400px;">
+		<h4>{ballot.project.name}</h4>	
+		<h5><f:translate key="tx_bcvoting_edit" /> ballot</h5>
+		
+		<f:link.action action="show" arguments="{ballot : ballot}"><f:translate key="tx_bcvoting_preview" /></f:link.action>
+		
+		<f:form action="update" controller="Ballot" name="ballot" object="{ballot}" enctype="multipart/form-data">
+			<f:render partial="Ballot/FormFields" arguments="{ballot:ballot}" />
+			<f:form.submit value="save" />
+		<hr />
+		<h5>Options</h5>
+		<f:render partial="Ballot/Options" arguments="{ballot:ballot,assigned:assigned,admin:admin}" />
+		</f:form>
+	</div>
+	<f:if condition="{ballot.reference}">
+	<f:then>
+		<hr />
+		Ballot-Reference: {ballot.reference}
+	</f:then>
+	<f:else>
+		<hr />
+	 	<h5 class="tx-bc-voting section">Seal Ballot</h5>
+	 	<f:form action="sealBallot" controller="Ballot" name="ballot" object="{ballot}">
+	  		<f:form.checkbox name="asset"  value="true" /> Issue asset
+	  		
+	  		<br />Issue permission: <f:form.textfield name="permission" value="{issuePermission}" size="40" readonly="true" />
+	  		<br /><f:form.submit value="Seal ballot!" />
+		</f:form>
+	</f:else>
+	</f:if>
+</f:section>
