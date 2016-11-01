@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2015-10-16T22:11:26Z" product-name="bc_voting">
+		<header/>
+		<body>
+			<trans-unit id="voter_id.description">
+				<source>voterId</source>
+			</trans-unit>
+			<trans-unit id="wallet_address.description">
+				<source>walletAddress</source>
+			</trans-unit>
+			<trans-unit id="project.description">
+				<source>project</source>
+			</trans-unit>
+			<trans-unit id="person.description">
+				<source>person</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

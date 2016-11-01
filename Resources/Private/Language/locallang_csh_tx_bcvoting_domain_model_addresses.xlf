@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2015-10-16T22:11:26Z" product-name="bc_voting">
+		<header/>
+		<body>
+			<trans-unit id="street.description">
+				<source>street</source>
+			</trans-unit>
+			<trans-unit id="zip.description">
+				<source>zip</source>
+			</trans-unit>
+			<trans-unit id="village.description">
+				<source>village</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2015-10-23T19:38:55Z" product-name="bc_voting">
+		<header/>
+		<body>
+			<trans-unit id="name.description">
+				<source>Name of the Project</source>
+			</trans-unit>
+			<trans-unit id="description.description">
+				<source>description</source>
+			</trans-unit>
+			<trans-unit id="start.description">
+				<source>start</source>
+			</trans-unit>
+			<trans-unit id="end.description">
+				<source>end</source>
+			</trans-unit>
+			<trans-unit id="assignments.description">
+				<source>assignments</source>
+			</trans-unit>
+			<trans-unit id="options.description">
+				<source>options</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>
