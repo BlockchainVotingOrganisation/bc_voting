@@ -1,0 +1,15 @@
+<!-- Rev. 89 -->
+<f:layout name="Default" />
+
+<f:section name="main">
+New option
+<h3>{ballot.project.name}</h3>
+<f:flashMessages renderMode="div" />
+<f:render partial="Project/Menu" arguments="{project : ballot.project}" />
+<f:render partial="FormErrors" arguments="{object:Option}" />
+
+<f:form action="create" controller="Option" name="newOption" object="{newOption}" enctype="multipart/form-data" arguments="{ballot:ballot}">	
+	<f:render partial="Option/FormFields" arguments="{colors:colors}" />
+	<f:form.submit value="Create" />
+</f:form>
+</f:section>

@@ -1,0 +1,14 @@
+<f:layout name="Default" />
+<!-- Revision 83 -->
+<f:section name="main">
+	<f:render partial="FormErrors" arguments="{object:Option}" />
+	<f:render partial="Project/Menu" arguments="{project : option.ballot.project}" />
+	<f:flashMessages renderMode="div" />
+	
+	<h4>{option.ballot.project.name}</h4>
+	<h5><f:translate key="tx_bcvoting_edit_option" /> "{option.name}"</h5>
+	<f:form action="update" name="option" object="{option}" enctype="multipart/form-data">
+		<f:render partial="Option/FormFields" arguments="{option:option, colors:colors}" />
+		<f:form.submit value="Save" />
+	</f:form>
+</f:section>
