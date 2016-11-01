@@ -160,5 +160,66 @@
 				</el>
 			</ROOT>
 		</RPC>
+		<Payment>
+			<ROOT>
+				<el>
+					<settings.payment_vtc_address>
+						<TCEforms>
+						<label>VTC Address</label>
+							<config>
+								<type>input</type>
+								<size>80</size> 
+								<max>80</max> 
+								<eval>trim</eval>
+							</config>
+						</TCEforms>
+					</settings.payment_vtc_address>
+					<settings.payment_btc_address>
+						<TCEforms>
+						<label>BTC Address</label>
+							<config>
+								<type>input</type>
+								<size>80</size> 
+								<max>80</max> 
+								<eval>trim</eval>
+							</config>
+						</TCEforms>
+					</settings.payment_btc_address>
+					<settings.payment_sealing>
+						<TCEforms>
+							<label>Price Sealing VTC</label>
+							<config>
+								<type>input</type>
+								<size>10</size> 
+								<max>20</max> 
+								<eval>trim</eval>
+							</config>
+						</TCEforms>
+					</settings.payment_sealing>
+					<settings.payment_voting>
+						<TCEforms>
+							<label>Price Voting VTC</label>
+							<config>
+								<type>input</type>
+								<size>10</size> 
+								<max>20</max> 
+								<eval>trim</eval>
+							</config>
+						</TCEforms>
+					</settings.payment_voting>
+					<settings.payment_time>
+						<TCEforms>
+							<label>Price Time VTC</label>				
+							<config>
+								<type>input</type>
+								<size>10</size> 
+								<max>20</max> 
+								<eval>trim</eval>
+							</config>
+						</TCEforms>
+					</settings.payment_time>
+				</el>
+			</ROOT>
+		</Payment>
 	</sheets>
 </T3DataStructure>
