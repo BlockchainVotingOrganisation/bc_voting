@@ -34,7 +34,7 @@
 				<source>Name</source>
 			</trans-unit>
 			<trans-unit id="tx_bcvoting_domain_model_project.reference">
-				<source>Reference (Txid)</source>
+				<source>Reference (Sealing TxId)</source>
 			</trans-unit>
 			<trans-unit id="tx_bcvoting_domain_model_project.description">
 				<source>Description</source>
@@ -59,9 +59,6 @@
 			</trans-unit>
 			<trans-unit id="tx_bcvoting_domain_model_project.options">
 				<source>Options</source>
-			</trans-unit>
-			<trans-unit id="tx_bcvoting_domain_model_project.reference">
-				<source>Blockchain reference</source>
 			</trans-unit>
 			<trans-unit id="tx_bcvoting_domain_model_project.infosite">
 				<source>Official Information Site</source>
