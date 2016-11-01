@@ -111,7 +111,7 @@ $GLOBALS['TCA']['tx_bcvoting_domain_model_project'] = array(
 		),
 		'reference' => array(
 				'exclude' => 1,
-				'label' => 'LLL:EXT:bc_voting/Resources/Private/Language/locallang_db.xlf:tx_bcvoting_domain_model_ballot.reference',
+				'label' => 'LLL:EXT:bc_voting/Resources/Private/Language/locallang_db.xlf:tx_bcvoting_domain_model_project.reference',
 				'config' => array(
 						'type' => 'input',
 						'size' => 15,
