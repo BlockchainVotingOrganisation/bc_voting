@@ -2,15 +2,18 @@
 Rev. 117
 <f:section name="main">
 
-<f:render partial="Project/Menu" arguments="{project : project, isAssigned: isAssigned, isAdmin: isAdmin}" />
+<f:render partial="Project/Menu" arguments="{project : project, isAssigned: isAssigned, isAdmin: isAdmin, feuser: feuser}" />
 
 <f:flashMessages renderMode="div" />
 <f:render partial="FormErrors" arguments="{object:Project}" />
-
+<f:debug>{json}</f:debug>
 <h4>{project.name}</h4>
 
-txid: xxx
-
+Sealing txid: <a href="http://www.blockchain-voting.org:9333/BVS/tx/{ref}">{ref}</a>
+<hr />
+JSON:
+<br />
+<textarea rows="10" cols="80">{json}</textarea>
 
 <hr />
 <f:link.action action="list" controller="Project" arguments="{project:project}"><f:translate key="tx_bcvoting_domain_model_project.back_to_list" /></f:link.action> |
