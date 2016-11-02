@@ -1,0 +1,22 @@
+<f:layout name="Default" />
+Rev. 53
+<f:section name="main">
+<f:render partial="Menu" arguments="{project : project, assigned : assigned}" />
+<f:flashMessages renderMode="div" />
+<h4>Arguments</h4>
+<table class="tx-bc-voting">
+	<f:for each="{arguments}" as="argument">
+	<tr>
+		<td style="width:10%; vertical-align:top; float:left;" class="tx-bc-voting">
+			<b>{argument.prooption.name}</b> 
+		</td>
+		<td style="width:90%; float:right;" class="tx-bc-voting"><b>{argument.name}</b></td>
+	</tr>	
+		
+	<tr>	
+		<td style="width:10%; float:left; min-height:30px" class="tx-bc-voting">&nbsp;&nbsp;&nbsp;</td>
+		<td style="width:90%; vertical-align:top; float:right;" class="tx-bc-voting">{argument.text}</td>
+	</tr>	
+	</f:for>
+</table>
+</f:section>

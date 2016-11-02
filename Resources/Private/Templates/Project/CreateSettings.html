@@ -1,0 +1,30 @@
+
+<f:layout name="Default" />
+Rev. 66
+<f:section name="main">
+<f:render partial="Project/Menu" arguments="{project : project}" />
+
+<h4>{project.name}</h4>
+
+<f:translate key="tx_bcvoting_edit_project" />
+
+<f:flashMessages renderMode="div" />
+<f:render partial="FormErrors" arguments="{object:Project}" />
+
+
+<f:if condition="{isAdmin} == 'true'">
+	<f:form action="update" controller="Project" name="project" object="{project}" >
+		
+		<f:form.hidden name="redirect[action]" value="new" />
+		<f:form.hidden name="redirect[controller]" value="Ballot" />
+		<f:form.hidden name="redirect[extension]" value="BcVoting" />
+	
+		<f:render partial="Project/Settings" arguments="{project : project, categories : categories}" />
+		<f:render partial="Project/Links" arguments="{project : project}" />
+		
+		<f:form.submit value="Next" /><br />
+	
+	</f:form>
+</f:if>
+
+</f:section>

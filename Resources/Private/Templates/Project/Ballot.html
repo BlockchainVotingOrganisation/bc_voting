@@ -1,0 +1,23 @@
+Rev. 58
+<f:layout name="Default" />
+<f:section name="main">
+
+<f:flashMessages renderMode="div" />
+<div class="tx-bc-voting project">
+	<img src="{project.logo.src}" width="{project.logo.width}" height="{project.logo.height}" />
+	<h3 class="tx-bc-voting project title">{project.name}</h3>
+</div>
+<div class="tx-bc-voting project">{project.description}</div>
+<table>
+	<f:for each="{project.options}" as="option">  
+		<tr>
+			<td>{option.name}</td>
+			<td><a href="https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=bvs:{option.walletAddress}?amount=1"><img src="https://chart.googleapis.com/chart?chs=50x50&cht=qr&chl=bvs:{option.walletAddress}?amount=1" width="50" height="50" /></a></td>
+			<td>
+				<f:if condition="{assigned}">
+					<f:link.action action="vote" controller="Option" arguments="{option:option,user:user,project:project}">Vote</f:link.action>
+				</f:if>
+			</td>
+		</tr>    
+	</f:for>
+</table>

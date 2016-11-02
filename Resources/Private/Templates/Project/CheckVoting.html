@@ -1,0 +1,24 @@
+<!-- Rev. 94 -->
+<f:layout name="Default" />
+<f:section name="main">
+
+<f:render partial="Menu" arguments="{project : project, isAssigned:isAssigned,isAdmin:isAdmin}" />
+<f:render partial="FormErrors" arguments="{object:Project}" />
+
+<h3>{project.name}</h3>
+<h4>Evaluation {f:format.date(date: date_now, format: 'd.m.Y H:i')}</h4>
+
+<f:flashMessages renderMode="div" />
+
+<f:if condition="{voting.reference} != ''">
+	<f:then>
+		<f:render partial="Project/Check" arguments="{result:result}" />
+	</f:then>	
+</f:if>
+<hr />
+<f:form action="checkVoting" name="voting" object="{Voting}"  arguments="{project:project}">
+	<f:render partial="Project/FormEvaluation" arguments="{result:result}" />
+	<f:form.submit value="Find" /><br />
+</f:form>
+<f:render partial="Blockchain/ShortInfo" arguments="{result:result}" />
+</f:section>

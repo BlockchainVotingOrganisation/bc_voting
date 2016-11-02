@@ -1,0 +1,36 @@
+<f:layout name="Default" />
+Rev. 107
+<f:section name="main">
+
+<f:flashMessages renderMode="div" />
+
+<f:link.action action="new" controller="Project" arguments="{isAdmin:isAdmin, project:newProject}">
+	<f:translate key="create_new" />
+</f:link.action> | 
+<f:link.action action="import" controller="Project" arguments="{isAdmin:isAdmin, project:newProject}">
+	<f:translate key="import" />
+</f:link.action>
+	
+<hr />
+
+<f:for each="{projects}" as="project">
+	<f:cycle values="{0: 'whitesmoke', 1: '#fff'}" as="color">
+		<div style="background-color: {color}">
+			<div><f:link.action action="show" arguments="{project: project}" title="{project.description}">{project.name}</f:link.action></div>
+			<div><f:format.date format="d.m.Y">{project.start}</f:format.date> - <f:format.date format="d.m.Y">{project.end}</f:format.date></div>
+		</div>
+
+		<f:if condition="{isAdmin} == 'true'">
+			<f:then>
+				<div style="background-color: {color}">
+				
+					<f:link.action action="edit" arguments="{project:project}"><f:translate key="tx_bcvoting_edit" /></f:link.action> |
+					<f:link.action action="delete" arguments="{project: project}"><f:translate key="tx_bcvoting_delete" /></f:link.action> |
+					<f:translate key="copy" />
+				</div>										
+			</f:then>
+		</f:if>
+	</f:cycle>
+</f:for>
+
+</f:section>

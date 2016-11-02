@@ -1,0 +1,38 @@
+<!-- Rev. 107 -->
+<f:layout name="Default" />
+<f:section name="main">
+
+<f:render partial="Menu" arguments="{project : project, isAssigned:isAssigned,isAdmin:isAdmin}" />
+<h3>{project.name}</h3>
+<f:flashMessages renderMode="div" />
+<f:render partial="FormErrors" arguments="{object:Project}" />
+<div>{result.error}</div>
+
+<h4><f:translate key="evaluation" /> {f:format.date(date: date_now, format: 'd.m.Y H:i')}</h4>
+<f:if condition="{url_csv} != ''">
+<f:then>
+	[<a href="{result.url_csv}" download><f:translate key="download_raw_data" /></a>]
+</f:then>
+</f:if>
+
+<f:if condition="{f:format.date(date: project.ende, format: 'U')} < {f:format.date(date: date_now, format: 'U')}">
+	<f:if condition="{counts -> f:count()} > 0">
+		<f:then>
+			<f:render partial="Project/Results" arguments="{counts:counts, result:result}" />
+		</f:then>
+	</f:if>
+</f:if>
+
+<hr />
+
+
+
+<f:form action="checkVoting" name="voting" object="{Voting}"  arguments="{project:project}">
+	<f:render partial="Project/FormEvaluation" arguments="{reference:result.txid}" />
+	<f:form.submit value="{f:translate(key:'find')}" /><br />
+</f:form>
+
+<hr />
+<f:render partial="Blockchain/ShortInfo" arguments="{bcResult:bcResult}" />
+
+</f:section>

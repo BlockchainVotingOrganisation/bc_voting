@@ -1,0 +1,12 @@
+<!-- Rev 118 -->
+<f:layout name="Default" />
+<f:section name="main">
+
+<f:render partial="Menu" arguments="{project : project, isAssigned:isAssigned, isAdmin:isAdmin, feuser: feuser}" />
+<f:flashMessages renderMode="div" />
+<h2>{project.name}</h2>
+<f:form action="import" name="project" object="{project}" class="tx-bcvoting">
+	<f:form.textfield name="reference" size="80" /><br /> 
+</f:form>
+
+</f:section>

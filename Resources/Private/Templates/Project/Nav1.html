@@ -1,0 +1,14 @@
+{namespace bvs=Goettertz\BcVoting\ViewHelpers}
+<f:layout name="Default" />
+Rev. 29
+<f:section name="main">
+
+<table  class="tx_bcvoting" style="border-left: 1px solid black;">
+	<f:for each="{projects}" as="project">
+		<tr>
+			<td style="padding:2px; border-bottom: 1px dotted black;"><f:link.action action="show" arguments="{project: project}" style="color: black;">{project.name}</f:link.action></td>
+		</tr>
+	</f:for>
+	
+</table>
+</f:section>

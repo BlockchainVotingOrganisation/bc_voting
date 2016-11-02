@@ -1,0 +1,9 @@
+<f:layout name="Default" />
+Rev. 57
+<f:section name="main">
+<f:translate key="tx_bcvoting_project_assign" />
+<h3>{project.name}</h3>
+<f:flashMessages renderMode="div" />
+<f:render partial="Menu" arguments="{project : project}" />
+<b>You are not logged in. Please <f:link.page pageUid="{register}">register</f:link.page> and/or <f:link.page pageUid="{login}">login</f:link.page> for assignment.</b>
+</f:section>
