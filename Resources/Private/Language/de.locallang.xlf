@@ -1,70 +1,89 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" datatype="plaintext" original="messages" date="2015-10-23T19:38:55Z" product-name="bc_voting">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2015-10-23T19:38:55Z" product-name="bc_voting">
 		<header/>
 		<body>
-			<trans-unit id="tx_bcvoting_domain_model_voting">
-				<source>Voting</source>
-			</trans-unit>
-			<trans-unit id="tx_bcvoting_domain_model_category">
-				<source>Category</source>
-			</trans-unit>
-			<trans-unit id="tx_bcvoting_domain_model_category.name">
-				<source>Name</source>
-			</trans-unit>
-			<trans-unit id="tx_bcvoting_domain_model_category.description">
-				<source>Description</source>
-			</trans-unit>
-			<trans-unit id="tx_bcvoting_domain_model_category.ulterior">
-				<source>Ulterior</source>
-			</trans-unit>
-			<trans-unit id="tx_bcvoting_domain_model_category.closed">
-				<source>Closed</source>
-			</trans-unit>
 			<trans-unit id="tx_bcvoting_domain_model_project">
-				<source>Project</source>
+				<source>Projekt</source>
 			</trans-unit>
-			<trans-unit id="tx_bcvoting_domain_model_project.logo">
-				<source>Header image</source>
-			</trans-unit>
-			<trans-unit id="tx_bcvoting_domain_model_project.category">
-				<source>Category</source>
-			</trans-unit>
+			<trans-unit id="tx_bcvoting_projects">
+				<target>Abstimmungen / Wahlen</target>
+			</trans-unit>		
 			<trans-unit id="tx_bcvoting_domain_model_project.name">
 				<source>Name</source>
+				<target>Name</target>
 			</trans-unit>
 			<trans-unit id="tx_bcvoting_domain_model_project.reference">
 				<source>Reference (Sealing TxId)</source>
 			</trans-unit>
+			<trans-unit id="tx_bcvoting_domain_model_project.logo">
+				<source>Header image</source>
+				<target>Logo</target>
+			</trans-unit>
 			<trans-unit id="tx_bcvoting_domain_model_project.description">
 				<source>Description</source>
+				<target>Beschreibung</target>
 			</trans-unit>
 			<trans-unit id="tx_bcvoting_domain_model_project.text">
-				<source>Law Draft</source>
+				<source>Laws Draft</source>
+				<target>Gesetzesentwurf</target>
 			</trans-unit>
 			<trans-unit id="tx_bcvoting_domain_model_project.footer">
 				<source>Footer</source>
+				<target>Fußtext</target>
 			</trans-unit>
 			<trans-unit id="tx_bcvoting_domain_model_project.type">
 				<source>Type</source>
+				<target>Type</target>
 			</trans-unit>
 			<trans-unit id="tx_bcvoting_domain_model_project.start">
 				<source>Start</source>
 			</trans-unit>
 			<trans-unit id="tx_bcvoting_domain_model_project.end">
-				<source>End</source>
+				<target>Ende</target>
+			</trans-unit>
+			<trans-unit id="tx_bcvoting_domain_model_project.blockchain_name">
+				<source>Blockchain Name</source>
 			</trans-unit>
 			<trans-unit id="tx_bcvoting_domain_model_project.assignments">
 				<source>Assignments</source>
+				<target>Mitgliedschaften</target>
 			</trans-unit>
 			<trans-unit id="tx_bcvoting_domain_model_project.options">
 				<source>Options</source>
 			</trans-unit>
+			<trans-unit id="tx_bcvoting_domain_model_project.reference">
+				<source>Blockchain reference</source>
+			</trans-unit>
 			<trans-unit id="tx_bcvoting_domain_model_project.infosite">
 				<source>Official Information Site</source>
+				<target>Offizielle Website mit Informationen zur Wahl</target>
 			</trans-unit>
 			<trans-unit id="tx_bcvoting_domain_model_project.forumUrl">
 				<source>Official Forum Site</source>
+				<target>Offizielle Website mit Diskussionsforum zur Wahl</target>
+			</trans-unit>
+
+			<trans-unit id="tx_bcvoting_domain_model_argument">
+				<source>Argument</source>
+			</trans-unit>
+			<trans-unit id="tx_bcvoting_domain_model_argument.name">
+				<source>Header</source>
+				<target>Überschrift</target>
+			</trans-unit>
+			<trans-unit id="tx_bcvoting_domain_model_argument.text">
+				<source>Text</source>
+			</trans-unit>
+			<trans-unit id="tx_bcvoting_domain_model_argument.option">
+				<source>Option</source>
+				<target>Wahlmöglichkeit</target>
+			</trans-unit>
+			<trans-unit id="tx_bcvoting_domain_model_argument.choose_option">
+				<source>Please choose option</source>
+				<target>Bitte wählen Sie eine Option:</target>
+			</trans-unit>
+			<trans-unit id="tx_bcvoting_domain_model_project.options">
+				<source>Options</source>
 			</trans-unit>
 			<trans-unit id="tx_bcvoting_domain_model_ballot">
 				<source>Ballot</source>
@@ -89,6 +108,7 @@
 			</trans-unit>
 			<trans-unit id="tx_bcvoting_domain_model_option.description">
 				<source>Description</source>
+				<target>Beschreibung</target>
 			</trans-unit>
 			<trans-unit id="tx_bcvoting_domain_model_option.wallet_address">
 				<source>Wallet Address</source>
@@ -108,12 +128,6 @@
 			<trans-unit id="tx_bcvoting_domain_model_assignment.role">
 				<source>Role</source>
 			</trans-unit>
-			<trans-unit id="tx_bcvoting_domain_model_assignment.user">
-				<source>User</source>
-			</trans-unit>
-			<trans-unit id="tx_bcvoting_domain_model_assignment.votes">
-				<source>Votes</source>
-			</trans-unit>
 			<trans-unit id="tx_bcvoting_domain_model_role">
 				<source>Role</source>
 			</trans-unit>
@@ -123,17 +137,43 @@
 			<trans-unit id="tx_bcvoting_domain_model_role.description">
 				<source>Description</source>
 			</trans-unit>
-			<trans-unit id="tx_bcvoting_domain_model_argument">
-				<source>Argument</source>
+			<trans-unit id="tx_bcvoting_edit_project">
+				<source>Edit Project</source>
+				<target>Projekt bearbeiten</target>
 			</trans-unit>
-			<trans-unit id="tx_bcvoting_domain_model_argument.name">
-				<source>Header</source>
+			<trans-unit id="tx_bcvoting_delete">
+				<source>Delete</source>
+				<target>Löschen</target>
 			</trans-unit>
-			<trans-unit id="tx_bcvoting_domain_model_argument.text">
-				<source>Text</source>
+			<trans-unit id="tx_bcvoting_options">
+				<source>Options</source>
+				<target>Wahlmöglichkeiten</target>
 			</trans-unit>
-			<trans-unit id="tx_bcvoting_domain_model_argument.option">
-				<source>Option</source>
+			<trans-unit id="tx_bcvoting_edit_option">
+				<source>Edit option</source>
+				<target>Wahloption bearbeiten</target>
+			</trans-unit>
+			<trans-unit id="tx_bcvoting_evaluation">
+				<source>Results / Evaluation</source>
+				<target>Ergebnisse / Auswertung</target>
+			</trans-unit>
+			<trans-unit id="tx_bcvoting_votes_amount">
+				<source>Amount of votes</source>
+			</trans-unit>
+			<trans-unit id="tx_bcvoting_show">
+				<source>Show</source>
+				<target>Zeige</target>
+			</trans-unit>
+			<trans-unit id="tx_bcvoting_ballot">
+				<source>Ballot</source>
+				<target>Stimmzettel</target>
+			</trans-unit>
+			<trans-unit id="Project_Show_Members_Name">
+				<source>Member's name</source>
+				<target>Mitglied Name</target>
+			</trans-unit>
+			<trans-unit id="Project_Show_Members_Role">
+				<source>Member's role</source>
 			</trans-unit>
 		</body>
 	</file>
