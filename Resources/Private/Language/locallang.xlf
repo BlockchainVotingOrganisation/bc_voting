@@ -12,6 +12,9 @@
 			<trans-unit id="tx_bcvoting_domain_model_project.name">
 				<source>Title</source>
 			</trans-unit>
+			<trans-unit id="tx_bcvoting_domain_model_project.reference">
+				<source>Reference (Sealing TxId)</source>
+			</trans-unit>
 			<trans-unit id="tx_bcvoting_domain_model_project.logo">
 				<source>Header image</source>
 			</trans-unit>
