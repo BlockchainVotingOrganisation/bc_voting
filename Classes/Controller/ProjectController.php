@@ -963,6 +963,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 			$this->view->assign('isAssigned', 'true');
 			$this->view->assign('txid', $txid);
 		}
+		else die ('Not logged in!');
 	}
 	
 	/**
