@@ -29,7 +29,7 @@ ini_set("display_errors", 1);
  ***************************************************************/
 
 /**
- * Revision 117:
+ * Revision 118:
  */
 
 use \Goettertz\BcVoting\Service\Blockchain;
@@ -949,6 +949,20 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		$this->view->assign('project', $project);
 		$this->view->assign('json', $json);
 		$this->view->assign('hash', $hash);
+	}
+	
+	/**
+	 * import
+	 *  
+	 * imports project from blockchain
+	 * 
+	 * @param string $txid
+	 */
+	public function importAction($txid = '') {
+		if ($feuser = $this->userRepository->getCurrentFeUser()) {
+			$this->view->assign('isAssigned', 'true');
+			$this->view->assign('txid', $txid);
+		}
 	}
 	
 	/**
