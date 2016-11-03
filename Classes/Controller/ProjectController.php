@@ -1,8 +1,6 @@
 <?php
 namespace Goettertz\BcVoting\Controller;
 
-ini_set("display_errors", 1);
-
 /***************************************************************
  *
  *  Copyright notice
