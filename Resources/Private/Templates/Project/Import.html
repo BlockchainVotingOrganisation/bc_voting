@@ -6,7 +6,11 @@
 <f:flashMessages renderMode="div" />
 <h2>{project.name}</h2>
 <f:form action="import" name="project" object="{project}" class="tx-bcvoting">
+	<f:translate key="tx_bcvoting_domain_model_project.reference" /><br />
 	<f:form.textfield name="reference" size="80" /><br /> 
+	Password:<br />
+	<f:form.textfield name="password" type="password" /><br /> 
+	<f:form.submit value="{f:translate(key:'save')}" /> 
 </f:form>
 
 </f:section>
