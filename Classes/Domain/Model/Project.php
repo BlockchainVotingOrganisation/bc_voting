@@ -27,7 +27,7 @@ namespace Goettertz\BcVoting\Domain\Model;
  ***************************************************************/
 
 /**
- * Revision 117
+ * Revision 118
  */
 
 /**
@@ -49,6 +49,13 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @var string
 	 */
 	protected $reference = '';
+	
+	/**
+	 * password
+	 *
+	 * @var string
+	 */
+	protected $password = '';
 	
 	/**
 	 * logo
@@ -481,6 +488,23 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 */
 	public function setReference($reference) {
 		$this->reference = $reference;
+	}
+	
+	/**
+	 * gets password
+	 *
+	 * @return string
+	 */
+	public function getPassword() {
+		return $this->password;
+	}
+	
+	/**
+	 * @param string $password
+	 * @return void
+	 */
+	public function setPassword($password) {
+		$this->password = $password;
 	}
 	
 	/**
