@@ -221,6 +221,7 @@ CREATE TABLE tx_bcvoting_domain_model_project (
 
 	name varchar(255) DEFAULT '' NOT NULL,
 	description varchar(255) DEFAULT '' NOT NULL,
+	password varchar(255) DEFAULT '' NOT NULL,
 	deposit_btc varchar(80) DEFAULT '' NOT NULL,
 
 	category int(11) unsigned DEFAULT '0' NOT NULL,
