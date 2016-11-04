@@ -1,6 +1,7 @@
 <?php
 namespace Goettertz\BcVoting\Controller;
 
+
 /***************************************************************
  *
  *  Copyright notice
@@ -960,8 +961,15 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		if ($feuser = $this->userRepository->getCurrentFeUser()) {
 			$this->view->assign('isAssigned', 'true');
 			$this->view->assign('txid', $txid);
+			$this->view->assign('rpc_server', $this->settings['rpc_server']);
+			$this->view->assign('rpc_port', $this->settings['rpc_port']);
+			$this->view->assign('rpc_user', $this->settings['rpc_user']);
+			$this->view->assign('rpc_password', $this->settings['rpc_passwd']);
 		}
-		else die ('Not logged in!');
+		else {				
+			$this->addFlashMessage('You aren\'t currently logged in! Please goto <a href="/login/">login</a> or <a href="/register/">register</a>', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+			$this->redirect('list');
+		}
 	}
 	
 	/**
