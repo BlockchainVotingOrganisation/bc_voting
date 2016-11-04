@@ -1,6 +1,6 @@
 <?php
 /**
- * Rev.117
+ * Rev.118
  */
 if (!defined ('TYPO3_MODE')) {
 	die ('Access denied.');
@@ -9,10 +9,10 @@ if (!defined ('TYPO3_MODE')) {
 $GLOBALS['TCA']['tx_bcvoting_domain_model_project'] = array(
 	'ctrl' => $GLOBALS['TCA']['tx_bcvoting_domain_model_project']['ctrl'],
 	'interface' => array(
-		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, name, reference, logo, category, description, start, end, ballots, infosite, forum_url, blockchain_name, rpc_server, rpc_password, rpc_user, rpc_port, assignments, wallet_address',
+		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, name, password, reference, logo, category, description, start, end, ballots, infosite, forum_url, blockchain_name, rpc_server, rpc_password, rpc_user, rpc_port, assignments, wallet_address',
 	),
 	'types' => array(
-		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, name, reference, logo, category, description, start, end, ballots, infosite, forum_url, blockchain_name, rpc_server, rpc_password, rpc_user, rpc_port, assignments, wallet_address, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime'),
+		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, name, password, reference, logo, category, description, start, end, ballots, infosite, forum_url, blockchain_name, rpc_server, rpc_password, rpc_user, rpc_port, assignments, wallet_address, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime'),
 	),
 	'palettes' => array(
 		'1' => array('showitem' => ''),
@@ -109,6 +109,17 @@ $GLOBALS['TCA']['tx_bcvoting_domain_model_project'] = array(
 				'eval' => 'trim,required'
 			),
 		),
+
+		'password' => array(
+				'exclude' => 1,
+				'label' => 'LLL:EXT:bc_voting/Resources/Private/Language/locallang_db.xlf:tx_bcvoting_domain_model_project.password',
+				'config' => array(
+						'type' => 'input',
+						'size' => 15,
+						'eval' => 'trim'
+				),
+		),
+			
 		'reference' => array(
 				'exclude' => 1,
 				'label' => 'LLL:EXT:bc_voting/Resources/Private/Language/locallang_db.xlf:tx_bcvoting_domain_model_project.reference',
@@ -118,7 +129,7 @@ $GLOBALS['TCA']['tx_bcvoting_domain_model_project'] = array(
 						'eval' => 'trim'
 				),
 		),
-			
+
 		'logo' => array(
 			'exclude' => 0,
 			'label' => 'LLL:EXT:bc_voting/Resources/Private/Language/locallang_db.xlf:tx_bcvoting_domain_model_project.logo',
