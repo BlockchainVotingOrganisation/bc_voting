@@ -1,6 +1,6 @@
 <?php
 namespace Goettertz\BcVoting\Controller;
-
+ini_set("display_errors", 1);
 /***************************************************************
  *
  *  Copyright notice
@@ -315,14 +315,14 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 					
 					if (is_string($address)) {
 						$transactions = array();
-						$newtransactions = Blockchain::getRpcResult($project)->listaddresstransactions($address, 10);
+						$newtransactions = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->listaddresstransactions($address, 10);
 						if (!is_string($newtransactions['error'])) {
 							$transactions = array_merge($transactions, $newtransactions);
 							$this->view->assign('transactions', $transactions);
 						}
 						
 						
-						$assets = Blockchain::getAssetBalanceFromAddress($project, $address);
+						$assets = Blockchain::getAssetBalanceFromAddress($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), $address);
 					}
 					$this->view->assign('assets', $assets);
 				}
@@ -512,7 +512,7 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 								if (!empty($project->getRpcServer())) {
 									if ($assignment) {
 											
-										$newAddress = Blockchain::getRpcResult($project)->getnewaddress();
+										$newAddress = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getnewaddress();
 										$assignment->setWalletAddress($newAddress);
 										$this->assignmentRepository->update($assignment);
 											
@@ -523,7 +523,7 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 											
 										# Für jeden Stimmzettel Assets senden
 										foreach ($project->getBallots() as $ballot) {
-											if ($bcArray = Blockchain::getRpcResult($project)->sendassettoaddress($newAddress,$ballot->getAsset(),$ballot->getVotes())) {
+											if ($bcArray = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->sendassettoaddress($newAddress,$ballot->getAsset(),$ballot->getVotes())) {
 												$this->addFlashMessage($ballot->getName().': sending assets...ok '.$bcArray, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
 												# VTC für Transaktionen bereitstellen ...
 												if (!$bcArray['error']) $this->addFlashMessage('Send '.$ballot->getVotes().' Asset "'.$ballot->getAsset().'" to '.$newAddress.' ... ok!','', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);

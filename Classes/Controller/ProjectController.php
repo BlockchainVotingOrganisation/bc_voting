@@ -175,11 +175,11 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 
 			if (is_string($rpcServer) && $rpcServer !== '') {
 				try {
-					if($bcArray = Blockchain::getRpcResult($project)->getinfo()) {
+					if($bcArray = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getinfo()) {
 						$this->view->assign('bcResult', $bcArray);
 					}
 					
-					if ($assets = Blockchain::getRpcResult($project)->getmultibalances($walletAddress)) {
+					if ($assets = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getmultibalances($walletAddress)) {
 						$ballots = $project->getBallots();
 						if (count($ballots) > 0) {
 							foreach ($ballots AS $ballot) {
@@ -382,7 +382,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 				$rpcServer = $project->getRpcServer();
 				if (is_string($rpcServer) && $rpcServer !== '') {
 					try {
-						$bcArray = Blockchain::getRpcResult($project)->getinfo();
+						$bcArray = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getinfo();
 						if(is_array($bcArray)) {
 							$this->view->assign('blockchain', $bcArray);
 						}
@@ -524,7 +524,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 					if (!empty($project->getRpcServer())) {
 						if ($assignment) {
 								
-							$newAddress = Blockchain::getRpcResult($project)->getnewaddress();
+							$newAddress = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getnewaddress();
 							$assignment->setWalletAddress($newAddress);
 							$this->assignmentRepository->update($assignment);
 								
@@ -535,7 +535,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 								
 							# Für jeden Stimmzettel Assets senden
 							foreach ($project->getBallots() as $ballot) {
-								if ($bcArray = Blockchain::getRpcResult($project)->sendassettoaddress($newAddress,$ballot->getAsset(),$ballot->getVotes())) {
+								if ($bcArray = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->sendassettoaddress($newAddress,$ballot->getAsset(),$ballot->getVotes())) {
 									$this->addFlashMessage($ballot->getName().': sending assets...ok ', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
 									# VTC für Transaktionen bereitstellen ...
 									if (!$bcArray['error']) $this->addFlashMessage('Send '.$ballot->getVotes().' Asset "'.$ballot->getAsset().'" to '.$newAddress.' ... ok!','', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
@@ -743,7 +743,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		}
 
 		# Begin old methods from db - should be replaced by bc		
-		if($bcArray = Blockchain::getRpcResult($project)->getinfo()) {
+		if($bcArray = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getinfo()) {
 			$this->view->assign('bcResult', $bcArray);
 		}
 
@@ -1066,11 +1066,11 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		
 			# Find transactions
 			$txid = array();
-			$result['transactions'] = Blockchain::getRpcResult($project)->listaddresstransactions($address);
+			$result['transactions'] = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->listaddresstransactions($address);
 			
 			foreach ($result['transactions'] AS $transaction) {
 				
-				$secret = Blockchain::retrieveData($project, $transaction['txid']);
+				$secret = Blockchain::retrieveData($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), $transaction['txid']);
 				$decrypted = MCrypt::decrypt($secret);
 				$decrypted = explode("-", $decrypted);
 				$fromaddress = $transaction['myaddresses'][0];
@@ -1079,8 +1079,8 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 				$assetAmount = array($asset => 1);
 			
 				# if balance > 0
-				if (Blockchain::getAssetBalanceFromAddress($project, $fromaddress, $asset) > 0) {
-					if ($txid[] = Blockchain::getRpcResult($project)->sendwithmetadatafrom($fromaddress,$toaddress,$assetAmount,bin2hex($transaction['txid'])) ) {}	
+				if (Blockchain::getAssetBalanceFromAddress($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), $fromaddress, $asset) > 0) {
+					if ($txid[] = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->sendwithmetadatafrom($fromaddress,$toaddress,$assetAmount,bin2hex($transaction['txid'])) ) {}	
 				}
 			}
 			$result['txids'] = $txid;

@@ -549,7 +549,7 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 				$toaddress = $ballot->getWalletAddress(); // ballot-address, wenn geheime Wahl
 			}
 			else $toaddress = $option->getWalletAddress(); // option-address, wenn nicht geheim
-			$votes = Blockchain::getAssetBalanceFromAddress($project, $fromaddress, $asset);
+			$votes = Blockchain::getAssetBalanceFromAddress($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), $fromaddress, $asset);
 
 			# Stimmrechte Anzahl
 			

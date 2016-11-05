@@ -156,7 +156,7 @@ class OptionController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 				If($assignment != NULL) {
 // 					$blockchain = new \Goettertz\BcVoting\Service\Blockchain();
 					if ($project->getRpcServer() != '') {
-						$newAddress = Blockchain::getRpcResult($project)->getaccountaddress($newOption->getName());
+						$newAddress = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getaccountaddress($newOption->getName());
 					}
 					$newOption->setWalletAddress($newAddress);
 					$this->addFlashMessage('The option was created.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
@@ -249,7 +249,7 @@ class OptionController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 // 					$blockchain = new \Goettertz\BcVoting\Service\Blockchain();
 					if ($project->getRpcServer() != '') {
 						if ($option->getWalletAddress() === '') {
-							$newAddress = Blockchain::getRpcResult($project)->getaccountaddress($option->getName());
+							$newAddress = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getaccountaddress($option->getName());
 							$option->setWalletAddress($newAddress);
 						}
 					}
