@@ -25,7 +25,7 @@ namespace Goettertz\BcVoting\Service;
 /**
  * 
  * @author louis
- * Rev. 105
+ * Rev. 118
  */
 
 interface Rpc {
@@ -33,7 +33,7 @@ interface Rpc {
 	/**
 	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
 	 */
-	public static function getRpcResult(\Goettertz\BcVoting\Domain\Model\Project $project);
+	public static function getRpcResult(\Goettertz\BcVoting\Domain\Model\Project $project = NULL);
 }
 
 
@@ -55,12 +55,14 @@ class Blockchain implements Rpc {
 	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
 	 * @return \Goettertz\BcVoting\Service\jsonRPCClient $blockchain
 	 */
-	public static function getRpcResult(\Goettertz\BcVoting\Domain\Model\Project $project) {
+	public static function getRpcResult(\Goettertz\BcVoting\Domain\Model\Project $project = NULL) {
 		
-		$rpcServer = $project->getRpcServer();
-		$rpcUser = $project->getRpcUser();
-		$rpcPassword = $project->getRpcPassword();
-		$rpcPort = $project->getRpcPort();
+		if ($project !== NULL) {
+			$rpcServer = $project->getRpcServer();
+			$rpcUser = $project->getRpcUser();
+			$rpcPassword = $project->getRpcPassword();
+			$rpcPort = $project->getRpcPort();
+		}
 		
 		if ($rpcServer > NULL)
 		{
@@ -70,6 +72,14 @@ class Blockchain implements Rpc {
 		{
 			return NULL;
 		}				
+	}
+	
+	/**
+	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
+	 * @return string
+	 */
+	public static function getNewAddress(\Goettertz\BcVoting\Domain\Model\Project $project) {
+		return self::getRpcResult($project)->getnewaddress();
 	}
 	
 	/**
