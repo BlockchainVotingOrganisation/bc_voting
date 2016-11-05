@@ -167,7 +167,7 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 				}
 				
 				if ($project->getRpcServer() != '') {
-					$newAddress = Blockchain::getRpcResult($project)->getaccountaddress($newBallot->getName());
+					$newAddress = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getaccountaddress($newBallot->getName());
 				}
 				$newBallot->setWalletAddress($newAddress);
 				
@@ -227,7 +227,7 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 				$assignment = $user ? $project->getAssignmentForUser($user, 'admin') : NULL;
 				If($assignment != NULL) {
 					
-					if (!empty($project->getRpcUser())) $bcArray = Blockchain::getRpcResult($project)->listpermissions('issue');
+					if (!empty($project->getRpcUser())) $bcArray = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->listpermissions('issue');
 					
 					$this->view->assign('issuePermission', $bcArray[0]['address']);
 					$this->view->assign('ballot', $ballot);
@@ -310,7 +310,7 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 					}
 					if (empty($ballot->getWalletAddress())) {
 						if ($project->getRpcServer() != '') {
-							$newAddress = Blockchain::getRpcResult($project)->getaccountaddress($ballot->getName());
+							$newAddress = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getaccountaddress($ballot->getName());
 						}
 					$ballot->setWalletAddress($newAddress);
 					}
@@ -376,7 +376,7 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 					if (empty($ballot->getAsset())) {
 						
 						# issue asset for ballot
-						$bcArray = Blockchain::getRpcResult($project)->listpermissions('issue');
+						$bcArray = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->listpermissions('issue');
 						$issueAddress = $bcArray[0]['address'];
 						$asset = array();
 // 						try {
@@ -393,10 +393,10 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 							$newAsset->setQuantity(20000000);
 							$newAsset->setDivisibility(1);
 							
-							if ($result = Blockchain::getRpcResult($project)->issue($issueAddress, $newAsset->getName(), $newAsset->getQuantity(), $newAsset->getDivisibility())) {
+							if ($result = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->issue($issueAddress, $newAsset->getName(), $newAsset->getQuantity(), $newAsset->getDivisibility())) {
 									
 							
-								$asset = Bockchain::getRpcResult($project)->listassets($result);
+								$asset = Bockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->listassets($result);
 							
 									
 								$newAsset->setAssetId($asset[0]['assetref']);
@@ -425,7 +425,7 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 						$hash = $this->getHash($json);
 
 						# Saving data in the blockchain ...
-						if ($ref = Blockchain::storeData($project, $project->getWalletAddress(), $project->getWalletAddress(), 0.00000001, $json)  ) {
+						if ($ref = Blockchain::storeData($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), $project->getWalletAddress(), $project->getWalletAddress(), 0.00000001, $json)  ) {
 							
 							$ballot->setReference($ref);
 							$this->ballotRepository->update($ballot);
@@ -561,7 +561,7 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 				$amount = array($asset => 1);
 					
 				# Assets versenden
-				if ($ref = Blockchain::getRpcResult($project)->sendwithmetadatafrom($fromaddress,$toaddress,$amount,bin2hex($secret)) ) {
+				if ($ref = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->sendwithmetadatafrom($fromaddress,$toaddress,$amount,bin2hex($secret)) ) {
 					# wenn erfolgreich
 					if (is_string($ref)) {
 			

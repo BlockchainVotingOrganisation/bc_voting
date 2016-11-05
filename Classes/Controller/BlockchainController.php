@@ -54,8 +54,8 @@ class BlockchainController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 		$rpcServer = $project->getRpcServer();
 		if (is_string($rpcServer) && $rpcServer !== '') {
 			try {
-				if(is_array(Blockchain::getRpcResult($project)->getinfo())) {
-					$bcArray = Blockchain::getRpcResult($project)->getinfo();
+				if(is_array(Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getinfo())) {
+					$bcArray = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getinfo();
 					$this->view->assign('blockchain', $bcArray);
 				}
 			}
