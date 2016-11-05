@@ -309,6 +309,6 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 		$ballot = $this->getBallot();
 		$project = $ballot->getProject();
 		$fromAddress = $ballot->getWalletAddress();
-		return $this->votings = ($fromAddress && $project) ? (\Goettertz\BcVoting\Service\Blockchain::getAssetBalanceFromAddress($project, $fromAddress)) : NULL; 		
+		return $this->votings = ($fromAddress && $project) ? (\Goettertz\BcVoting\Service\Blockchain::getAssetBalanceFromAddress($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), $fromAddress)) : NULL; 		
 	}
 }

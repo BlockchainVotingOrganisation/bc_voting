@@ -441,7 +441,7 @@ class Ballot extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 					if (empty($result['ballot'][$i]['logo'])) $result['ballot'][$i]['logo'] = '----';
 					$result['ballot'][$i]['walletaddress'] = $result['ballot'][$i]['walletaddress'];
 					
-					$balance = \Goettertz\BcVoting\Service\Blockchain::getAssetBalanceFromAddress($project, $result['ballot'][$i]['walletaddress'], self::getAsset());
+					$balance = \Goettertz\BcVoting\Service\Blockchain::getAssetBalanceFromAddress($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), $result['ballot'][$i]['walletaddress'], self::getAsset());
 					$result['ballot'][$i]['balance'] = $balance;
 					
 
