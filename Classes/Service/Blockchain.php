@@ -36,7 +36,7 @@ interface Rpc {
 	 * @param string $rpcUser
 	 * @param string $rpcPassword
 	 */
-	public static function getRpcResult(\Goettertz\BcVoting\Domain\Model\Project $project = NULL);
+	public static function getRpcResult($rpcServer, $rpcPort, $rpcUser, $rpcPassword);
 }
 
 
