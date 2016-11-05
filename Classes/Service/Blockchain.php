@@ -31,7 +31,10 @@ namespace Goettertz\BcVoting\Service;
 interface Rpc {
 	
 	/**
-	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
+	 * @param string $rpcServer
+	 * @param string $rpcPort
+	 * @param string $rpcUser
+	 * @param string $rpcPassword
 	 */
 	public static function getRpcResult(\Goettertz\BcVoting\Domain\Model\Project $project = NULL);
 }
@@ -52,10 +55,14 @@ class Blockchain implements Rpc {
 	 * wird der Service nur einmal während der Laufzeit benötigt? ja
 	 * also ist static gut!
 	 *
-	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
+	 * @param string $rpcServer
+	 * @param string $rpcPort
+	 * @param string $rpcUser
+	 * @param string $rpcPassword
+	 * 
 	 * @return \Goettertz\BcVoting\Service\jsonRPCClient $blockchain
 	 */
-	public static function getRpcResult(\Goettertz\BcVoting\Domain\Model\Project $project = NULL) {
+	public static function getRpcResult($rpcServer, $rpcPort, $rpcUser, $rpcPassword) {
 		
 		if ($project !== NULL) {
 			$rpcServer = $project->getRpcServer();
@@ -75,11 +82,15 @@ class Blockchain implements Rpc {
 	}
 	
 	/**
-	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
+	 * @param string $rpcServer
+	 * @param string $rpcPort
+	 * @param string $rpcUser
+	 * @param string $rpcPassword
+	 * 
 	 * @return string
 	 */
-	public static function getNewAddress(\Goettertz\BcVoting\Domain\Model\Project $project) {
-		return self::getRpcResult($project)->getnewaddress();
+	public static function getNewAddress($rpcServer, $rpcPort, $rpcUser, $rpcPassword) {
+		return self::getRpcResult($rpcServer, $rpcPort, $rpcUser, $rpcPassword)->getnewaddress();
 	}
 	
 	/**
@@ -90,48 +101,59 @@ class Blockchain implements Rpc {
 	 * @param string $data
 	 * @return mixed
 	 */
-	public static function storeData($project,$fromaddress,$toaddress,$assetAmount,$data) {
+	public static function storeData($rpcServer, $rpcPort, $rpcUser, $rpcPassword,$fromaddress,$toaddress,$assetAmount,$data) {
 		$data = bin2hex($data);
-		return self::getRpcResult($project)->sendwithmetadatafrom($fromaddress,$toaddress,$assetAmount,$data);
+		return self::getRpcResult($rpcServer, $rpcPort, $rpcUser, $rpcPassword)->sendwithmetadatafrom($fromaddress,$toaddress,$assetAmount,$data);
 	}
 	
 	/**
-	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
+	 * @param string $rpcServer
+	 * @param string $rpcPort
+	 * @param string $rpcUser
+	 * @param string $rpcPassword
+	 * 
 	 * @param string $txid
 	 */
-	public static function retrieveData($project, $txid) {
-		$data = self::getRpcResult($project)->getrawtransaction($txid,1);
+	public static function retrieveData($rpcServer, $rpcPort, $rpcUser, $rpcPassword, $txid) {
+		$data = self::getRpcResult($rpcServer, $rpcPort, $rpcUser, $rpcPassword)->getrawtransaction($txid,1);
 		return hex2bin($data['data'][0]);
 	}
 	
 	/**
-	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
+	 * @param string $rpcServer
+	 * @param string $rpcPort
+	 * @param string $rpcUser
+	 * @param string $rpcPassword
+	 * 
 	 * @param string $fromAddress
 	 * @param unknown $asset
 	 * @return mixed
 	 */
-	public static function getAssetBalanceFromAddress($project, $fromAddress, $assetref = NULL) {
+	public static function getAssetBalanceFromAddress($rpcServer, $rpcPort, $rpcUser, $rpcPassword, $fromAddress, $assetref = NULL) {
 		
 		if($assetref)
 		{
-			$data = self::getRpcResult($project)->getmultibalances($fromAddress, array($assetref));
+			$data = self::getRpcResult($rpcServer, $rpcPort, $rpcUser, $rpcPassword)->getmultibalances($fromAddress, array($assetref));
 			return $data[$fromAddress][0]['qty'];
 		}
 		else {
-			$data = self::getRpcResult($project)->getmultibalances($fromAddress);
+			$data = self::getRpcResult($rpcServer, $rpcPort, $rpcUser, $rpcPassword)->getmultibalances($fromAddress);
 			return $data;
 		}
 			
 	}
 	
 	/**
-	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
+	 * @param string $rpcServer
+	 * @param string $rpcPort
+	 * @param string $rpcUser
+	 * @param string $rpcPassword
 	 * @param string $toAddress
 	 * @param string $ssset
 	 * @param double $amount
 	 */
-	public static function sendassettoaddress($project, $toAddress, $asset, $amount) {
-		return self::getRpcResult($project)->sendassettoaddress($toAddress, $asset, $amount);
+	public static function sendassettoaddress($rpcServer, $rpcPort, $rpcUser, $rpcPassword, $toAddress, $asset, $amount) {
+		return self::getRpcResult($rpcServer, $rpcPort, $rpcUser, $rpcPassword)->sendassettoaddress($toAddress, $asset, $amount);
 	}
 }
 ?>
