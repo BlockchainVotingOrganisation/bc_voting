@@ -5,9 +5,9 @@
 <f:render partial="Menu" arguments="{project : project, isAssigned:isAssigned, isAdmin:isAdmin, feuser: feuser}" />
 <f:flashMessages renderMode="div" />
 <h2>{project.name}</h2>
-<f:form action="import" name="project" object="{project}" class="tx-bcvoting">
+<f:form action="import" name="project" class="tx-bcvoting">
 	<f:translate key="tx_bcvoting_domain_model_project.reference" /><br />
-	<f:form.textfield name="reference" size="80" /><br /> 
+	<f:form.textfield name="reference" size="80"  value="{reference]"/><br /> 
 	RPC-Server:<br />
 	<f:form.textfield name="rpcServer" value="{rpc_server}"/><br /> 
 	RPC-Port:<br />
@@ -18,7 +18,7 @@
 	<f:form.textfield name="rpcPassword"  value="{rpc_password}" size="80" /><br />
 	Project-Password:<br />
 	<f:form.textfield name="password" type="password" /><br /> 
-	<f:form.submit value="{f:translate(key:'save')}" /> 
+	<f:form.submit value="{f:translate(key:'import')}" /> 
 </f:form>
 
 </f:section>
