@@ -62,23 +62,8 @@ class Blockchain implements Rpc {
 	 * 
 	 * @return \Goettertz\BcVoting\Service\jsonRPCClient $blockchain
 	 */
-	public static function getRpcResult($rpcServer, $rpcPort, $rpcUser, $rpcPassword) {
-		
-		if ($project !== NULL) {
-			$rpcServer = $project->getRpcServer();
-			$rpcUser = $project->getRpcUser();
-			$rpcPassword = $project->getRpcPassword();
-			$rpcPort = $project->getRpcPort();
-		}
-		
-		if ($rpcServer > NULL)
-		{
-			return $blockchain =  new \Goettertz\BcVoting\Service\jsonRPCClient('http://'.$rpcUser.':'.$rpcPassword.'@'.$rpcServer.':'.$rpcPort.'/');
-		}
-		else
-		{
-			return NULL;
-		}				
+	public static function getRpcResult($rpcServer, $rpcPort, $rpcUser, $rpcPassword) {		
+		return $blockchain =  new \Goettertz\BcVoting\Service\jsonRPCClient('http://'.$rpcUser.':'.$rpcPassword.'@'.$rpcServer.':'.$rpcPort.'/');
 	}
 	
 	/**
@@ -94,29 +79,37 @@ class Blockchain implements Rpc {
 	}
 	
 	/**
-	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
+	 * @param string $rpcServer
+	 * @param string $rpcPort
+	 * @param string $rpcUser
+	 * @param string $rpcPassword
 	 * @param string $fromaddress
 	 * @param string $toaddress
 	 * @param double $assetAmount
 	 * @param string $data
 	 * @return mixed
 	 */
-	public static function storeData($rpcServer, $rpcPort, $rpcUser, $rpcPassword,$fromaddress,$toaddress,$assetAmount,$data) {
+	public static function storeData($rpcServer, $rpcPort, $rpcUser, $rpcPassword, $fromaddress, $toaddress, $assetAmount, $data) {
 		$data = bin2hex($data);
 		return self::getRpcResult($rpcServer, $rpcPort, $rpcUser, $rpcPassword)->sendwithmetadatafrom($fromaddress,$toaddress,$assetAmount,$data);
 	}
 	
 	/**
+	 * retrieves data from blockchain
+     *
 	 * @param string $rpcServer
 	 * @param string $rpcPort
 	 * @param string $rpcUser
 	 * @param string $rpcPassword
-	 * 
 	 * @param string $txid
+	 * 
+	 * @return array|string
 	 */
 	public static function retrieveData($rpcServer, $rpcPort, $rpcUser, $rpcPassword, $txid) {
-		$data = self::getRpcResult($rpcServer, $rpcPort, $rpcUser, $rpcPassword)->getrawtransaction($txid,1);
-		return hex2bin($data['data'][0]);
+		$data = self::getRpcResult($rpcServer, $rpcPort, $rpcUser, $rpcPassword)->getrawtransaction(trim($txid), 1);
+		
+		if (is_string($data['error'])) { return $data; }
+		else { return hex2bin($data['data'][0]); }
 	}
 	
 	/**
