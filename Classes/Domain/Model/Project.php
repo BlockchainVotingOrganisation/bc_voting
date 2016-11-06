@@ -531,11 +531,7 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Goettertz\BcVoting\Domain\Model\Ballot> $ballots
 	 */
 	public function getBallots($bc = false) {
-		if ($bc === false) return $this->ballots;
-		
-		else {
-			
-		}
+		return $this->ballots;		
 	}
 	
 	/**
