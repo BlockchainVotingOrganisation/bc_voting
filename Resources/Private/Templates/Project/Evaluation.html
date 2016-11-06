@@ -1,11 +1,12 @@
-<!-- Rev. 107 -->
+<!-- Rev. 118 -->
 <f:layout name="Default" />
 <f:section name="main">
 
 <f:render partial="Menu" arguments="{project : project, isAssigned:isAssigned,isAdmin:isAdmin}" />
-<h3>{project.name}</h3>
 <f:flashMessages renderMode="div" />
 <f:render partial="FormErrors" arguments="{object:Project}" />
+
+<h3>{project.name}</h3>
 <div>{result.error}</div>
 
 <h4><f:translate key="evaluation" /> {f:format.date(date: date_now, format: 'd.m.Y H:i')}</h4>
