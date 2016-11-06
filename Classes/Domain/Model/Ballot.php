@@ -27,26 +27,8 @@ namespace Goettertz\BcVoting\Domain\Model;
  ***************************************************************/
 
 /**
- * Revision 109:
- * - Bugfix: Division by zero in line 454
- * 
- * Revision 101:
- * - getOptions: Bugfix empty color
- * 
- * Revision 99:
- * -get Options($blockchain) + returns sums of votes (balances)
- * 
- * Revision 96:
- * - getOptions($blockchain) getting options from bc
- * 
- * Revision 94
- * -gets and compares data from blockchain
- * 
- * Revision 86
- * - votes - amount of votes
- * 
- * Revision 82
- * - getter and setter for votes
+ * Revision 118
+ 
  */
  
 /**
@@ -419,12 +401,13 @@ class Ballot extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 *
 	 */
 	public function getOptions($blockchain = false, $compare = false) {
-		if ($blockchain === false) return $this->options;
+		if ($blockchain === false) 
+			return $this->options;
 		else {
 			# JSON from ballot-reference
 			if (!empty($txid = self::getReference())) {
 				$project = self::getProject();
-				$result['json'] = \Goettertz\BcVoting\Service\Blockchain::retrieveData($project, $txid);
+				$result['json'] = Blockchain::retrieveData($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), $txid);
 				$result['array'] = json_decode($result['json']);
 				$i = 0;
 				$allBalance = 0;
