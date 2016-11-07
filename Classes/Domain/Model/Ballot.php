@@ -27,7 +27,7 @@ namespace Goettertz\BcVoting\Domain\Model;
  ***************************************************************/
 
 /**
- * Revision 118
+ * Revision 120
  
  */
  
@@ -142,6 +142,8 @@ class Ballot extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 	/**
 	 * walletAddress
+	 * 
+	 * Temp address for encrypted votings
 	 *
 	 * @var string
 	 */
@@ -215,6 +217,8 @@ class Ballot extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 	/**
 	 * Returns the walletAddress
+	 * 
+	 * Temp address for encrypted votings
 	 *
 	 * @return string $walletAddress
 	 */
@@ -224,8 +228,11 @@ class Ballot extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	
 	/**
 	 * Sets the walletAddress
-	 *
+	 * 
+	 * Temp address for encrypted votings
+	 * 
 	 * @param string $walletAddress
+	 * 
 	 * @return void
 	 */
 	public function setWalletAddress($walletAddress) {

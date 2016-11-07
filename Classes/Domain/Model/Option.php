@@ -25,19 +25,7 @@ namespace Goettertz\BcVoting\Domain\Model;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  *
- *  Re. 99:
- *   - getJson: color
- *  
- *  Rev.98
- *  - getJson: parent
- *  
- *  Rev. 93:
- *  - new property parent
- *  - new property votings
- *  - function getVotings
- *  
- *  Rev. 84:
- *  - new property color
+ * Revision 118
  *  
  **********************************************************************/
 
