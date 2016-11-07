@@ -27,7 +27,7 @@ namespace Goettertz\BcVoting\Controller;
  ***************************************************************/
 
 /**
- * Revision 23
+ * Revision 118
  */
 
 /**
