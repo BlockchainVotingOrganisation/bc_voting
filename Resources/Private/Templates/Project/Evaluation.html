@@ -1,4 +1,4 @@
-<!-- Rev. 118 -->
+<!-- Rev. 120 -->
 <f:layout name="Default" />
 <f:section name="main">
 
@@ -10,10 +10,11 @@
 <div>{result.error}</div>
 
 <h4><f:translate key="evaluation" /> {f:format.date(date: date_now, format: 'd.m.Y H:i')}</h4>
-<f:if condition="{url_csv} != ''">
+<f:if condition="{result.url_csv} != ''">
 <f:then>
 	[<a href="{result.url_csv}" download><f:translate key="download_raw_data" /></a>]
 </f:then>
+<f:else>{result.url_csv}</f:else>
 </f:if>
 
 <f:if condition="{f:format.date(date: project.ende, format: 'U')} < {f:format.date(date: date_now, format: 'U')}">
