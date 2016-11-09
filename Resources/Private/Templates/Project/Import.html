@@ -1,13 +1,14 @@
-<!-- Rev 118 -->
+<!-- Rev 121 -->
 <f:layout name="Default" />
 <f:section name="main">
 
-<f:render partial="Menu" arguments="{project : project, isAssigned:isAssigned, isAdmin:isAdmin, feuser: feuser}" />
 <f:flashMessages renderMode="div" />
-<h2>{project.name}</h2>
+<f:debug title="Raw data">{data}</f:debug>
+<f:debug title="New project">{project}</f:debug>
+
 <f:form action="import" name="project" class="tx-bcvoting">
 	<f:translate key="tx_bcvoting_domain_model_project.reference" /><br />
-	<f:form.textfield name="reference" size="80"  value="{reference]"/><br /> 
+	<f:form.textfield name="reference" size="80"  value="{reference}"/><br /> 
 	RPC-Server:<br />
 	<f:form.textfield name="rpcServer" value="{rpc_server}"/><br /> 
 	RPC-Port:<br />
