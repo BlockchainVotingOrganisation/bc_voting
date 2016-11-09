@@ -582,7 +582,9 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 	}
 	
 	/**
+	 * checkVoting
 	 * 
+	 * Should be moved to voting controller
 	 * @return string[]|number[]
 	 */
 	public function checkVotingAction() {
@@ -979,11 +981,57 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 				# Check existing projects
 				$projects = $this->projectRepository->findByReference($reference);
 				if (count($projects) > 0) {
-					$this->addFlashMessage('Error: Project already exist on this server:<br /> <b>&quot;'.$projects[0]->getName().'&quot;</b>', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+					$this->addFlashMessage('Error: Project already exists on this server:<br /> <b>&quot;'.$projects[0]->getName().'&quot;</b>', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 					$this->redirect('list');					
 				}
-			}
+				else {
+					
+					# Cast stdClass to array
+					$data = (array) $data;
+					
+					# Import array project data into DB ...
+					$project = new \Goettertz\BcVoting\Domain\Model\Project();
+					$project->setName($data['name']);
+					$project->setDescription($data['description']);
+					//logo -> importLogo($uri)
+					$project->setStart($data['start']);
+					$project->setEnd($data['end']);
+					$project->setWalletAddress($data['walletAddress']);
+					$this->projectRepository->add($project);
+					$persistenceManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
+					$persistenceManager->persistAll();
+					# Import ballots with options (for each)
+					$projectUid = $project->getUid();
+					foreach ($data['ballots'] AS $ballot) {
+						$newBallot = new \Goettertz\BcVoting\Domain\Model\Ballot();
+						
+						# Cast stdClass to array
+						$ballot = (array) $ballot;
+						
+						$newBallot->setProject($projectUid);
+						$newBallot->setReference($ballot['reference']);
+						$newBallot->setName($ballot['name']);
+						$newBallot->setStart($ballot['start']);
+						$newBallot->setEnd($ballot['end']);
+						$newBallot->setText($ballot['text']);
+						$newBallot->setFooter($ballot['footer']);
+						
+						# Import options
+						foreach ($ballot['options'] AS $option) {
+							$newOption = new \Goettertz\BcVoting\Domain\Model\Option();
+							
+							# Cast stdClass to array
+							$option = (array) $option;
+						}
+						$this->ballotRepository->add($newBallot);
+						$persistenceManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
+						$persistenceManager->persistAll();
+					}
 
+					$this->view->assign('project',$project);	
+				}
+			}
+			
 			$this->view->assign('data', $data);
 			$this->view->assign('isAssigned', 'true');
 			$this->view->assign('reference', $reference);
