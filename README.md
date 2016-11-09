@@ -1,1 +1,1 @@
-# bc_voting is a typo3-extension to organize blockchain voting projects. See more: www.blockchain-voting.org.
+# bc_voting is a Typo3 extension to organize blockchain voting projects. See more at: www.blockchain-voting.org.
