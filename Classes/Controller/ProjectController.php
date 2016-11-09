@@ -1001,14 +1001,14 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 					$persistenceManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
 					$persistenceManager->persistAll();
 					# Import ballots with options (for each)
-					$projectUid = $project->getUid();
+					//$projectUid = $project->getUid();
 					foreach ($data['ballots'] AS $ballot) {
 						$newBallot = new \Goettertz\BcVoting\Domain\Model\Ballot();
 						
 						# Cast stdClass to array
 						$ballot = (array) $ballot;
 						
-						$newBallot->setProject($projectUid);
+						$newBallot->setProject($project);
 						$newBallot->setReference($ballot['reference']);
 						$newBallot->setName($ballot['name']);
 						$newBallot->setStart($ballot['start']);
