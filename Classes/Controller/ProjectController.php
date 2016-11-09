@@ -29,7 +29,7 @@ ini_set("display_errors", 1);
  ***************************************************************/
 
 /**
- * Revision 120
+ * Revision 121
  */
 
 use \Goettertz\BcVoting\Service\Blockchain;
@@ -975,6 +975,13 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
  					$this->addFlashMessage($data['error'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 				}
 				else $data = json_decode($data);
+				
+				# Check existing projects
+				$projects = $this->projectRepository->findByReference($reference);
+				if (count($projects) > 0) {
+					$this->addFlashMessage('Error: Project already exist on this server:<br /> <b>&quot;'.$projects[0]->getName().'&quot;</b>', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+					$this->redirect('list');					
+				}
 			}
 
 			$this->view->assign('data', $data);
