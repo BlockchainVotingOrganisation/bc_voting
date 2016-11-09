@@ -27,7 +27,7 @@ namespace Goettertz\BcVoting\Domain\Model;
  ***************************************************************/
 
 /**
- * Revision 118
+ * Revision 121
  */
 
 /**
@@ -677,7 +677,7 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 		$returnObject->walletaddress = $this->getWalletAddress();
 
  		foreach ($this->getBallots() AS $ballot) {
- 			$returnObject->ballots[] = $ballot->getReference();
+ 			$returnObject->ballots[] = $ballot->getJson();
  		}
 
 		return json_encode($returnObject, JSON_FORCE_OBJECT);
