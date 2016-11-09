@@ -1,0 +1,15 @@
+
+plugin.tx_bcvoting {
+	view {
+		# cat=plugin.tx_bcvoting/file; type=string; label=Path to template root (FE)
+		templateRootPath = EXT:bc_voting/Resources/Private/Templates/
+		# cat=plugin.tx_bcvoting/file; type=string; label=Path to template partials (FE)
+		partialRootPath = EXT:bc_voting/Resources/Private/Partials/
+		# cat=plugin.tx_bcvoting/file; type=string; label=Path to template layouts (FE)
+		layoutRootPath = EXT:bc_voting/Resources/Private/Layouts/
+	}
+	persistence {
+		# cat=plugin.tx_bcvoting//a; type=string; label=Default storage PID
+		storagePid =
+	}
+}

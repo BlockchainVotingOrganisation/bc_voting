@@ -34,6 +34,20 @@ plugin.tx_bcvoting._CSS_DEFAULT_STYLE (
 		border: 1px #FF0000 solid;
 	}
 	
+	.typo3-messages .message-error {
+		padding: 20px;
+		color: red;
+		background-color: lightgray;
+		border: 1px #FF0000 solid;
+	}
+
+	.typo3-messages .message-ok {
+		padding: 20px;	
+		color:green;
+		background-color:lightgray;
+		border: 1px #FF0000 solid;
+	}
+	
 	.tx-felogin-pi1 input {
 		min-width: 160px;
 	}
@@ -78,14 +92,6 @@ plugin.tx_bcvoting._CSS_DEFAULT_STYLE (
 		padding: 2px;
 	}
 
-	.typo3-messages .message-error {
-		color:red;
-	}
-
-	.typo3-messages .message-ok {
-		color:green;
-	}
-	
 	.tx-bc-voting input {
 		font-weight:bold;
 	}
