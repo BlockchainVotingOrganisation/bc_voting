@@ -675,7 +675,11 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 		$returnObject->start = $this->getStart();
 		$returnObject->end = $this->getEnd();
 		$returnObject->walletaddress = $this->getWalletAddress();
-
+		$returnObject->category = $this->getCategory();
+		$returnObject->infosite = $this->getInfosite();
+		$returnObject->forumurl = $this->getForumUrl();
+		$returnObject->reference = $this->getReference();
+		
  		foreach ($this->getBallots() AS $ballot) {
  			$returnObject->ballots[] = $ballot->getJson();
  		}
