@@ -1,7 +1,6 @@
 <?php
 namespace Goettertz\BcVoting\Controller;
-//error_reporting(E_ALL);
-ini_set("display_errors", 1);
+
 
 /***************************************************************
  *
@@ -30,7 +29,7 @@ ini_set("display_errors", 1);
 
 
 /**
- * Revision 118
+ * Revision 121
  * - Feature Property colors
  */
 
@@ -248,7 +247,7 @@ class OptionController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 				If($assignment != NULL) {
 // 					$blockchain = new \Goettertz\BcVoting\Service\Blockchain();
 					if ($project->getRpcServer() != '') {
-						if ($option->getWalletAddress() === '') {
+						if (empty($option->getWalletAddress())) {
 							$newAddress = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getaccountaddress($option->getName());
 							$option->setWalletAddress($newAddress);
 						}
@@ -324,9 +323,5 @@ class OptionController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 				$uploadConfiguration
 				);
 	}
-
 }
-
-
-
 ?>
