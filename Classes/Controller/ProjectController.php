@@ -1037,6 +1037,19 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 				
 				$this->projectRepository->add($newproject);
 				
+				$roles = $this->roleRepository->findByName('admin');
+				
+				if (count($roles) == 0) {
+					$newRole = new \Goettertz\BcVoting\Domain\Model\Role();
+					$newRole->setName('admin');
+					$this->roleRepository->add($newRole);
+					$roles[0] = $newRole;
+				}
+	
+				if ($this->addAssignment($newproject, $feuser, $roles[0])) {
+					$this->addFlashMessage('The project\'s "'.$newProject->getName().'" assignment "'.$newProject->getName().'" was created.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+				}
+				
 				$persistenceManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
 				$persistenceManager->persistAll();
 				
