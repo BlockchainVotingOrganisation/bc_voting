@@ -33,6 +33,12 @@
 			<trans-unit id="tx_bcvoting_domain_model_project.name">
 				<source>Name</source>
 			</trans-unit>
+			<trans-unit id="tx_bcvoting_domain_model_project.password">
+				<source>Password</source>
+			</trans-unit>
+			<trans-unit id="tx_bcvoting_domain_model_project.reference">
+				<source>Reference (Sealing TxId)</source>
+			</trans-unit>
 			<trans-unit id="tx_bcvoting_domain_model_project.description">
 				<source>Description</source>
 			</trans-unit>
@@ -57,9 +63,6 @@
 			<trans-unit id="tx_bcvoting_domain_model_project.options">
 				<source>Options</source>
 			</trans-unit>
-			<trans-unit id="tx_bcvoting_domain_model_project.reference">
-				<source>Blockchain reference</source>
-			</trans-unit>
 			<trans-unit id="tx_bcvoting_domain_model_project.infosite">
 				<source>Official Information Site</source>
 			</trans-unit>
@@ -72,6 +75,9 @@
 			<trans-unit id="tx_bcvoting_domain_model_ballot.name">
 				<source>Name</source>
 			</trans-unit>
+			<trans-unit id="tx_bcvoting_domain_model_ballot.reference">
+				<source>Reference (TxId)</source>
+			</trans-unit>
 			<trans-unit id="tx_bcvoting_domain_model_ballot.logo">
 				<source>Header Image</source>
 			</trans-unit>
@@ -80,6 +86,15 @@
 			</trans-unit>
 			<trans-unit id="tx_bcvoting_domain_model_ballot.footer">
 				<source>Footer text</source>
+			</trans-unit>
+			<trans-unit id="tx_bcvoting_domain_model_ballot.votes">
+				<source>Amount of votes</source>
+			</trans-unit>
+			<trans-unit id="tx_bcvoting_domain_model_ballot.asset">
+				<source>Asset reference</source>
+			</trans-unit>
+			<trans-unit id="tx_bcvoting_domain_model_ballot.project">
+				<source>Project</source>
 			</trans-unit>
 			<trans-unit id="tx_bcvoting_domain_model_option">
 				<source>Option</source>
