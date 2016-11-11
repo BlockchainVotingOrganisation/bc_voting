@@ -1,7 +1,6 @@
 <?php
 namespace Goettertz\BcVoting\Controller;
 
-ini_set("display_errors", 1);
 
 /***************************************************************
  *
@@ -29,7 +28,7 @@ ini_set("display_errors", 1);
  ***************************************************************/
 
 /**
- * Revision 121
+ * Revision 123
  */
 
 use \Goettertz\BcVoting\Service\Blockchain;
@@ -233,6 +232,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 
 	/**
 	 * action create
+	 * creates new project from formdata
 	 *
 	 * @param \Goettertz\BcVoting\Domain\Model\Project $newProject
 	 * 
@@ -973,7 +973,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 			if ($this->request->hasArgument('reference')) {
 				$reference = $this->request->getArgument('reference');
 				
-				# Check connection settings
+				# Check connection settings -> should be migrated to method setRpcConnection and checkRpcConnection
 				$rpcServer = trim($this->settings['rpc_server']);
 				if (!$this->request->hasArgument('rpcServer')) {
 					$rpcServer = trim($this->request->getArgument('rpcServer'));
@@ -1002,71 +1002,99 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 				else $data = json_decode($data); 
 				
 				# Cast stdClass to array
-				$data = (array) $data;
+				if (is_a($data, 'stdClass', false)) $data = (array) $data;
 				
 				# Check existing projects
 				$projects = $this->projectRepository->findByReference($reference);
 				if (count($projects) > 0) {
 					$this->addFlashMessage('Error: Project with same reference already exists on this server:<br /> <b>&quot;'.$projects[0]->getName().'&quot;</b>', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-					$this->redirect('list');					
+// 					$this->redirect('list');					
 				}
 				$projects = $this->projectRepository->findByName($data['name']);
 				if (count($projects) > 0) {
 					$this->addFlashMessage('Error: Project with same name already exists on this server. Please rename or delete the old Project.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-					$this->redirect('list');
+// 					$this->redirect('list');
 				}
 				
-				
-					
-				# Import array project data into DB ...
-				$project = new \Goettertz\BcVoting\Domain\Model\Project();
-				$project->setName($data['name']);
-				$project->setDescription($data['description']);
+				# Import array project data into DB ... 
+				// should be migrated to project->setProject
+				$newproject = new \Goettertz\BcVoting\Domain\Model\Project();
+				$newproject->setName($data['name']);
+				$newproject->setDescription($data['description']);
 				//logo -> importLogo($uri)
-				$project->setStart($data['start']);
-				$project->setEnd($data['end']);
-				$project->setWalletAddress($data['walletaddress']);
-				$this->projectRepository->add($project);
+				$newproject->setStart($data['start']);
+				$newproject->setEnd($data['end']);
+				$newproject->setWalletAddress($data['walletaddress']);
+				$newproject->setCategory($data['category']);
+				$newproject->setInfosite($data['infosite']);
+				$newproject->setForumurl($data['forumUrl']);
+				$newproject->setReference($data['reference']);
+				
+				$this->projectRepository->add($newproject);
+				
 				$persistenceManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
 				$persistenceManager->persistAll();
+				
 				# Import ballots with options (for each)
-				// 					$projectUid = $project->getUid();
 				foreach ($data['ballots'] AS $ballot) {
+					$this->addFlashMessage($ballot, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 					$newBallot = new \Goettertz\BcVoting\Domain\Model\Ballot();
-				
-					# Cast stdClass to array
+					
+					# Cast json to stdClass and array
+					$ballot = json_decode($ballot);
 					$ballot = (array) $ballot;
-				
-					$newBallot->setProject($project);
+	
+					$newBallot->setProject($newproject);
+					
 					$newBallot->setReference($ballot['reference']);
 					$newBallot->setName($ballot['name']);
 					$newBallot->setStart($ballot['start']);
 					$newBallot->setEnd($ballot['end']);
 					$newBallot->setText($ballot['text']);
 					$newBallot->setFooter($ballot['footer']);
-				
-					# Import options
-					foreach ($ballot['options'] AS $option) {
-						$newOption = new \Goettertz\BcVoting\Domain\Model\Option();
-							
-						# Cast stdClass to array
-						$option = (array) $option;
-					}
+					$newBallot->setAsset($ballot['asset']);
+					$newBallot->setReference($ballot['reference']);
+					
 					$this->ballotRepository->add($newBallot);
 					$persistenceManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
 					$persistenceManager->persistAll();
+
+// 					# Import options
+					foreach ($ballot['options'] AS $option) {
+						$newOption = new \Goettertz\BcVoting\Domain\Model\Option();
+							
+// 						# Cast json to stdClass and array
+						$option = json_decode($option);
+						$option = (array) $option;
+						
+						# Set option
+						$newOption->setBallot($newBallot);
+						$newOption->setName($option['name']);
+						$newOption->setDescription($option['description']);
+						
+						$newOption->setWalletAddress($option['walletaddress']);
+						$newOption->setColor($option['color']);
+						$newOption->setParent($option['parent']);
+						
+						# Add option
+						$this->optionRepository->add($newOption);
+						$persistenceManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
+						$persistenceManager->persistAll();
+						
+					}
+
 				}
 				
-				$this->view->assign('project',$project);
+				$this->view->assign('project',$newproject);
 			}
 			
 			$this->view->assign('data', $data);
 			$this->view->assign('isAssigned', 'true');
 			$this->view->assign('reference', $reference);
-			$this->view->assign('rpc_server', $this->settings['rpc_server']);
-			$this->view->assign('rpc_port', $this->settings['rpc_port']);
-			$this->view->assign('rpc_user', $this->settings['rpc_user']);
-			$this->view->assign('rpc_password', $this->settings['rpc_passwd']);
+			$this->view->assign('rpc_server', $rpcServer);
+			$this->view->assign('rpc_port', $rpcPort);
+			$this->view->assign('rpc_user', $rpcUser);
+			$this->view->assign('rpc_password', $rpcPassword);
 		}
 		else {				
 			$this->addFlashMessage('You aren\'t currently logged in! Please goto <a href="/login/">login</a> or <a href="/register/">register</a>', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
@@ -1203,6 +1231,32 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 	
 		$this->assignmentRepository->add($assignment);
 		return $assignment;
+	}
+	
+	/**
+	 * @param array $settings
+	 * @param array $request
+	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
+	 */
+	private function setRpcConnection($settings = NULL, $request = NULL, \Goettertz\BcVoting\Domain\Model\Project $project = NULL) {
+		
+		$rpcServer = trim($this->settings['rpc_server']);
+		if (!$this->request->hasArgument('rpcServer')) {
+			$rpcServer = trim($this->request->getArgument('rpcServer'));
+		}
+		
+		$rpcPort = trim($this->settings['rpc_port']);
+		if (!$this->request->hasArgument('rpcPort')) {
+			$rpcPort = trim($this->request->getArgument('rpcPort'));
+		}
+		$rpcUser = trim($this->settings['rpc_user']);
+		if (!$this->request->hasArgument('rpcUser')) {
+			$rpcUser = trim($this->request->getArgument('rpcUser'));
+		}
+		$rpcPassword = trim($this->settings['rpc_passwd']);
+		if (!$this->request->hasArgument('rpcPassword')) {
+			$rpcPassword = trim($this->request->getArgument('rpcPassword'));
+		}
 	}
 }
 ?>
