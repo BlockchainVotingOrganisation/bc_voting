@@ -27,7 +27,7 @@ namespace Goettertz\BcVoting\Domain\Model;
  ***************************************************************/
 
 /**
- * Revision 120
+ * Revision 123
  
  */
  
@@ -478,6 +478,7 @@ class Ballot extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 		$returnObject->start = $this->getStart();
 		$returnObject->end = $this->getEnd();
 		$returnObject->walletaddress = $this->getWalletAddress();
+		$returnObject->reference = $this->getReference();
 	
 		foreach ($this->getOptions() as $option) {
 			$returnObject->options[] = $option->getJson();
