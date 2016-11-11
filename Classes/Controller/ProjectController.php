@@ -1059,6 +1059,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 					$newBallot->setFooter($ballot['footer']);
 					$newBallot->setAsset($ballot['asset']);
 					$newBallot->setReference($ballot['reference']);
+					$newBallot->setWalletAddress($ballot['walletaddress']);
 					
 					$this->ballotRepository->add($newBallot);
 					$persistenceManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
