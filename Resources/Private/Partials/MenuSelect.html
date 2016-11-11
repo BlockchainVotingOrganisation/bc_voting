@@ -1,0 +1,18 @@
+<!-- Rev 123 -->
+
+<div class="tx-bc-voting_Menu">
+
+	<f:if condition="{isAssigned} == 'true'">
+		<f:render partial="VoterMenu" arguments="{project : project, isAssigned: isAssigned, isAdmin: isAdmin, feuser: feuser}" />
+	</f:if>
+		
+	<f:if condition="{isAdmin} == 'true'">
+		| <f:render partial="AdminMenu" arguments="{project : project, isAssigned: isAssigned, isAdmin: isAdmin, feuser: feuser}" />
+	</f:if>
+		
+	<div id="feuser">{feuser.username}</div>
+
+</div>
+
+<div class="tx-bc-voting_SubMenu">
+</div>

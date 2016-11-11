@@ -1,4 +1,5 @@
-<!-- Rev 78 -->
+<!-- Rev 123 -->
+
 <div class="tx-bc-voting_Menu">
 	
 	<f:if condition="{project}">
@@ -12,9 +13,11 @@
 	</f:if>
 	
 	<f:if condition="{isAdmin} == 'true'">
-		<f:if condition="{project.reference} == ''" >
-			| <f:link.action action="edit" controller="Project" arguments="{project:project}">Edit</f:link.action>
-		</f:if>
+		
+			| <f:link.action action="edit" controller="Project" arguments="{project:project}">Admin</f:link.action>
+		
 	</f:if>
+	
+	<div id="feuser">{feuser.username}</div>
 
 </div>
