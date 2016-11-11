@@ -1029,7 +1029,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 				$newproject->setCategory($data['category']);
 				$newproject->setInfosite($data['infosite']);
 				$newproject->setForumurl($data['forumUrl']);
-				$newproject->setReference($data['reference']);
+				$newproject->setReference($reference);
 				$newproject->setRpcServer($rpcServer);
 				$newproject->setRpcPort($rpcPort);
 				$newproject->setRpcUser($rpcUser);
