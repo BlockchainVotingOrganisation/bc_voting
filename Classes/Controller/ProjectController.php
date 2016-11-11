@@ -1,6 +1,7 @@
 <?php
 namespace Goettertz\BcVoting\Controller;
 
+ini_set("display_errors", 1);
 
 /***************************************************************
  *
@@ -1029,6 +1030,10 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 				$newproject->setInfosite($data['infosite']);
 				$newproject->setForumurl($data['forumUrl']);
 				$newproject->setReference($data['reference']);
+				$newproject->setRpcServer($rpcServer);
+				$newproject->setRpcPort($rpcPort);
+				$newproject->setRpcUser($rpcUser);
+				$newproject->setRpcPassword($rpcPassword);
 				
 				$this->projectRepository->add($newproject);
 				
