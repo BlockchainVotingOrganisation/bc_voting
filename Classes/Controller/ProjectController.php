@@ -1,6 +1,8 @@
 <?php
 namespace Goettertz\BcVoting\Controller;
 
+ini_set("display_errors", 1);
+
 /***************************************************************
  *
  *  Copyright notice
@@ -1007,12 +1009,12 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 				$projects = $this->projectRepository->findByReference($reference);
 				if (count($projects) > 0) {
 					$this->addFlashMessage('Error: Project with same reference already exists on this server:<br /> <b>&quot;'.$projects[0]->getName().'&quot;</b>', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-// 					$this->redirect('list');					
+					$this->redirect('list');					
 				}
 				$projects = $this->projectRepository->findByName($data['name']);
 				if (count($projects) > 0) {
 					$this->addFlashMessage('Error: Project with same name already exists on this server. Please rename or delete the old Project.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-// 					$this->redirect('list');
+					$this->redirect('list');
 				}
 				
 				# Import array project data into DB ... 
