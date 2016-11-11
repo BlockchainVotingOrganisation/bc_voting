@@ -1,0 +1,10 @@
+<f:layout name="Default" />
+<!-- Revision 123 -->
+<f:section name="main">
+<f:render partial="User/Menu" arguments="{project : project, isAdmin:isAdmin}" />
+<h3>Single View for User</h3>
+<f:flashMessages renderMode="div" />
+<f:render partial="User/Properties" arguments="{project : project, user:user, assignments:assignments, assets:assets, transactions:transactions}" />
+<hr />
+<f:link.action action="list" arguments="{project:project}">Back to list</f:link.action><br />
+</f:section>
