@@ -1,4 +1,4 @@
-<!-- Rev. 113 -->
+<!-- Rev. 117 -->
 
 {user.username}<br />
 
@@ -11,14 +11,14 @@
 		<td>{assignments.project.name}</td>
 		<td>
 		<f:if condition="{assignments.walletAddress}">
-		<f:then>
-			{assignments.walletAddress}<br />
-			
-			<f:link.action action="sendAssets" extensionName="BcVoting" pluginName="Project" controller="User" arguments="{project:project,toAddress:assignments.walletAddress}">[SendAssets]</f:link.action>
-		</f:then>
-		<f:else>
-			<f:link.action action="getNewAddress" extensionName="BcVoting" pluginName="Project" controller="User" arguments="{project:project}">[Get new address]</f:link.action>
-		</f:else>
+			<f:then>
+				{assignments.walletAddress}<br />
+				
+				<f:link.action action="sendAssets" extensionName="BcVoting" pluginName="Project" controller="User" arguments="{project:project,toAddress:assignments.walletAddress}">[SendAssets]</f:link.action>
+			</f:then>
+			<f:else>
+				<f:link.action action="getNewAddress" extensionName="BcVoting" pluginName="Project" controller="User" arguments="{project:project, assignment:assignments}">[Get new address]</f:link.action>
+			</f:else>
 		</f:if>
 		</td>
 	</tr>
