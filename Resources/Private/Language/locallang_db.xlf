@@ -63,6 +63,9 @@
 			<trans-unit id="tx_bcvoting_domain_model_project.options">
 				<source>Options</source>
 			</trans-unit>
+			<trans-unit id="tx_bcvoting_domain_model_project.ballots">
+				<source>Ballots</source>
+			</trans-unit>
 			<trans-unit id="tx_bcvoting_domain_model_project.infosite">
 				<source>Official Information Site</source>
 			</trans-unit>
