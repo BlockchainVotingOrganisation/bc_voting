@@ -414,7 +414,7 @@ class Ballot extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 			# JSON from ballot-reference
 			if (!empty($txid = self::getReference())) {
 				$project = self::getProject();
-				$result['json'] = Blockchain::retrieveData($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), $txid);
+				$result['json'] = \Goettertz\BcVoting\Service\Blockchain::retrieveData($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), $txid);
 				$result['array'] = json_decode($result['json']);
 				$i = 0;
 				$allBalance = 0;
