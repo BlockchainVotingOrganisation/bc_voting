@@ -1,6 +1,6 @@
 <?php
 /**
- * Rev.86
+ * Rev.122
  * - votes
  */
 if (!defined ('TYPO3_MODE')) {
@@ -25,6 +25,7 @@ $GLOBALS['TCA']['tx_bcvoting_domain_model_ballot'] = array(
 			'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.language',
 			'config' => array(
 				'type' => 'select',
+				'renderType' => 'selectSingle',
 				'foreign_table' => 'sys_language',
 				'foreign_table_where' => 'ORDER BY sys_language.title',
 				'items' => array(
@@ -39,11 +40,12 @@ $GLOBALS['TCA']['tx_bcvoting_domain_model_ballot'] = array(
 			'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.l18n_parent',
 			'config' => array(
 				'type' => 'select',
+				'renderType' => 'selectSingle',
 				'items' => array(
 					array('', 0),
 				),
 				'foreign_table' => 'tx_bcvoting_domain_model_ballot',
-				'foreign_table_where' => 'AND tx_bcvoting_domain_model_ballot.pid=###CURRENT_PID### AND tx_bcvoting_domain_model_project.sys_language_uid IN (-1,0)',
+				'foreign_table_where' => 'AND tx_bcvoting_domain_model_ballot.pid=###CURRENT_PID### AND tx_bcvoting_domain_model_ballot.sys_language_uid IN (-1,0)',
 			),
 		),
 		'l10n_diffsource' => array(
