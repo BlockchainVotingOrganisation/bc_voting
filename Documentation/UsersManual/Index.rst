@@ -11,38 +11,52 @@
 Users manual
 ============
 
-Creating a new voting project
-_____________________________
-
-You have to log in as a frontend user to create new voting projects. After login navigate to the page containing the bc_voting plugin. The default view is project list.
-
-[Screenshot]
-
-Click on the link: Create new project to crate a new project.
-
-
 Target group: **Users**
+
+Content:
+--------
+
+- Adding Project Plugin
+- Configuring the Plugin
+
+Adding Project Plugin
+----------------------
+In the backend navigate to the page that should contain the bc_voting content element. Click "Add":
 
 .. figure:: ../Images/UserManual/BackendView.png
 	:width: 500px
 	:alt: Backend view
+	:align: left
 
-	Default Backend view (caption of the image)
+	Default Backend view
 
-	The Backend view of TYPO3 after the user has clicked on module "Page". (legend of the image)
+	The Backend view of TYPO3 after the user has clicked on module "Page".
 
+... and choose plugin from content type:
 
-Link to official documentation
-------------------------------
+.. figure:: ../Images/UserManual/BackendView2.png
+	:width: 500px
+	:alt: Backend view
+	:align: left
 
-Sphinx makes it easy to link to official TYPO3 documentation:
+	Select Content Type
 
-- :ref:`TYPO3 Tutorial for Editors <t3editors:start>`
-- :ref:`Getting Started Tutorial <t3start:start>`
+	The Backend view of TYPO3 after the user has clicked "Add" in page content module.
 
-and you may even link to a very specific chapter explaining how to within the TypoScript Reference.
+... and then general plugin -> BVS-Project from the selection list.
 
-For a complete reference of available cross-link prefixes, please consult file ``_make/conf.py``.
+.. figure:: ../Images/UserManual/BackendView3.png
+	:width: 500px
+	:alt: Backend view
+	:align: left
+
+	Select Plugin
+
+	The Backend view of TYPO3 after the user has clicked "Plugin"-Tab in new content module.
+
+Configuring the Plugin
+-----------------------
+
 
 
 FAQ
