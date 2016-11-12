@@ -1,6 +1,7 @@
 <?php
 namespace Goettertz\BcVoting\Controller;
-
+//error_reporting(E_ALL);
+ini_set("display_errors", 1);
 
 /***************************************************************
  *
@@ -323,5 +324,9 @@ class OptionController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 				$uploadConfiguration
 				);
 	}
+
 }
+
+
+
 ?>

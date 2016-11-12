@@ -9,10 +9,10 @@ if (!defined ('TYPO3_MODE')) {
 $GLOBALS['TCA']['tx_bcvoting_domain_model_asset'] = array(
 	'ctrl' => $GLOBALS['TCA']['tx_bcvoting_domain_model_asset']['ctrl'],
 	'interface' => array(
-		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, starttime, endtime, name, assetId, quantity, options, reference, project, start, end',
+		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, starttime, endtime, name, logo, description, text, footer, options, reference, project, start, end',
 	),
 	'types' => array(
-		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, name, start, end, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime'),
+		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, name, logo, text, footer, options, reference, project, start, end, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime'),
 	),
 	'palettes' => array(
 		'1' => array('showitem' => ''),
@@ -73,7 +73,7 @@ $GLOBALS['TCA']['tx_bcvoting_domain_model_asset'] = array(
 			
 		'assetId' => array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:bc_voting/Resources/Private/Language/locallang_db.xlf:tx_bcvoting_domain_model_asset.asset_id',
+			'label' => 'LLL:EXT:bc_voting/Resources/Private/Language/locallang_db.xlf:tx_bcvoting_domain_model_asset.text',
 			'config' => array(
 				'type' => 'text',
 				'size' => 30,
@@ -82,7 +82,7 @@ $GLOBALS['TCA']['tx_bcvoting_domain_model_asset'] = array(
 		),
 		'quantity' => array(
 					'exclude' => 1,
-					'label' => 'LLL:EXT:bc_voting/Resources/Private/Language/locallang_db.xlf:tx_bcvoting_domain_model_asset.quantity',
+					'label' => 'LLL:EXT:bc_voting/Resources/Private/Language/locallang_db.xlf:tx_bcvoting_domain_model_asset.footer',
 					'config' => array(
 							'type' => 'text',
 							'size' => 30,

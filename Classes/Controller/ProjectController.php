@@ -261,7 +261,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 				$roles[0] = $newRole;
 			}
 
-			if ($this->addAssignment($newProject, $user, $roles[0])) {
+			if ($this->addAssignment($newProject, $user, 'admin')) {
 				$this->addFlashMessage('The project\'s "'.$newProject->getName().'" assignment "'.$newProject->getName().'" was created.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
 			}
 			
@@ -481,18 +481,66 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		$db = $GLOBALS['TYPO3_DB']->sql_query($sql);
 		$this->redirect('edit','Ptoject','BcVoting',array('ptoject'=>$ptoject));
 	}
+	
+	/**
+	 * adds a new assignment
+	 *
+	 * @param \Goettertz\BcVoting\Domain\Model\Project $project;
+	 * @param \Goettertz\BcVoting\Domain\Model\User $user;
+	 * @param string $role
+	 *
+	 * @return \Goettertz\BcVoting\Domain\Model\Assignment
+	 */
+	protected function addAssignment(\Goettertz\BcVoting\Domain\Model\Project $project, \Goettertz\BcVoting\Domain\Model\User $user, $role) {
 		
+		$roles = $this->roleRepository->findByName($role);
+		if (count($roles) === 0) {
+			$newRole = new \Goettertz\BcVoting\Domain\Model\Role();
+			$newRole->setName($role);
+			$this->roleRepository->add($newRole);
+			$persistenceManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
+			$persistenceManager->persistAll();
+		}
+		else {
+			$newRole = $roles[0];
+		}
+		
+// 		die('Project: '.$project->getName().', '.'User: '.$user->getUsername().', Role: '.$newRole->getName());
+		
+		# Check issue #19 duplicate entries
+// 		$duplicates = $this->assignmentRepository->findDuplicates($project->getUid(),$user->getUid(),$newRole->getUid());
+// 		$this->assignmentRepository->deleteDuplicates($project->getUid(),$user->getUid(),$newRole->getUid());
+		
+		$myassignment = New \Goettertz\BcVoting\Domain\Model\Assignment();
+		
+		$myassignment->setProject($project);
+		$myassignment->setUser($user);
+		$myassignment->setRole($newRole);
+		
+		
+// 		die ('Project: '.$project->getName().', '.'User: '.$user->getUsername().', Role: '.$newRole->getName().', Assignment User: '.$myassignment->getUser()->getUsername());
+		$this->assignmentRepository->add($myassignment);
+
+// 		else return NULL;
+		
+// 		$persistenceManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
+// 		$persistenceManager->persistAll();
+		
+ 		
+	}
+	
 	/**
 	 * action assign
 	 * 
 	 * assigns an user to a project as a member/voter
-	 * - send votes/assets to the wallet-address for this assignment
 	 * 
 	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
 	 */
-	public function assignAction(\Goettertz\BcVoting\Domain\Model\Project $project, \Goettertz\BcVoting\Domain\Model\User $user = NULL) {
-		
+	public function assignAction(\Goettertz\BcVoting\Domain\Model\Project $project) {
+		# Widerspruch zu Funktionsargumenten!!!
+
 		$user = $this->userRepository->getCurrentFeUser();
+		
 		if ($user === NULL) {
 			$loginPid = $this->settings['login'];
 			$registrationPid = $this->settings['registration'];
@@ -504,60 +552,49 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		else {
 			//Prüfen, ob bereits Mitglied
 			if (!$assignment = $user ? $project->getAssignmentForUser($user) : NULL) {
-				// 				$assignment = new \Goettertz\BcVoting\Domain\Model\Assignment();
-			
-				# Falls noch keine Rolle member vorhanden ist
-				$roles = $this->roleRepository->findByName('Member');
-				if (count($roles) == 0) {
-					$newRole = new \Goettertz\BcVoting\Domain\Model\Role();
-					$newRole->setName('Member');
-					$this->roleRepository->add($newRole);
-					$roles[0] = $newRole;
-				}
-			
+				
+				$this->addFlashMessage('Project: '.$project->getName(), '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+				$this->addFlashMessage('User   : '.$user->getUsername(), '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+				$this->addFlashMessage('Role   : Member', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
 				# Mitglied als Member registrieren
-				try {
-					$assignment = $this->addAssignment($project, $user, $roles[0]);
-						
-					$persistenceManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
-					$persistenceManager->persistAll();
-						
-					if (!empty($project->getRpcServer())) {
-						if ($assignment) {
-								
-							$newAddress = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getnewaddress();
-							$assignment->setWalletAddress($newAddress);
-							$this->assignmentRepository->update($assignment);
-								
-							$persistenceManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
-							$persistenceManager->persistAll();
-								
-							$this->addFlashMessage('New Address: '.$newAddress.'.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
-								
-							# Für jeden Stimmzettel Assets senden
-							foreach ($project->getBallots() as $ballot) {
-								if ($bcArray = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->sendassettoaddress($newAddress,$ballot->getAsset(),$ballot->getVotes())) {
-									$this->addFlashMessage($ballot->getName().': sending assets...ok ', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
-									# VTC für Transaktionen bereitstellen ...
-									if (!$bcArray['error']) $this->addFlashMessage('Send '.$ballot->getVotes().' Asset "'.$ballot->getAsset().'" to '.$newAddress.' ... ok!','', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
-									else $this->addFlashMessage($bcArray['error'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
-								}
-								else {
-									$this->addFlashMessage($ballot->getName().': sending Assets...failed!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-								}
-							}
-						}
-						else {
-							$this->addFlashMessage('No Assignment!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-						}
-					}
-					else $this->addFlashMessage('No RPC-Server!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+				
+			$this->addAssignment($project, $user, 'Member');
+			$this->addFlashMessage('New Assignment created! Now you have to import your credentials, given from election office.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+				
 			
-				} catch (Exception $e) {
-					$this->addFlashMessage($e, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-				}
 			}
-			$this->redirect('show',NULL,NULL,array('project' => $project, 'bcResult' => $bcArray));
+			$this->redirect('show','Project',NULL,array('project' => $project));
+		}
+	}
+	
+	/**
+	 * allocate assets
+	 * zunächst unnütz! alte methode, um automatisch assets an neue Mitglieder zu versenden.
+	 * @param \Goettertz\BcVoting\Domain\Model\Assignment $assignment
+	 */
+	protected function allocateAssets(\Goettertz\BcVoting\Domain\Model\Assignment $assignment) {
+		
+		$project = $assignment->getProject();
+		$newAddress = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getnewaddress();
+		$assignment->setWalletAddress($newAddress);
+		$this->assignmentRepository->update($assignment);
+		
+		$persistenceManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
+		$persistenceManager->persistAll();
+		
+		$this->addFlashMessage('New Address: '.$newAddress.'.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+		
+		# Für jeden Stimmzettel Assets senden
+		foreach ($project->getBallots() as $ballot) {
+			if ($bcArray = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->sendassettoaddress($newAddress,$ballot->getAsset(),$ballot->getVotes())) {
+				$this->addFlashMessage($ballot->getName().': sending assets...ok ', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+				# VTC für Transaktionen bereitstellen ...
+				if (!$bcArray['error']) $this->addFlashMessage('Send '.$ballot->getVotes().' Asset "'.$ballot->getAsset().'" to '.$newAddress.' ... ok!','', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+				else $this->addFlashMessage($bcArray['error'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+			}
+			else {
+				$this->addFlashMessage($ballot->getName().': sending Assets...failed!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+			}
 		}
 	}
 	
@@ -1009,12 +1046,12 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 				$projects = $this->projectRepository->findByReference($reference);
 				if (count($projects) > 0) {
 					$this->addFlashMessage('Error: Project with same reference already exists on this server:<br /> <b>&quot;'.$projects[0]->getName().'&quot;</b>', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-					$this->redirect('list');					
+// 					$this->redirect('list');					
 				}
 				$projects = $this->projectRepository->findByName($data['name']);
 				if (count($projects) > 0) {
 					$this->addFlashMessage('Error: Project with same name already exists on this server. Please rename or delete the old Project.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-					$this->redirect('list');
+// 					$this->redirect('list');
 				}
 				
 				# Import array project data into DB ... 
@@ -1047,7 +1084,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 				}
 	
 				if ($this->addAssignment($newproject, $feuser, $roles[0])) {
-					$this->addFlashMessage('The project\'s "'.$newProject->getName().'" assignment "'.$newProject->getName().'" was created.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+					$this->addFlashMessage('The project\'s "'.$newproject->getName().'" assignment "'.$newproject->getName().'" was created.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
 				}
 				
 				$persistenceManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
@@ -1232,25 +1269,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		return $result;
 	}
 	
-	/**
-	 * adds a new assignment
-	 *
-	 * @param \Goettertz\BcVoting\Domain\Model\Project $project;
-	 * @param \Goettertz\BcVoting\Domain\Model\User $user;
-	 * @param string $role
-	 *
-	 * @return \Goettertz\BcVoting\Domain\Model\Assignment
-	 */
-	protected function addAssignment(\Goettertz\BcVoting\Domain\Model\Project $project, \Goettertz\BcVoting\Domain\Model\User $user, $role) {
-		$assignment = New \Goettertz\BcVoting\Domain\Model\Assignment();
-		$assignment->setProject($project);
-		$assignment->setUser($user);
-		$assignment->setRole($role);
-		$assignment->setVotes(1);
-	
-		$this->assignmentRepository->add($assignment);
-		return $assignment;
-	}
+
 	
 	/**
 	 * @param array $settings

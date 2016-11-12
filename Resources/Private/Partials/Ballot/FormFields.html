@@ -1,0 +1,54 @@
+{namespace h=Goettertz\BcVoting\ViewHelpers}
+<!-- Rev. 89 -->
+<div style="width:100%; margin: 30px 0px; display: block;">
+	<label for="name">
+		<f:translate key="tx_bcvoting_domain_model_ballot.name" /> <span class="required">(required)</span>
+	</label><br /> 
+		<f:form.textfield property="name" size="80" /><br />
+<div>
+<br /> 
+<div style="width:100%;" margin: 10px 0px; display: inline-block;">
+	<div style="width:50%; float:left;">
+		<label for="start">
+			<f:translate key="tx_bcvoting_domain_model_project.start" /> <span class="required">(required)</span>
+		</label><br />
+			<f:form.textfield property="start" value="{ballot.start -> f:format.date( format: 'd.m.Y' )}" /><br />
+		</div>
+		<div style="width:50%; float:left;">
+		<label for="end">
+			<f:translate key="tx_bcvoting_domain_model_project.end" /> <span class="required">(required)</span>
+		</label><br />
+			<f:form.textfield property="end" value="{ballot.end -> f:format.date( format: 'd.m.Y' )}" /><br />
+	</div>
+	<div style="float:clear; width:100%;">&nbsp;</div>
+</div>
+<br /> 
+<div style="width:100%; margin: 30px 0px; display: block;">
+	<label for="logo">
+		<f:translate key="tx_bcvoting_domain_model_ballot.logo" />
+	</label><br />
+	<h:form.upload property="logo">
+			<f:if condition="{resource}">
+			<f:image image="{resource}" alt="" width="50"/><br /><f:link.action action="removeLogo" arguments="{ballot : ballot}">Remove first before upload!</f:link.action>
+		</f:if> 
+	</h:form.upload><br />
+	<small>Hint: You should have resized your image before uploading</small><br />
+	<br />
+	<label for="amountOfVotes">
+		<f:translate key="tx_bcvoting_domain_model_ballot.amountOfVotes" />Amount of votes
+	</label><br />
+	<f:form.textfield property="votes" size="2" />
+	<br />
+	<br />
+	<label for="text">
+		<f:translate key="tx_bcvoting_domain_model_ballot.text" />
+	</label><br />
+	<f:form.textarea property="text" rows="5" cols="50" />
+	<br />
+	<label for="footer">
+		<f:translate key="tx_bcvoting_domain_model_ballot.footer" />
+	</label><br />
+	<f:form.textarea property="footer" rows="5" cols="50" /><br />
+	<div style="float:clear; height:10px; width:100%;">&nbsp;</div>
+</div>
+

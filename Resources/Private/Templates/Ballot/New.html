@@ -1,14 +1,16 @@
+{namespace h=Goettertz\BcVoting\ViewHelpers}
 <f:layout name="Default" />
 <f:section name="main">
-<!-- Rev. 71 -->
+<!-- Rev. 67 -->
 <f:render partial="Project/Menu" arguments="{project : project}" />
 <f:flashMessages renderMode="div" />
 
 <div style="min-height:400px;">
 	<h4>{project.name}</h4>	
 	<h5>New ballot</h5>
-	<f:form action="create" controller="Ballot" name="newBallot" object="{newBallot}" enctype="multipart/form-data" arguments="{project : project}">
-	<f:render partial="Ballot/FormFields""/>
+	<f:form action="create" controller="Ballot" name="newBallot" object="{ballot}" enctype="multipart/form-data" arguments="{project : project}">
+	
+	<f:render partial="Ballot/FormFields" arguments="{ballot:newBallot}"/>
 		<f:form.submit value="Create" />		
 	</f:form>
 </f:section>

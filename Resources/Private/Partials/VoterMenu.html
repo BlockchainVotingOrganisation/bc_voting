@@ -1,10 +1,11 @@
 <!-- Rev 123 -->
+
 <f:if condition="{project}">
 	<f:link.action action="show" controller="Project" arguments="{project:project}">Information</f:link.action> |
 	<f:link.action action="evaluation" controller="Project" arguments="{project: project}">Evaluation</f:link.action>
 	
 	<f:if condition="{isAssigned} == 'false'">
-		  	| <f:link.action action="assign" controller="Project" arguments="{user:user, project:project}">Assign</f:link.action>
+		  	| <f:link.action action="assign" controller="Project" arguments="{project:project}">Assign</f:link.action>
 	</f:if>
 	| Log
 </f:if>	

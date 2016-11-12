@@ -1,0 +1,13 @@
+<!-- Rev. 52 -->
+<label for="name">
+	<f:translate key="tx_bcvoting_domain_model_argument.name" /> <span class="required">(required)</span>
+</label><br />
+	<f:form.textfield property="name" size="50" /><br />is argument pro:
+	<f:form.select property="prooption" options="{project.options}" prependOptionLabel="Please choose" prependOptionValue="0" optionLabelField="name" optionValueField="uid" />
+	<hr />
+	
+<label for="text">
+	<f:translate key="tx_bcvoting_domain_model_argument.text" /> 
+</label><br />
+
+	<f:form.textarea property="text" cols="50" rows="5" /><br />

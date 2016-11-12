@@ -32,38 +32,38 @@ namespace Goettertz\BcVoting\Domain\Repository;
  */
 class AssignmentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 	
-	/**
-	 * @param integer $project
-	 * @param integer $user
-	 * @param integer $role
-	 */
-	public function findDuplicates($project,$user,$role) {
-		$sql = 'SELECT a.uid
-					FROM tx_bcvoting_domain_model_assignment as a
-				WHERE a.user='.$user.' AND a.project='.$project.' AND a.role='.$role;
+// 	/**
+// 	 * @param integer $project
+// 	 * @param integer $user
+// 	 * @param integer $role
+// 	 */
+// 	public function findDuplicates($project,$user,$role) {
+// 		$sql = 'SELECT a.uid
+// 					FROM tx_bcvoting_domain_model_assignment as a
+// 				WHERE a.user='.$user.' AND a.project='.$project.' AND a.role='.$role;
 	
 	
-		$query = $this->createQuery();
-		$query->getQuerySettings()->setReturnRawQueryResult(true);
-		$query->statement($sql);
+// 		$query = $this->createQuery();
+// 		$query->getQuerySettings()->setReturnRawQueryResult(true);
+// 		$query->statement($sql);
 	
-		return $query->execute();
-	}
+// 		return $query->execute();
+// 	}
 	
-	/**
-	 * @param integer $project
-	 * @param integer $user
-	 * @param integer $role
-	 */
-	public function deleteDuplicates($project,$user,$role) {
-		$sql = 'Delete FROM tx_bcvoting_domain_model_assignment 
-				WHERE user='.$user.' AND project='.$project.' AND role='.$role;
+// 	/**
+// 	 * @param integer $project
+// 	 * @param integer $user
+// 	 * @param integer $role
+// 	 */
+// 	public function deleteDuplicates($project,$user,$role) {
+// 		$sql = 'Delete FROM tx_bcvoting_domain_model_assignment 
+// 				WHERE (user='.$user.' AND project='.$project.' AND role='.$role.') OR user=0 OR deleted=0 OR project=0';
 		
-		$query = $this->createQuery();
-		$query->getQuerySettings()->setReturnRawQueryResult(true);
-		$query->statement($sql);
+// 		$query = $this->createQuery();
+		
+// 		$query->statement($sql);
 	
-		return $query->execute();
-	}
+// 		$query->execute();
+// 	}
 }
 ?>

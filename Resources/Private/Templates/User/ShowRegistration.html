@@ -1,0 +1,10 @@
+<f:layout name="Default" />
+Rev. 32
+<f:section name="main">
+<h3>Registration</h3>
+
+<f:flashMessages renderMode="div" />
+<f:form action="create" name="user" object="{user}" >
+<f:render partial="User/FormFields" arguments="{user:user}" />
+</f:form>
+</f:section>

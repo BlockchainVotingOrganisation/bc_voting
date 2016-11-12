@@ -1,0 +1,30 @@
+{namespace bvs=Goettertz\BcVoting\ViewHelpers}
+<f:layout name="Default" />
+Rev. 51
+<f:section name="main">
+<f:render partial="Menu" arguments="{project : project, assigned : assigned}" />
+<h4>Arguments</h4>
+<f:flashMessages renderMode="div" />
+<f:for each="{project.assignments}" as="myAssignment">
+	<f:if condition="{myAssignment.user.uid} == <bvs:GetUserId/>">
+		<f:then>
+			<f:if condition="{myAssignment.role.name} == 'admin'">
+				<f:then>
+					<f:link.action action="new" arguments="{project:project}">Create new argument</f:link.action>
+				</f:then>
+			</f:if>
+		</f:then>
+	</f:if>
+</f:for>
+<f:flashMessages renderMode="div" />
+
+<div  class="tx_bcvoting" >
+	<f:for each="{arguments}" as="argument">
+		<div style="width:10%; float:left">
+			{argument.prooption.name} 
+		</div>
+		<div style="width:90%;">{argument.name}</div>
+
+	</f:for>
+</div>
+</f:section>

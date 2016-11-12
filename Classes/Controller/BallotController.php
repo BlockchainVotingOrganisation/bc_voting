@@ -537,10 +537,12 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 		# Wahl mit Multichain
 		if (!empty($project->getRpcServer())) {
 			$asset = trim($ballot->getAsset());
+			
 			$fromaddress = trim($assignment->getWalletAddress());
 			if (empty($fromaddress)) {
 				return $result['error'] = 'Error (525): no address to send from!';
 			}
+			
 			if ($project->getCategory()->getUlterrior() == true) {
 				
 				#prüfen, ob es schon eine addresse gibt...
@@ -549,6 +551,7 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 				$toaddress = $ballot->getWalletAddress(); // ballot-address, wenn geheime Wahl
 			}
 			else $toaddress = $option->getWalletAddress(); // option-address, wenn nicht geheim
+			
 			$votes = Blockchain::getAssetBalanceFromAddress($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), $fromaddress, $asset);
 
 			# Stimmrechte Anzahl

@@ -1,0 +1,27 @@
+<!-- Rev. 102 -->
+<f:debug title="Template Properties">{project.category}</f:debug>
+<div style="width:100%; margin: 10px 0px; display: inline-block;">
+	<div>	
+		<label for="category">
+			<f:translate key="tx_bcvoting_domain_model_project.category" /> <span class="required">(required)</span>
+		</label>
+		<br />
+		<f:for each="{categories}" as="category">
+			<f:form.radio property="category" value="{category}" checked="{category}=={project.category}" /> 
+				{category.name} <br />
+		</f:for>
+		<hr />
+		<h5><f:translate key="template" /> <f:translate key="properties" /></h5>
+		<pre>
+			{project.category.name}
+			{project.category.closed}
+			{project.category.ulterior}
+		</pre>
+	</div>
+	<hr />
+	<div>
+		<label for="maxVoters">Max. Voters</label> / <label for="priceBtc">Price BTC</label><br />
+		 <f:form.textfield name="maxVoters" size="7" placeholder="50" style="text-align:right;" /> <f:form.textfield name="price" size="15" disabled="1" value="0" style="text-align:right;" /><br /> <br />
+	</div>
+	<div style="float:clear; height:1px; width:100%;">&nbsp;</div>
+</div>

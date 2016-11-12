@@ -32,10 +32,14 @@ namespace Goettertz\BcVoting\Domain\Repository;
  */
 class VotingRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 
-// 	public function addVoting(\Goettertz\BcVoting\Domain\Model\Project $project) {
+	public function addVoting(\Goettertz\BcVoting\Domain\Model\Project $project) {
 		
-// 		$this->add();
-// 	}
+		
+		
+		
+		
+		$this->add();
+	}
 	
 }
 ?>

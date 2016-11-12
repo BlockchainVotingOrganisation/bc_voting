@@ -27,7 +27,7 @@ namespace Goettertz\BcVoting\Domain\Model;
  ***************************************************************/
 
 /**
- * Revision 101
+ * Revision 48
  */
 
 /**

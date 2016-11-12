@@ -1,0 +1,38 @@
+<!-- Rev. 78 -->
+<f:if condition="{admin}== 'true'">
+	<f:link.action action="new" controller="Option" arguments="{ballot : ballot}">+ Create new option</f:link.action>
+</f:if>
+
+<table style="color:red;">
+	<f:for each="{ballot.options}" as="option"> 
+	
+		<f:cycle values="{0: '#fff', 1: '#fff'}" as="color">
+		<tr style="background-color: {color}">
+			<td style="border-bottom: 1px dotted black; border-top: 1px dotted black; padding:20px; vertical-align: middle;">
+			<f:if condition="{option.logo} != 0">
+				<f:image image="{option.logo}" alt="{ballot.logo.originalResource.title}" style="width: max-height: 50px; max-width: 100%; height: auto;" /><br />
+			</f:if>
+				{option.name}<br />
+				{option.description}
+			</td>
+			<td style="border-bottom: 1px dotted black; border-top: 1px dotted black; padding:20px; vertical-align: middle;">
+				<f:if condition="{isAssigned} == 'true'">
+				<f:then>
+					<f:form.radio name="option" value="{option}" class="tx-bc-voting vote" style="background:transparent;" />
+				</f:then>
+				<f:else>
+					<a href="https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=bitcoin:{option.walletAddress}?amount=1"><img style="max-width:100%; height: auto;" src="https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=bitcoin:{option.walletAddress}?amount=1" width="150" height="150" title="{option.walletAddress}" /></a>
+				</f:else>
+				</f:if>
+			</td>
+		</tr>
+		<f:if condition="{admin}== 'true'">
+		<tr style="background-color: {color}">
+			<td colspan="2">
+				<f:link.action action="edit" controller="Option" arguments="{option : option}">Edit</f:link.action> | <f:link.action action="delete" controller="Option" arguments="{option : option}">Delete</f:link.action> 
+			</td>
+		</tr>
+		</f:if>
+		</f:cycle>
+	</f:for>
+</table>

@@ -355,8 +355,7 @@ CREATE TABLE tx_bcvoting_domain_model_assignment (
 	PRIMARY KEY (uid),
 	KEY parent (pid),
 	KEY t3ver_oid (t3ver_oid,t3ver_wsid),
-	UNIQUE KEY combi (user,project,role),
- KEY language (l10n_parent,sys_language_uid)
+	KEY language (l10n_parent,sys_language_uid)
 
 );
 

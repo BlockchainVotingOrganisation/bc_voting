@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<T3DataStructure>
+	<meta type="array">
+		<langChildren>0</langChildren>
+		<langDisable>1</langDisable>
+	</meta>
+	<sheets>
+		<PIDs>
+			<ROOT>
+				<type>array</type>
+				<el>
+					<settings.redirectUrl>
+				        <TCEforms>
+				            <label>Redirect after create</label>
+							<config>
+								<type>group</type>
+								<internal_type>db</internal_type>
+								<allowed>pages</allowed>
+								<size>1</size>
+								<maxitems>1</maxitems>
+								<minitems>0</minitems>
+								<show_thumbs>1</show_thumbs>
+							</config>
+				        </TCEforms>
+				    </settings.redirectUrl>
+				    <settings.login>
+				        <TCEforms>
+				            <label>Login URL</label>
+							<config>
+								<type>group</type>
+								<internal_type>db</internal_type>
+								<allowed>pages</allowed>
+								<size>1</size>
+								<maxitems>1</maxitems>
+								<minitems>0</minitems>
+								<show_thumbs>1</show_thumbs>
+							</config>
+				        </TCEforms>
+				    </settings.login>
+				    <settings.logout>
+				        <TCEforms>
+				            <label>Logout URL</label>
+							<config>
+								<type>group</type>
+								<internal_type>db</internal_type>
+								<allowed>pages</allowed>
+								<size>1</size>
+								<maxitems>1</maxitems>
+								<minitems>0</minitems>
+								<show_thumbs>1</show_thumbs>
+							</config>
+				        </TCEforms>
+				    </settings.logout>
+				    <settings.registration>
+				        <TCEforms>
+				            <label>Registration URL</label>
+							<config>
+								<type>group</type>
+								<internal_type>db</internal_type>
+								<allowed>pages</allowed>
+								<size>1</size>
+								<maxitems>1</maxitems>
+								<minitems>0</minitems>
+								<show_thumbs>1</show_thumbs>
+							</config>
+				        </TCEforms>				        
+				    </settings.registration>
+				</el>
+			</ROOT>
+		</PIDs>
+	</sheets>
+</T3DataStructure>

@@ -27,7 +27,7 @@ ini_set("display_errors", 1);
  ***************************************************************/
 
 /**
- * Rev. 118
+ * Rev. 121
  */
 use Goettertz\BcVoting\Service\Blockchain;
 /**
@@ -559,7 +559,7 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
 	 */
 	public function getNewAddressAction(\Goettertz\BcVoting\Domain\Model\Assignment $assignment, \Goettertz\BcVoting\Domain\Model\Project $project) {
-		$assignment->setWalletAddress(Blockchain::getNewAddress($project));
+		$assignment->setWalletAddress(Blockchain::getNewAddress($project->getRpcServer(),$project->getRpcPort(),$project->getRpcUser(), $project->getRpcPassword()));
 		$this->assignmentRepository->update($assignment);
 		$this->redirect('show',NULL,NULL, array('project' => $project, 'user' => $assignment->getUser()));
 	}

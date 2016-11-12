@@ -5,7 +5,7 @@ namespace Goettertz\BcVoting\Domain\Repository;
  *
  *  Copyright notice
  *
- *  (c) 2016 Louis Göttertz <info2015@goettertz.de>, goettertz.de
+ *  (c) 2015 Louis Göttertz <info2015@goettertz.de>, goettertz.de
  *
  *  All rights reserved
  *
@@ -29,16 +29,15 @@ namespace Goettertz\BcVoting\Domain\Repository;
 
 /**
  * The repository for (fe-)users
- * 
- * Rev. 90
  */
 class UserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository  {
 
 	/**
-	 * Gets the currently logged in frontend user, 
-	 * or NULL if no user is logged in.
-	 * 
-	 * @return \Goettertz\BcVoting\Domain\Model\User|NULL  
+	 *
+	 * Gets the currently logged in frontend user.
+	 * @return \Goettertz\BcVoting\Domain\Model\User  The currently logged in frontend
+	 *                                              user, or NULL if no user is
+	 *                                              logged in.
 	 *
 	 */
 	public Function getCurrentFeUser() {

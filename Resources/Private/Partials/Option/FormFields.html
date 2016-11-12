@@ -1,0 +1,36 @@
+<!-- Rev. 83 -->
+{namespace h=Goettertz\BcVoting\ViewHelpers}
+<label for="name">
+	<f:translate key="tx_bcvoting_domain_model_option.name" /> <span class="required">(required)</span>
+</label><br />
+	<f:form.textfield property="name" size="50" /><br />
+<br /><label>Color</label>
+<f:form.select property="color" options="{colors}" />
+<br />
+	
+<br /><label for="logo">
+	Header Image 
+</label><br />
+<h:form.upload property="logo">
+	<f:if condition="{resource}">
+		<f:image image="{resource}" alt="" width="50"/>
+		<br /><f:link.action action="removeLogo" arguments="{option : option}">Remove first before upload a new one!!</f:link.action><br />
+	</f:if> 
+</h:form.upload><br />
+<br /><label for="description">
+	<f:translate key="tx_bcvoting_domain_model_option.description" />
+</label><br />
+	<f:form.textarea property="description" cols="50" /><br />
+<br /><label for="walletAddress">
+	<f:translate key="tx_bcvoting_domain_model_option.wallet_address" /> 
+</label><br />
+<f:if condition="{option.walletAdress} == ''">
+<f:then>
+	<f:form.textfield property="walletAddress" size="50" readonly="1" /><br />
+	 <br />
+</f:then>
+<f:else>
+	<f:form.textfield property="walletAddress" size="50" /><br />
+</f:else>
+</f:if>
+	 

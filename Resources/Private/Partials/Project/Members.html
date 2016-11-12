@@ -1,0 +1,22 @@
+<h3>Members</h3>
+<table class="tx-bc-voting">
+	<tr>
+		<th>Username</th>
+		<th>Role</th>
+		<th>Actions</th>
+	</tr>
+	<f:for each="{project.assignments}" as="assignment">
+	<tr>
+		<td>
+			{assignment.user.username}
+		</td>
+		<td>
+			<f:form.select name="assignment.role" options="{1:'Admin',2:'Member',3:'Voter'}" optionLabelField="role" value="{assignment.role}"/></br>
+		</td>
+		<td>Resign</td>
+	</tr>
+	</f:for>
+	<tr>
+		<td colspan="3">New Assignment | Message to assigned users</td>
+	</tr>
+</table>

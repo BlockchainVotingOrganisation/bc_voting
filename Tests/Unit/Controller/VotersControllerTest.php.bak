@@ -1,0 +1,142 @@
+<?php
+namespace Goettertz\BcVoting\Tests\Unit\Controller;
+/***************************************************************
+ *  Copyright notice
+ *
+ *  (c) 2015 Louis Göttertz <com@goettertz.de>, Louis Göttertz Internetprogrammierung
+ *  			
+ *  All rights reserved
+ *
+ *  This script is part of the TYPO3 project. The TYPO3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
+
+/**
+ * Test case for class Goettertz\BcVoting\Controller\VotersController.
+ *
+ * @author Louis Göttertz <com@goettertz.de>
+ */
+class VotersControllerTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
+
+	/**
+	 * @var \Goettertz\BcVoting\Controller\VotersController
+	 */
+	protected $subject = NULL;
+
+	protected function setUp() {
+		$this->subject = $this->getMock('Goettertz\\BcVoting\\Controller\\VotersController', array('redirect', 'forward', 'addFlashMessage'), array(), '', FALSE);
+	}
+
+	protected function tearDown() {
+		unset($this->subject);
+	}
+
+	/**
+	 * @test
+	 */
+	public function listActionFetchesAllVoterssFromRepositoryAndAssignsThemToView() {
+
+		$allVoterss = $this->getMock('TYPO3\\CMS\\Extbase\\Persistence\\ObjectStorage', array(), array(), '', FALSE);
+
+		$votersRepository = $this->getMock('Goettertz\\BcVoting\\Domain\\Repository\\VotersRepository', array('findAll'), array(), '', FALSE);
+		$votersRepository->expects($this->once())->method('findAll')->will($this->returnValue($allVoterss));
+		$this->inject($this->subject, 'votersRepository', $votersRepository);
+
+		$view = $this->getMock('TYPO3\\CMS\\Extbase\\Mvc\\View\\ViewInterface');
+		$view->expects($this->once())->method('assign')->with('voters', $allVoterss);
+		$this->inject($this->subject, 'view', $view);
+
+		$this->subject->listAction();
+	}
+
+	/**
+	 * @test
+	 */
+	public function showActionAssignsTheGivenVotersToView() {
+		$voters = new \Goettertz\BcVoting\Domain\Model\Voters();
+
+		$view = $this->getMock('TYPO3\\CMS\\Extbase\\Mvc\\View\\ViewInterface');
+		$this->inject($this->subject, 'view', $view);
+		$view->expects($this->once())->method('assign')->with('voters', $voters);
+
+		$this->subject->showAction($voters);
+	}
+
+	/**
+	 * @test
+	 */
+	public function newActionAssignsTheGivenVotersToView() {
+		$voters = new \Goettertz\BcVoting\Domain\Model\Voters();
+
+		$view = $this->getMock('TYPO3\\CMS\\Extbase\\Mvc\\View\\ViewInterface');
+		$view->expects($this->once())->method('assign')->with('newVoters', $voters);
+		$this->inject($this->subject, 'view', $view);
+
+		$this->subject->newAction($voters);
+	}
+
+	/**
+	 * @test
+	 */
+	public function createActionAddsTheGivenVotersToVotersRepository() {
+		$voters = new \Goettertz\BcVoting\Domain\Model\Voters();
+
+		$votersRepository = $this->getMock('Goettertz\\BcVoting\\Domain\\Repository\\VotersRepository', array('add'), array(), '', FALSE);
+		$votersRepository->expects($this->once())->method('add')->with($voters);
+		$this->inject($this->subject, 'votersRepository', $votersRepository);
+
+		$this->subject->createAction($voters);
+	}
+
+	/**
+	 * @test
+	 */
+	public function editActionAssignsTheGivenVotersToView() {
+		$voters = new \Goettertz\BcVoting\Domain\Model\Voters();
+
+		$view = $this->getMock('TYPO3\\CMS\\Extbase\\Mvc\\View\\ViewInterface');
+		$this->inject($this->subject, 'view', $view);
+		$view->expects($this->once())->method('assign')->with('voters', $voters);
+
+		$this->subject->editAction($voters);
+	}
+
+	/**
+	 * @test
+	 */
+	public function updateActionUpdatesTheGivenVotersInVotersRepository() {
+		$voters = new \Goettertz\BcVoting\Domain\Model\Voters();
+
+		$votersRepository = $this->getMock('Goettertz\\BcVoting\\Domain\\Repository\\VotersRepository', array('update'), array(), '', FALSE);
+		$votersRepository->expects($this->once())->method('update')->with($voters);
+		$this->inject($this->subject, 'votersRepository', $votersRepository);
+
+		$this->subject->updateAction($voters);
+	}
+
+	/**
+	 * @test
+	 */
+	public function deleteActionRemovesTheGivenVotersFromVotersRepository() {
+		$voters = new \Goettertz\BcVoting\Domain\Model\Voters();
+
+		$votersRepository = $this->getMock('Goettertz\\BcVoting\\Domain\\Repository\\VotersRepository', array('remove'), array(), '', FALSE);
+		$votersRepository->expects($this->once())->method('remove')->with($voters);
+		$this->inject($this->subject, 'votersRepository', $votersRepository);
+
+		$this->subject->deleteAction($voters);
+	}
+}

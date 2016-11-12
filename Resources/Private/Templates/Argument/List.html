@@ -1,0 +1,37 @@
+{namespace bvs=Goettertz\BcVoting\ViewHelpers}
+<f:layout name="Default" />
+Rev. 54
+<f:section name="main">
+<f:render partial="Project/Menu" arguments="{project : project, assigned : assigned}" />
+<h4>Arguments</h4>
+<f:flashMessages renderMode="div" />
+<f:for each="{project.assignments}" as="myAssignment">
+	<f:if condition="{myAssignment.user.uid} == <bvs:GetUserId/>">
+		<f:then>
+			<f:if condition="{myAssignment.role.name} == 'admin'">
+				<f:then>
+					<f:link.action action="new" arguments="{project:project}">Create new argument</f:link.action>
+				</f:then>
+			</f:if>
+		</f:then>
+	</f:if>
+</f:for>
+
+
+<div  class="tx-bc-voting" >
+	<f:for each="{arguments}" as="argument">
+		<div style="width:10%; float:left">
+			{argument.prooption.name} 
+		</div>
+		<div style="width:60%; float:left">{argument.name}</div>
+		<div style="width:30%; float:left">
+			<f:link.action action="edit" arguments="{argument:argument}">Edit</f:link.action> | 
+			<f:link.action action="delete" arguments="{argument:argument}">Delete</f:link.action> | 
+			<f:link.action action="up" arguments="{argument:argument}">Up</f:link.action> |
+			<f:link.action action="down" arguments="{argument:argument}">Down</f:link.action> | 
+			<f:link.action action="hide" arguments="{argument:argument}">hide</f:link.action>
+		</div>
+		<div style="float:clear; border-bottom:1px solid silver; height:1px;">&nbsp;</div>
+	</f:for>
+</div>
+</f:section>

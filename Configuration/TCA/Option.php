@@ -1,5 +1,5 @@
 <?php
-# Revision 92
+# Revision 83
 
 if (!defined ('TYPO3_MODE')) {
 	die ('Access denied.');
