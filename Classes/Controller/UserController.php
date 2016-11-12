@@ -297,8 +297,6 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 	 */
 	public function showAction(\Goettertz\BcVoting\Domain\Model\User $user, \Goettertz\BcVoting\Domain\Model\Project $project = NULL) {
 
-
-		
 		if ($user === $this->userRepository->getCurrentFeUser()) {
 			$this->view->assign('user', $user);
 				$rpcServer = trim($this->settings['rpc_server']);
@@ -323,7 +321,7 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 					
 					if (is_string($address)) {
 						$transactions = array();
-						$newtransactions = Blockchain::getRpcResult($rpcServer, $rpcPort), $rpcUser, $rpcPassword)->listaddresstransactions($address, 10);
+						$newtransactions = Blockchain::getRpcResult($rpcServer, $rpcPort, $rpcUser, $rpcPassword)->listaddresstransactions($address, 10);
 						if (!is_string($newtransactions['error'])) {
 							$transactions = array_merge($transactions, $newtransactions);
 							$this->view->assign('transactions', $transactions);
