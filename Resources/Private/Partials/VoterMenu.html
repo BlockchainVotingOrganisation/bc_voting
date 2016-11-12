@@ -1,4 +1,4 @@
-<!-- Rev 123 -->
+<!-- Rev 125 -->
 
 <f:if condition="{project}">
 	<f:link.action action="show" controller="Project" arguments="{project:project}">Information</f:link.action> |
@@ -7,8 +7,8 @@
 	<f:if condition="{isAssigned} == 'false'">
 		  	| <f:link.action action="assign" controller="Project" arguments="{project:project}">Assign</f:link.action>
 	</f:if>
-	| Log
+	| 
 </f:if>	
-
+<f:link.action action="list" controller="Project">List Projects</f:link.action>
 
 

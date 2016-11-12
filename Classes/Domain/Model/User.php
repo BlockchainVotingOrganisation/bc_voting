@@ -28,12 +28,9 @@ namespace Goettertz\BcVoting\Domain\Model;
 
 /**
  * User - Feuser
- * Revision 116 - password2 for checkimg purpose
- * Revision 114 - test extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
+ * 
+ * Revision 125
  *  
- * FE-User Mapping: 
- * 
- * 
  */
 class User extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser {
 
@@ -91,6 +88,14 @@ class User extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser {
 	 * @var string
 	 */
 	protected $publicKey;
+	
+	/**
+	 * assignments
+	 *
+	 * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Goettertz\BcVoting\Domain\Model\Assignment>
+	 * @cascade remove
+	 */
+	protected $assignments = NULL;
 	
 	/**
 	 * Gets uid
@@ -209,6 +214,26 @@ class User extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser {
  	 */
  	public function setPublicKey($publicKey) {
  		$this->publicKey = $publicKey;
+ 	}
+ 	
+ 	/**
+ 	 * Returns the assignments
+ 	 *
+ 	 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Goettertz\BcVoting\Domain\Model\Assignment> $assignments
+ 	 */
+ 	public function getAssignments() {
+ 		return $this->assignments;
+ 	}
+ 	
+
+ 	/**
+ 	 * Sets the assignments
+ 	 *
+ 	 * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Goettertz\BcVoting\Domain\Model\Assignment> $assignments
+ 	 * @return void
+ 	 */
+ 	public function setAssignments(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $assignments) {
+ 		$this->assignments = $assignments;
  	}
 }
 

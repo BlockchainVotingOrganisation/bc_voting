@@ -1,6 +1,6 @@
 <?php
 namespace Goettertz\BcVoting\Controller;
-ini_set("display_errors", 1);
+// ini_set("display_errors", 1);
 /***************************************************************
  *
  *  Copyright notice
@@ -292,47 +292,15 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 	/**
 	 * action show
 	 * @param \Goettertz\BcVoting\Domain\Model\User $user
-	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
+	 * 
 	 * @return void
 	 */
-	public function showAction(\Goettertz\BcVoting\Domain\Model\User $user, \Goettertz\BcVoting\Domain\Model\Project $project = NULL) {
+	public function showAction(\Goettertz\BcVoting\Domain\Model\User $user) {
 
 		if ($user === $this->userRepository->getCurrentFeUser()) {
+			$assignments = $this->assignmentRepository->findByUser($user);
+			$this->view->assign('assignments', $assignments);
 			$this->view->assign('user', $user);
-				$rpcServer = trim($this->settings['rpc_server']);
-
-				
-				$rpcPort = trim($this->settings['rpc_port']);
-
-				$rpcUser = trim($this->settings['rpc_user']);
-
-				$rpcPassword = trim($this->settings['rpc_passwd']);
-
-				
-				if ($project !== NULL) {
-					$assignments = $user ? $project->getAssignmentForUser($user) : NULL;
-					$this->view->assign('assignments', $assignments);
-					
-					if (!empty($this->settings)) {
-							
-						$address = NULL;
-						if (!empty($assignments->getWalletAddress())) $address = $assignments->getWalletAddress();
-							
-						if (is_string($address)) {
-							$transactions = array();
-							$newtransactions = Blockchain::getRpcResult($rpcServer, $rpcPort, $rpcUser, $rpcPassword)->listaddresstransactions($address, 10);
-							if (!is_string($newtransactions['error'])) {
-								$transactions = array_merge($transactions, $newtransactions);
-								$this->view->assign('transactions', $transactions);
-							}
-					
-					
-							$assets = Blockchain::getAssetBalanceFromAddress($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), $address);
-						}
-						$this->view->assign('assets', $assets);
-					}
-						
-				}
 		}
 	}	
 	

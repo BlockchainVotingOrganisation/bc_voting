@@ -1,7 +1,26 @@
-<!-- Rev. 117 -->
+<!-- Rev. 125 -->
 
-{user.username}<br />
-
+{user.name} <br>
+{user.address}<br>
+{user.zip} {user.city}<br>
+{user.emailAddress} <br>
+ <hr>
+<h4>Assignments</h4>
+<table border="1">
+	<tr>
+			<th>Project</th>
+			<th>WalletAddress</th>
+			<th>Cmd</th>
+	</tr>
+	<f:for each="{assignments}" as="assignment">  
+		<tr>
+			<td><f:link.action action="show" controller="Project" arguments="{project:assignment.project}">{assignment.project.name}</f:link.action></td>
+			<td><f:link.action action="show" controller="Wallet" arguments="{address:assignment.walletAddress}">{assignment.walletAddress}</f:link.action></td>
+			<td>Remove</td>
+		</tr>    
+	</f:for>
+</table>
+<!-- 
 <table>
 	<tr>
 		<th>Project</th>
@@ -59,3 +78,4 @@
 	</f:if>
 	</f:for>
 </table>
+ -->
