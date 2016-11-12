@@ -6,8 +6,8 @@
 conf.py:
   copyright: 2016
   project: bc_voting
-  version: 1.0
-  release: 0.0.113
+  version: 0.8
+  release: 0.8.121
   latex_documents:
   - - Index
     - bc_voting.tex

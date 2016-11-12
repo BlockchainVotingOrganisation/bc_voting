@@ -24,10 +24,10 @@ bc_voting
 		en
 
 	:Description:
-		enter description.
+		Online Voting.
 
 	:Keywords:
-		comma,separated,list,keywords
+		Online Voting,Blockchain
 
 	:Copyright:
 		2016
@@ -36,7 +36,7 @@ bc_voting
 		Louis Göttertz
 
 	:Email:
-		author@example.com
+		info2016@goettertz.de
 
 	:License:
 		This document is published under the Open Publication License
@@ -58,4 +58,5 @@ bc_voting
 	Introduction/Index
 	AdministratorManual/Index
 	UsersManual/Index
+	VotingManual/Index
 	Links
