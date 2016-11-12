@@ -309,30 +309,30 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 				$rpcPassword = trim($this->settings['rpc_passwd']);
 
 				
-				$assignments = $user ? $project->getAssignmentForUser($user) : NULL;
-		
-				$this->view->assign('assignments', $assignments);
-				
-				
-				if (!empty($this->settings)) {
+				if ($project !== NULL) {
+					$assignments = $user ? $project->getAssignmentForUser($user) : NULL;
+					$this->view->assign('assignments', $assignments);
 					
-					$address = NULL;
-					if (!empty($assignments->getWalletAddress())) $address = $assignments->getWalletAddress();
+					if (!empty($this->settings)) {
+							
+						$address = NULL;
+						if (!empty($assignments->getWalletAddress())) $address = $assignments->getWalletAddress();
+							
+						if (is_string($address)) {
+							$transactions = array();
+							$newtransactions = Blockchain::getRpcResult($rpcServer, $rpcPort, $rpcUser, $rpcPassword)->listaddresstransactions($address, 10);
+							if (!is_string($newtransactions['error'])) {
+								$transactions = array_merge($transactions, $newtransactions);
+								$this->view->assign('transactions', $transactions);
+							}
 					
-					if (is_string($address)) {
-						$transactions = array();
-						$newtransactions = Blockchain::getRpcResult($rpcServer, $rpcPort, $rpcUser, $rpcPassword)->listaddresstransactions($address, 10);
-						if (!is_string($newtransactions['error'])) {
-							$transactions = array_merge($transactions, $newtransactions);
-							$this->view->assign('transactions', $transactions);
+					
+							$assets = Blockchain::getAssetBalanceFromAddress($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), $address);
 						}
-						
-						
-						$assets = Blockchain::getAssetBalanceFromAddress($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), $address);
+						$this->view->assign('assets', $assets);
 					}
-					$this->view->assign('assets', $assets);
+						
 				}
-
 		}
 	}	
 	
