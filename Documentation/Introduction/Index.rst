@@ -14,3 +14,13 @@ The blockchain voting system (BVS) is a new tool to create and organize secure o
 A blockchain service forces every action be stored in a fraud-free public ledger - the blockchain.
 
 The blockchain service also offers many possiblilities to check data.
+
+Plugins
+-------
+
+- Project
+- Wallet
+- Ballot
+- Election Office
+
+
