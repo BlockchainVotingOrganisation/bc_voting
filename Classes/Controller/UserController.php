@@ -27,7 +27,7 @@ ini_set("display_errors", 1);
  ***************************************************************/
 
 /**
- * Rev. 121
+ * Rev. 125
  */
 use Goettertz\BcVoting\Service\Blockchain;
 /**
@@ -295,27 +295,35 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
 	 * @return void
 	 */
-	public function showAction(\Goettertz\BcVoting\Domain\Model\User $user, \Goettertz\BcVoting\Domain\Model\Project $project) {
-		if ($feuser = $this->userRepository->getCurrentFeUser()) {
-			$assignment = $feuser ? $project->getAssignmentForUser($feuser, 'admin') : NULL;
-			If($assignment != NULL) {
-				$this->view->assign('user', $user);
-				$this->view->assign('project', $project);
-				$this->view->assign('isAdmin', 'true');
+	public function showAction(\Goettertz\BcVoting\Domain\Model\User $user, \Goettertz\BcVoting\Domain\Model\Project $project = NULL) {
 
-				$assignments = $user ? $project->getAssignmentForUser($user) : NULL;
+
+		
+		if ($user === $this->userRepository->getCurrentFeUser()) {
+			$this->view->assign('user', $user);
+				$rpcServer = trim($this->settings['rpc_server']);
+
 				
+				$rpcPort = trim($this->settings['rpc_port']);
+
+				$rpcUser = trim($this->settings['rpc_user']);
+
+				$rpcPassword = trim($this->settings['rpc_passwd']);
+
+				
+				$assignments = $user ? $project->getAssignmentForUser($user) : NULL;
+		
 				$this->view->assign('assignments', $assignments);
 				
-				# Nur, wenn BC!!!
-				if (!empty($project->getRpcServer())) {
+				
+				if (!empty($this->settings)) {
 					
 					$address = NULL;
 					if (!empty($assignments->getWalletAddress())) $address = $assignments->getWalletAddress();
 					
 					if (is_string($address)) {
 						$transactions = array();
-						$newtransactions = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->listaddresstransactions($address, 10);
+						$newtransactions = Blockchain::getRpcResult($rpcServer, $rpcPort), $rpcUser, $rpcPassword)->listaddresstransactions($address, 10);
 						if (!is_string($newtransactions['error'])) {
 							$transactions = array_merge($transactions, $newtransactions);
 							$this->view->assign('transactions', $transactions);
@@ -326,7 +334,7 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 					}
 					$this->view->assign('assets', $assets);
 				}
-			}
+
 		}
 	}	
 	
