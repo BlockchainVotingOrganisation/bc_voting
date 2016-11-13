@@ -180,11 +180,17 @@ class WalletController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 	public function importAction(\Goettertz\BcVoting\Domain\Model\Assignment $assignment, $key, $address = '') {
 		
 		$project = $assignment->getProject();
+		$user = $assignment->getUser();
 		
-		if ($feuser = $this->userRepository->getCurrentFeUser()) {
-			Blockchain::getRpcResult($rpcServer, $rpcPort, $rpcUser, $rpcPassword)->importprivkey($key,'Imported',true);
+		# Nur der Feuser selbst darf eine PaperWallet importieren.
+		if ($user === $this->userRepository->getCurrentFeUser()) {
+			$result = Blockchain::getRpcResult($rpcServer, $rpcPort, $rpcUser, $rpcPassword)->importprivkey($key,'Imported',true);
 			$this->view->assign('address', $address);
-			$this->view->assign('user', $feuser);
+			$this->view->assign('user', $user);
+			
+			# Balances
+			
+			# Transactions
 		}
 	}
 	
