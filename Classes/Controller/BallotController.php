@@ -1,7 +1,7 @@
 <?php
 namespace Goettertz\BcVoting\Controller;
 
-ini_set("display_errors", 1);
+// ini_set("display_errors", 1);
 
 /***************************************************************
  *
@@ -29,8 +29,7 @@ ini_set("display_errors", 1);
  ***************************************************************/
 
 /**
- * Revision 113:
- * - Bugfix #15
+ * Revision 126:
  * 
  */
 
