@@ -9,14 +9,23 @@
 <table border="1">
 	<tr>
 			<th>Project</th>
-			<th>WalletAddress</th>
+			<th>Wallet</th>
 			<th>Cmd</th>
 	</tr>
 	<f:for each="{assignments}" as="assignment">  
 		<tr>
 			<td><f:link.action action="show" controller="Project" arguments="{project:assignment.project}">{assignment.project.name}</f:link.action></td>
-			<td><f:link.action action="show" controller="Wallet" arguments="{address:assignment.walletAddress}">{assignment.walletAddress}</f:link.action></td>
-			<td>Remove</td>
+			<td>
+				<f:if condition="{assignment.walletAddress} != ''">
+				<f:then>
+					<f:link.action action="show" controller="Wallet" arguments="{address:assignment.walletAddress}">{assignment.walletAddress}</f:link.action>
+				</f:then>
+				<f:else>
+					<f:link.action action="import" controller="Wallet" arguments="{assignment:assignment}">Import Paper Wallet</f:link.action>
+				</f:else>
+				</f:if>
+			</td>
+			<td><f:link.action action="removeAssignment" controller="User" arguments="{assignment:assignment}">Remove</f:link.action></td>
 		</tr>    
 	</f:for>
 </table>
