@@ -9,12 +9,14 @@
 <table border="1">
 	<tr>
 			<th>Project</th>
+			<th>Role</th>
 			<th>Wallet</th>
 			<th>Cmd</th>
 	</tr>
 	<f:for each="{assignments}" as="assignment">  
 		<tr>
 			<td><f:link.action action="show" controller="Project" arguments="{project:assignment.project}">{assignment.project.name}</f:link.action></td>
+			<td>{assignment.role.name}</td>
 			<td>
 				<f:if condition="{assignment.walletAddress} != ''">
 				<f:then>
@@ -25,7 +27,7 @@
 				</f:else>
 				</f:if>
 			</td>
-			<td><f:link.action action="removeAssignment" controller="User" arguments="{project:assignment.project, user:assignment.user}">Remove</f:link.action></td>
+			<td><f:link.action action="removeAssignment" controller="User" arguments="{project:assignment, user:assignment.user}">Remove</f:link.action></td>
 		</tr>    
 	</f:for>
 </table>
