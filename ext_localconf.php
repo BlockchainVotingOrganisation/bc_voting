@@ -10,7 +10,7 @@ if (!defined('TYPO3_MODE')) {
 	array(
  		'Project' => 'list, show, new, create, edit, editbcparams, update, delete, assign, evaluation, arguments, settings, createSettings, removeLogo, checkVoting, execute, seal, import',
  		'Option' => 'list, show, new, create, edit, update, delete, vote, removeLogo',
- 		'Wallet' => 'show, importWallet',
+ 		'Wallet' => 'show, importWallet, import',
  		'User' => 'list, show, new, create, edit, update, delete, import, upload, sendAssets, getNewAddress, removeAssignment',
 		'Blockchain' => 'show',
 		'Argument' => 'list, show, new, create, edit, update, delete',
@@ -21,7 +21,7 @@ if (!defined('TYPO3_MODE')) {
 	array(
 		'Project' => 'list, show, new, create, edit, editbcparams, update, delete, assign, evaluation, arguments, settings, createSettings, removeLogo, checkVoting, execute, seal, import',
 		'Option' => 'list, show, new, create, edit, update, delete, vote, removeLogo',
-		'Wallet' => 'show, importWallet',
+		'Wallet' => 'show, importWallet, import',
  		'User' => 'list, show, new, create, edit, update, delete, import, upload, sendAssets, getNewAddress, removeAssignment',
 		'Blockchain' => 'show',
 		'Argument' => 'list, show, new, create, edit, update, delete',
