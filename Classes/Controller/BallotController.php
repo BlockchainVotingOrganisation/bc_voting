@@ -493,8 +493,8 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 						$result = $this->votingBc($project, $option, $assignment);
 					}
 			
-					if(!$result['error']) {
-						$this->addFlashMessage($result['msg'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+					if(!isset($result['error'])) {
+						$this->addFlashMessage($result, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
 					}
 					else {
 						$this->addFlashMessage($result['error'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
