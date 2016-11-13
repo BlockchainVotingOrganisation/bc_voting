@@ -1,9 +1,11 @@
+<!-- Rev. 125 -->
 <f:layout name="Default" />
-Rev. 107
 <f:section name="main">
-<f:render partial="Menu" arguments="{project : project}" />
+
+<f:render partial="MenuSelect" arguments="{feuser:feuser}" />
 <f:flashMessages renderMode="div" />
 <f:render partial="FormErrors" arguments="{object:Project}" />
+
 <h3>New Project</h3>
 <f:form action="create"  name="newProject" object="{newProject}">
 <f:render partial="Project/FormFields" />

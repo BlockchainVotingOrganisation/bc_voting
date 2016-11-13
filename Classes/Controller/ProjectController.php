@@ -1,7 +1,7 @@
 <?php
 namespace Goettertz\BcVoting\Controller;
 
-ini_set("display_errors", 1);
+//ini_set("display_errors", 1);
 
 /***************************************************************
  *
@@ -29,7 +29,7 @@ ini_set("display_errors", 1);
  ***************************************************************/
 
 /**
- * Revision 123
+ * Revision 124
  */
 
 use \Goettertz\BcVoting\Service\Blockchain;
@@ -879,13 +879,14 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		$isAdmin = 'false';
 		$$assetHolders = 0;			
 
-		if ($user = $this->userRepository->getCurrentFeUser()) {
-			$username = $user->getUsername();
+		if ($feuser = $this->userRepository->getCurrentFeUser()) {
+			$username = $feuser->getUsername();
+					
 			if ($blockchain) {
 				$$assetHolders = $blockchain->getUserBalance($username, $project);
 			}
 					
-			$assignment = $user ? $project->getAssignmentForUser($user) : NULL;
+			$assignment = $feuser ? $project->getAssignmentForUser($feuser) : NULL;
 			If($assignment != NULL) {
 				$isAssigned = 'true';
 				$role = $assignment->getRole($assignment);
@@ -893,13 +894,12 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 				
 			}
 					
-			$assignment = $user ? $project->getAssignmentForUser($user, 'admin') : NULL;
+			$assignment = $feuser ? $project->getAssignmentForUser($feuser, 'admin') : NULL;
 			If($assignment != NULL) {
 				$isAdmin = 'true';
-				
 			}
 		}
-		
+		$this->view->assign('feuser', $feuser);
 		$this->view->assign('project', $project);
 		$this->view->assign('isAssigned', $isAssigned);
 		$this->view->assign('isAdmin', $isAdmin);

@@ -1,9 +1,9 @@
 <f:layout name="Default" />
-Rev. 107
+Rev. 125
 <f:section name="main">
 
 <f:flashMessages renderMode="div" />
-
+<f:render partial="MenuSelect" arguments="{feuser:feuser}" />
 <f:link.action action="new" controller="Project" arguments="{isAdmin:isAdmin, project:newProject}">
 	<f:translate key="create_new" />
 </f:link.action> | 
