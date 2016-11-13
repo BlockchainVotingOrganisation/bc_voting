@@ -298,6 +298,7 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 	public function showAction(\Goettertz\BcVoting\Domain\Model\User $user) {
 
 		if ($user === $this->userRepository->getCurrentFeUser()) {
+			$this->view->assign('feuser', $user);
 			$assignments = $this->assignmentRepository->findByUser($user);
 			$this->view->assign('assignments', $assignments);
 			$this->view->assign('user', $user);
@@ -536,6 +537,10 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 		$assignment->setWalletAddress(Blockchain::getNewAddress($project->getRpcServer(),$project->getRpcPort(),$project->getRpcUser(), $project->getRpcPassword()));
 		$this->assignmentRepository->update($assignment);
 		$this->redirect('show',NULL,NULL, array('project' => $project, 'user' => $assignment->getUser()));
+	}
+	
+	public function removeAssignment(\Goettertz\BcVoting\Domain\Model\Assignment $assignment) {
+		$this->view->assign('assignment', $assignment);
 	}
 	
 	protected function saltedPassword($password) {		

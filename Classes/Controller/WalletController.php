@@ -27,7 +27,7 @@ ini_set("display_errors", 1);
  ***************************************************************/
 
 /**
- * Revision 107
+ * Revision 118
  */
 
 use Goettertz\BcVoting\Service\Blockchain;
@@ -130,9 +130,9 @@ class WalletController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 						// 					if (!in_array($address, $uniqueaddresses)) $uniqueaddresses[] = $address;
 						#get transaction-data from bc ...
 					
-						if(is_string($address)) $newtransactions = Blockchain::getRpcResult($project)->listaddresstransactions($address, 10);
+						if(is_string($address)) $newtransactions = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->listaddresstransactions($address, 10);
 						$transactions = array_merge($transactions, $newtransactions);
-						$assets[$address] = Blockchain::getAssetBalanceFromAddress($project, $address);
+						$assets[$address] = Blockchain::getAssetBalanceFromAddress($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), $address);
 						// 					sort($assets[$address]['total'], 0);
 						$assets[$address] = $assets[$address]['total'];
 							
@@ -165,6 +165,9 @@ class WalletController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 		$this->view->assign('amount', $amount);
 	}
 	
+	public function importWallet(\Goettertz\BcVoting\Domain\Model\Assignment $assignment) {
+		$this->view->assign('assignment', $assignment);
+	}
 	
 // 	/**
 // 	 * send action
