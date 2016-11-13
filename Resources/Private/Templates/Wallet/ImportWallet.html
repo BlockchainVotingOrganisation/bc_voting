@@ -1,8 +1,10 @@
 <f:layout name="Default" />
 Rev. 125
+<f:debug>{assignment</f:debug>
 <f:section name="main">
-<f:render partial="Wallet/Menu" arguments="{project : project}" />
-
+<f:render partial="Wallet/Menu" arguments="{feuser:feuser, assignment: assignment}" />
 <f:flashMessages renderMode="div" />
-<h3><f:translate key="tx_bcvoting_wallet" /></h3>
+
+<h3>Import Paper Wallet</h3>
+
 </f:section>

@@ -1,7 +1,6 @@
-<!-- Rev 123 -->
+<!-- Rev 125 -->
 
 <div class="tx-bc-voting_Menu">
-	Blockchain Info | Node Addresses | Send | Receive
-	<div id="feuser">{feuser.username}</div>
-
+	<f:link.action action="show" controller="Wallet" arguments="{user:user}">Wallet</f:link.action> | Send | Receive
+	<f:render partial="User/Feuser" arguments="{feuser:feuser, assignment: assignment}" />
 </div>

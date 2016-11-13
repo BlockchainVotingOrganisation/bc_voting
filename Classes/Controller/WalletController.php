@@ -166,6 +166,9 @@ class WalletController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 	}
 	
 	public function importWalletAction(\Goettertz\BcVoting\Domain\Model\Assignment $assignment) {
+		if ($feuser = $this->userRepository->getCurrentFeUser()) {
+			$this->view->assign('feuser', $feuser);
+		}
 		$this->view->assign('assignment', $assignment);
 	}
 	
