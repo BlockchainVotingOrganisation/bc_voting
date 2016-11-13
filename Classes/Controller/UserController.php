@@ -539,10 +539,16 @@ class UserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 		$this->redirect('show',NULL,NULL, array('project' => $project, 'user' => $assignment->getUser()));
 	}
 	
+	/**
+	 * @param \Goettertz\BcVoting\Domain\Model\Assignment $assignment
+	 */
 	public function removeAssignment(\Goettertz\BcVoting\Domain\Model\Assignment $assignment) {
 		$this->view->assign('assignment', $assignment);
 	}
 	
+	/**
+	 * @param string $password
+	 */
 	protected function saltedPassword($password) {		
 		$saltedPassword = '';
 		if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('saltedpasswords')) {

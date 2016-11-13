@@ -165,7 +165,7 @@ class WalletController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 		$this->view->assign('amount', $amount);
 	}
 	
-	public function importWallet(\Goettertz\BcVoting\Domain\Model\Assignment $assignment) {
+	public function importWalletAction(\Goettertz\BcVoting\Domain\Model\Assignment $assignment) {
 		$this->view->assign('assignment', $assignment);
 	}
 	
