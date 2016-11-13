@@ -165,6 +165,29 @@ class WalletController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 		$this->view->assign('amount', $amount);
 	}
 	
+	/**
+	 * importAction
+	 * 
+	 * Adds the privkey private key (as obtained from a prior call to dumpprivkey) 
+	 * to the wallet, together with its associated public address. If rescan is true, 
+	 * the entire blockchain is checked for transactions relating to all addresses 
+	 * in the wallet, including the added one.
+	 * 
+	 * @param \Goettertz\BcVoting\Domain\Model\Assignment $assignment
+	 * @param string $key
+	 * @param string $address
+	 */
+	public function importAction(\Goettertz\BcVoting\Domain\Model\Assignment $assignment, $key, $address = '') {
+		
+		$project = $assignment->getProject();
+		
+		if ($feuser = $this->userRepository->getCurrentFeUser()) {
+			Blockchain::getRpcResult($rpcServer, $rpcPort, $rpcUser, $rpcPassword)->importprivkey($key,'Imported',true);
+			$this->view->assign('address', $address);
+			$this->view->assign('user', $feuser);
+		}
+	}
+	
 	public function importWalletAction(\Goettertz\BcVoting\Domain\Model\Assignment $assignment) {
 		if ($feuser = $this->userRepository->getCurrentFeUser()) {
 			$this->view->assign('feuser', $feuser);

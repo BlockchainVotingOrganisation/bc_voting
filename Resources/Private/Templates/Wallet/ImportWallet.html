@@ -6,5 +6,11 @@ Rev. 125
 <f:flashMessages renderMode="div" />
 
 <h3>Import Paper Wallet</h3>
-
+<f:form action="import" name="wallet" object="{wallet}" arguments="{user:user}" >
+Address:<br />
+<f:form.textfield name="address" value="" size="70" /><br />
+Key:<br />
+<f:form.textfield name="address" value="" size="40" /><br />
+<f:form.submit value="Import" />
+</f:form>
 </f:section>
