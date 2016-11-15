@@ -188,12 +188,17 @@ class WalletController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 			$this->view->assign('address', $address);
 			$this->view->assign('user', $user);
 			
-			# Balances
+			# Balances for assignment address
 			
-			# Transactions
+			# Transactions  for assignment address
 		}
 	}
 	
+	/**
+	 * controlls form importWallet
+	 * 
+	 * @param \Goettertz\BcVoting\Domain\Model\Assignment $assignment
+	 */
 	public function importWalletAction(\Goettertz\BcVoting\Domain\Model\Assignment $assignment) {
 		if ($feuser = $this->userRepository->getCurrentFeUser()) {
 			$this->view->assign('feuser', $feuser);
