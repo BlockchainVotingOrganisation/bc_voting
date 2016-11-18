@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Revision 127
 
 #
