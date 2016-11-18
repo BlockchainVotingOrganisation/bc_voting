@@ -23,7 +23,7 @@ Adding Project Plugin
 ----------------------
 In the backend navigate to the page that should contain the bc_voting content element. Click "Add":
 
-.. figure:: ../Images/UserManual/BackendView.png
+.. figure:: ../Images/UsersManual/BackendView.png
 	:width: 500px
 	:alt: Backend view
 	:align: left
@@ -34,7 +34,7 @@ In the backend navigate to the page that should contain the bc_voting content el
 
 ... and choose plugin from content type:
 
-.. figure:: ../Images/UserManual/BackendView2.png
+.. figure:: ../Images/UsersManual/BackendView2.png
 	:width: 500px
 	:alt: Backend view
 	:align: left
@@ -45,7 +45,7 @@ In the backend navigate to the page that should contain the bc_voting content el
 
 ... and then general plugin -> BVS-Project from the selection list.
 
-.. figure:: ../Images/UserManual/BackendView3.png
+.. figure:: ../Images/UsersManual/BackendView3.png
 	:width: 500px
 	:alt: Backend view
 	:align: left
