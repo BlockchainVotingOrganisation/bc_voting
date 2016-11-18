@@ -871,4 +871,3 @@ CREATE TABLE tx_bcvoting_domain_model_element (
 	KEY t3ver_oid (t3ver_oid,t3ver_wsid),
  KEY language (l10n_parent,sys_language_uid)
 );
->>>>>>> a65113ce78dfb0979e080a8f605056582df8d6bc
