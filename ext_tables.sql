@@ -1,4 +1,4 @@
-# Revision 118
+# Revision 127
 
 #
 # Table structure for table 'tx_bcvoting_domain_model_asset'
@@ -220,7 +220,7 @@ CREATE TABLE tx_bcvoting_domain_model_project (
 	pid int(11) DEFAULT '0' NOT NULL,
 
 	name varchar(255) DEFAULT '' NOT NULL,
-	description varchar(255) DEFAULT '' NOT NULL,
+	description text NOT NULL,
 	password varchar(255) DEFAULT '' NOT NULL,
 	deposit_btc varchar(80) DEFAULT '' NOT NULL,
 
