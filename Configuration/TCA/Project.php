@@ -187,7 +187,6 @@ $GLOBALS['TCA']['tx_bcvoting_domain_model_project'] = array(
 			'label' => 'LLL:EXT:bc_voting/Resources/Private/Language/locallang_db.xlf:tx_bcvoting_domain_model_project.description',
 			'config' => array(
 				'type' => 'text',
-				'size' => 30,
 				'eval' => 'trim'
 			),
 		),
