@@ -185,12 +185,14 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 							foreach ($ballots AS $ballot) {
 							
 								if ($assetref = $ballot->getAsset()) {
-									foreach ($assets[$walletAddress] as $asset) {
+									if (is_array($assets))
+										foreach ($assets[$walletAddress] as $asset) {
 											
-										if ($assetref == $asset['assetref']) {
+											if ($assetref == $asset['assetref']) {
 											$ballot->setBalance($asset['qty']);
-										}
-										$this->ballotRepository->update($ballot);
+											}
+											
+											$this->ballotRepository->update($ballot);
 									}
 								}
 							}							
@@ -542,12 +544,9 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		$user = $this->userRepository->getCurrentFeUser();
 		
 		if ($user === NULL) {
-			$loginPid = $this->settings['login'];
-			$registrationPid = $this->settings['registration'];
-			
 			$this->view->assign('project', $project);
-			$this->view->assign('login', $loginPid);
-			$this->view->assign('register', $registrationPid);
+			$this->view->assign('login', $this->settings['login']);
+			$this->view->assign('register', $this->settings['registration']);
 		}
 		else {
 			//Prüfen, ob bereits Mitglied
@@ -964,67 +963,94 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 	public function sealAction(\Goettertz\BcVoting\Domain\Model\Project $project) {
 		
 		# Checks
-		
-		# Check if rpc-settings are configured - Should be moved to won function ...
-		$rpcServer = $project->getRpcServer();
-		if (empty($rpcServer)) {
-			$this->addFlashMessage('Error: No RPC-Server! ', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-			$this->redirect('list');			
+		// VTC payment address
+		$paymentAddress = $this->settings['payment_vtc_address'];
+		if (empty($paymentAddress)) {
+			$this->addFlashMessage('No payment address! '.$this->settings['payment_vtc_address'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+			$this->redirect('edit',NULL,NULL, array('project' => $project));			
 		}
 		
-		$rpcPort = $project->getRpcPort();
-		if (empty($rpcPort)) {
-			$this->addFlashMessage('Error: No RPC-Port! ', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-			$this->redirect('list');			
+		# Check if rpc-settings are configured
+		$rpc = $project->checkRpc($project,$this->settings);
+		if (is_string($rpc)) {
+			$this->addFlashMessage($rpc, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+			$this->redirect('edit',NULL,NULL, array('project' => $project));		
 		}
-
-		$rpcUser = $project->getRpcUser();
-		if (empty($rpcUser)) {
-			$this->addFlashMessage('Error: No RPC-User! ', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-			$this->redirect('list');			
+		else if (is_object($rpc)){
+			$project = $rpc;
 		}
-
-		$rpcPassword = $project->getRpcPassword();
-		if (empty($rpcPassword)) {
-			$this->addFlashMessage('Error: No RPC-Password! ', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-			$this->redirect('list');			
+		else {
+			$this->addFlashMessage('Unkown error.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+		}
+		
+		# wallet address
+		$walletAddress = $project->getWalletAddress();
+		if (empty($walletAddress)) {
+			$newAddress = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getnewaddress();
+			$project->setWalletAddress($newAddress);
+			$this->projectRepository->update($project);
+			$this->addFlashMessage('No wallet address. Got new one. '.$newAddress, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+			// 			$this->redirect('edit',NULL,NULL, array('project' => $project));
 		}
 		
 		# Check if already sealed
-		if ($project->getReference() === '') {
-		
-			# The data for sealing ...
-			$json = $project->getJson(); 
-			if ($json === NULL) {
-				$this->addFlashMessage('Fehler JSON! ', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-				$this->redirect('list');
-			}
-			
-			$hash = hash('sha256', $json);
-		
-			# Saving data in the blockchain ...
-			
-			$vtc_amount = $this->settings['payment_sealing'];
-			if ($vtc_amount < 0.00000001) $vtc_amount = 0.00000001;
-			$this->addFlashMessage('VTC: '.doubleval($vtc_amount), '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
-
-			if ($ref = Blockchain::storeData($project->getRpcServer(),$project->getRpcPort(),$project->getRpcUser(),$project->getRpcPassword(), $project->getWalletAddress(), $project->getWalletAddress(), doubleval($vtc_amount), $json)  ) {
-					
-				$project->setReference($ref);
-				$this->projectRepository->update($project);
-// 				$this->addFlashMessage('The project was updated.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+		if (!$project->getReference() === '') {
+			$this->addFlashMessage('Project already sealed.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 				
-				$persistenceManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
-				$persistenceManager->persistAll();
-				
-				if (!is_array($ref)) {
-					if (is_string($ref)) $this->addFlashMessage('The project was sealed. TxId: '.$ref, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
-				}
-				elseif (is_string($ref['error']))  $this->addFlashMessage('ERROR:  '.$ref['error'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-				else  $this->addFlashMessage('ERROR:  '.implode('-', $ref), '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-			}
-// 			$this->addFlashMessage('Success:  '.$project->getName().' sealed', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
 		}
+
+		# The data for sealing ...
+		$json = $project->getJson(); 
+		if ($json === NULL) {
+			$this->addFlashMessage('Fehler JSON! ', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+			$this->redirect('list');
+		}
+		
+		$hash = hash('sha256', $json);
+		
+		# Saving data in the blockchain ...			
+		$vtc_amount = $this->settings['payment_sealing'];
+// 		if ($vtc_amount < 0.00000001) $vtc_amount = 0.00000001;
+			
+		# check if balance is enough
+		$balance = Blockchain::getRpcResult($project->getRpcServer(),$project->getRpcPort(),$project->getRpcUser(),$project->getRpcPassword())->getaddressbalances($project->getWalletAddress());
+		if (is_double($balance[0]['qty'])) {
+			$balance = $balance[0]['qty'];
+		}
+		else {
+			$this->addFlashMessage('Insufficient funds in '.$project->getWalletAddress().' '.doubleval($balance[0]['qty']), '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+			$this->redirect('edit',NULL,NULL,array('project' => $project));
+		}
+		
+		if (doubleval($balance) < doubleval($vtc_amount)) {
+			$this->addFlashMessage('Not enough inputs! '.$project->getWalletAddress().' '.doubleval($balance), '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+			$this->redirect('edit',NULL,NULL,array('project' => $project));
+		}
+			
+		$this->addFlashMessage('From: '.$project->getWalletAddress().' Amount: '.doubleval($vtc_amount).' to '.$paymentAddress, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+		
+		if ($ref = Blockchain::storeData($project->getRpcServer(),$project->getRpcPort(),$project->getRpcUser(),$project->getRpcPassword(), trim($project->getWalletAddress()), trim($paymentAddress), doubleval($vtc_amount), $json)  ) {				
+			// wenn ein array zurückgegeben wird ist irgendetwas schiefgelaufen ...
+			if (!is_array($ref)) {					
+				// wenn erolgreich wird ein string mit txid zurückgegeben
+				if (is_string($ref)) {
+					$project->setReference($ref);
+					$this->projectRepository->update($project);
+						$this->addFlashMessage('The project was updated.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+			
+					$persistenceManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
+					$persistenceManager->persistAll();
+					$this->addFlashMessage('The project was sealed and project data had been stored in a transaction to propagade to the block chain. Please be patient until confirmation has happened. Returned transaction ID: '.$ref, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+				}
+			}
+			// wenn string "$ref['error']" existiert, ist ein Fehler in Blockchain:: passiert.
+			elseif (is_string($ref['error']))  $this->addFlashMessage('ERROR:  '.$ref['error'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+
+			// ein unbekannter Fehler. Versucht ein Rückgabewerte-Array -wenn vorhanden- auszulesen
+			else  $this->addFlashMessage('ERROR:  '.implode('-', $ref), '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+		}
+//  			$this->addFlashMessage('Success:  '.$project->getName().' sealed', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+		
 		
 		$this->view->assign('ref', $ref);
 		$this->view->assign('project', $project);

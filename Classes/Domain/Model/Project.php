@@ -27,7 +27,7 @@ namespace Goettertz\BcVoting\Domain\Model;
  ***************************************************************/
 
 /**
- * Revision 121
+ * Revision 128
  */
 
 /**
@@ -666,8 +666,12 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return string | false
 	 */
 	public function getJson() {
+		
+		# check data: ballots
+		
 	
 		$returnObject = new \stdClass();
+		
 		$returnObject->uid = $this->getUid();
 		$returnObject->name = $this->getName();
 		$returnObject->logo = $this->getLogo();
@@ -679,12 +683,99 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 		$returnObject->infosite = $this->getInfosite();
 		$returnObject->forumurl = $this->getForumUrl();
 		$returnObject->reference = $this->getReference();
+		#RPC
 		
+		if (!empty($this->getBallots()))
  		foreach ($this->getBallots() AS $ballot) {
  			$returnObject->ballots[] = $ballot->getJson();
  		}
 
 		return json_encode($returnObject, JSON_FORCE_OBJECT);
-	}	
+	}
+	
+	public function setProject(\Goettertz\BcVoting\Domain\Model\Project $project, $data) {
+		
+		$project->setName($data['name']);
+		$project->setDescription($data['description']);
+		//logo -> importLogo($uri)
+		$project->setStart($data['start']);
+		$project->setEnd($data['end']);
+		$project->setWalletAddress($data['walletaddress']);
+		$project->setCategory($data['category']);
+		$project->setInfosite($data['infosite']);
+		$project->setForumurl($data['forumUrl']);
+		$project->setReference($data['reference']);
+		return $project;
+	}
+
+	/**
+	 * Check if rpc-settings are configured
+	 * 
+	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
+	 * @param string $default
+	 * @return \Goettertz\BcVoting\Domain\Model\Project | string
+	 */
+	public function checkRpc(\Goettertz\BcVoting\Domain\Model\Project $project, $default = FALSE) {
+		
+		
+		if (empty($project->getRpcServer())) {
+			if ($default) {
+				if (!empty($default['rpc_server'])) {
+					$this->setRpcServer($default['rpc_server']);
+				}
+				else {
+					$msg = 'No RPC-Server! (722)';
+				}
+			}
+			else {
+				$msg = 'No RPC-Server! (721)';
+			}
+		}
+		
+		if (empty($project->getRpcPort())) {
+			if ($default) {
+				if (!empty($default['rpc_port'])) {
+					$this->setRpcPort($default['rpc_port']);
+				}
+				else {
+					$msg = 'No RPC-Port! (736)';
+				}
+			}
+			else {
+				$msg = 'No RPC-Port! (735)';
+			}
+		}
+		
+
+		if (empty($project->getRpcUser())) {
+			if ($default) {
+				if (!empty($default['rpc_user'])) {
+					$this->setRpcUser($default['rpc_user']);
+				}
+				else {
+					$msg = 'No RPC-User! (751)';
+				}
+			}
+			else {
+				$msg = 'No RPC-User! (750)';
+			}
+		}
+		
+		if (empty($project->getRpcPassword())) {
+			if ($default) {
+				if (!empty($default['rpc_passwd'])) {
+					$this->setRpcPassword($default['rpc_passwd']);
+				}
+				else {
+					$msg = 'No RPC-Password! (765)';
+				}
+			}
+			else {
+				$msg = 'No RPC-Password! (764)';
+			}
+		}
+		if ($msg) return $msg;
+		return $this;
+	}
 }
 ?>

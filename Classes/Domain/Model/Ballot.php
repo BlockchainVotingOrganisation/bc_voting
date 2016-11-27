@@ -480,7 +480,8 @@ class Ballot extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 		$returnObject->walletaddress = $this->getWalletAddress();
 		$returnObject->reference = $this->getReference();
 		$returnObject->asset = $this->getAsset();
-	
+		
+		if (!empty($this->getOptions()))
 		foreach ($this->getOptions() as $option) {
 			$returnObject->options[] = $option->getJson();
 		}
