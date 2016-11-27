@@ -961,6 +961,26 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
 	 */
 	public function sealAction(\Goettertz\BcVoting\Domain\Model\Project $project) {
+		# Get the user assignment and throw an exception if the current user is not a
+		# member of the selected project.
+		if ($feuser = $this->userRepository->getCurrentFeUser()) {
+			$isAssigned = 'false';
+			$assignment = $feuser ? $project->getAssignmentForUser($feuser,'admin') : NULL;
+			If($assignment === NULL) {
+				$this->addFlashMessage('No admin: '.$feuser.'!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+				$this->redirect('list',NULL,NULL, array('project' => $project));				
+			}
+			else {
+				$isAssigned = 'true';
+				$isAdmin = 'true';
+			}
+		}
+		else {
+			If($assignment === NULL) {
+				$this->addFlashMessage('Not logged in!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+				$this->redirect('list',NULL,NULL, array('project' => $project));
+			}			
+		}
 		
 		# Checks
 		// VTC payment address
@@ -1027,7 +1047,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 			$this->redirect('edit',NULL,NULL,array('project' => $project));
 		}
 			
-		$this->addFlashMessage('From: '.$project->getWalletAddress().' Amount: '.doubleval($vtc_amount).' to '.$paymentAddress, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+// 		$this->addFlashMessage('From: '.$project->getWalletAddress().' Amount: '.doubleval($vtc_amount).' to '.$paymentAddress, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
 		
 		if ($ref = Blockchain::storeData($project->getRpcServer(),$project->getRpcPort(),$project->getRpcUser(),$project->getRpcPassword(), trim($project->getWalletAddress()), trim($paymentAddress), doubleval($vtc_amount), $json)  ) {				
 			// wenn ein array zurückgegeben wird ist irgendetwas schiefgelaufen ...
@@ -1044,14 +1064,17 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 				}
 			}
 			// wenn string "$ref['error']" existiert, ist ein Fehler in Blockchain:: passiert.
-			elseif (is_string($ref['error']))  $this->addFlashMessage('ERROR:  '.$ref['error'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+			elseif (is_string($ref['error']))  {
+				$this->addFlashMessage('ERROR:  '.$ref['error'].' </br><b>Please check the node\'s debug.log.</b>', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+			}
 
 			// ein unbekannter Fehler. Versucht ein Rückgabewerte-Array -wenn vorhanden- auszulesen
 			else  $this->addFlashMessage('ERROR:  '.implode('-', $ref), '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 		}
 //  			$this->addFlashMessage('Success:  '.$project->getName().' sealed', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
 		
-		
+		$this->view->assign('isAdmin', $isAdmin);
+		$this->view->assign('isAssigned', $isAssigned);
 		$this->view->assign('ref', $ref);
 		$this->view->assign('project', $project);
 		$this->view->assign('json', $json);
