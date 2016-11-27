@@ -1,6 +1,6 @@
 <?php
 /**
- * Rev.122
+ * Rev.128
  */
 if (!defined ('TYPO3_MODE')) {
 	die ('Access denied.');
