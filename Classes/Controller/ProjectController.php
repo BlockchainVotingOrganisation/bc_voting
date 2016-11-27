@@ -29,7 +29,7 @@ namespace Goettertz\BcVoting\Controller;
  ***************************************************************/
 
 /**
- * Revision 124
+ * Revision 128
  */
 
 use \Goettertz\BcVoting\Service\Blockchain;
@@ -962,11 +962,44 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
 	 */
 	public function sealAction(\Goettertz\BcVoting\Domain\Model\Project $project) {
-		# Check if sealed
+		
+		# Checks
+		
+		# Check if rpc-settings are configured - Should be moved to won function ...
+		$rpcServer = $project->getRpcServer();
+		if (empty($rpcServer)) {
+			$this->addFlashMessage('Error: No RPC-Server! ', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+			$this->redirect('list');			
+		}
+		
+		$rpcPort = $project->getRpcPort();
+		if (empty($rpcPort)) {
+			$this->addFlashMessage('Error: No RPC-Port! ', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+			$this->redirect('list');			
+		}
+
+		$rpcUser = $project->getRpcUser();
+		if (empty($rpcUser)) {
+			$this->addFlashMessage('Error: No RPC-User! ', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+			$this->redirect('list');			
+		}
+
+		$rpcPassword = $project->getRpcPassword();
+		if (empty($rpcPassword)) {
+			$this->addFlashMessage('Error: No RPC-Password! ', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+			$this->redirect('list');			
+		}
+		
+		# Check if already sealed
 		if ($project->getReference() === '') {
 		
 			# The data for sealing ...
-			$json = $project->getJson($project);
+			$json = $project->getJson(); 
+			if ($json === NULL) {
+				$this->addFlashMessage('Fehler JSON! ', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+				$this->redirect('list');
+			}
+			
 			$hash = hash('sha256', $json);
 		
 			# Saving data in the blockchain ...
