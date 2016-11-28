@@ -805,15 +805,18 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 			$data = array();
 			
 			foreach($project->getBallots() AS $ballot) {
+				
+				// Array aus $result (789: DB $result = $this->getOptions($project))
 				$mergeArray = ($result[$ballot->getName()]['options']);
+				//  für alle Stimmzettel einfügen.
 				$data = array_merge($data, (array) $mergeArray);
 			}
-// 			$result['data'] = $mergeArray[0];
+
  			$result['lists'] = $this->getOptionListResults($data);
 		}
 		else 
 		{
-			$result['error'] = 'Can\'t get project options from blockchain! (716)';
+			$result['error'] = 'Can\'t get project options from blockchain! (789)';
 			$this->addFlashMessage($result['error'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 			$this->redirect('show',NULL,NULL, array('project' => $project));
 		}
