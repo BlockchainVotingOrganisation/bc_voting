@@ -29,7 +29,7 @@ namespace Goettertz\BcVoting\Controller;
  ***************************************************************/
 
 /**
- * Revision 128
+ * Revision 129
  */
 
 use \Goettertz\BcVoting\Service\Blockchain;
@@ -751,22 +751,56 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
 	 * @return void
 	 */
-	public function evaluationAction(\Goettertz\BcVoting\Domain\Model\Project $project) {
+	public function evaluationAction(\Goettertz\BcVoting\Domain\Model\Project $project, $reference = '') {
 			
+		# Neu: Project (und später Votes) aus Blockchain holen 
+		#   (siehe Import Action, diese sollte in function import und action getrennr werden).
+		
+		
+// 		if ($project === NULL) $project = new \Goettertz\BcVoting\Domain\Model\Project();
+		
+		# Check if rpc-settings are configured
+		$rpc = $project->checkRpc($project,$this->settings);
+		if (is_string($rpc)) {
+			$this->addFlashMessage($rpc, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+			$this->redirect('show',NULL,NULL, array('project' => $project));		
+		}
+		else if (is_object($rpc)){
+			$project = $rpc;
+		}
+		else {
+			$this->addFlashMessage('Unkown error.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+			$this->redirect('show',NULL,NULL, array('project' => $project));		
+		}
+		
+		$bcdata = Blockchain::retrieveData($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), trim($project->getReference()));
+		if (isset($bcdata['error'])) {
+			$this->addFlashMessage($bcdata['error'].' (776)', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+		}
+		
+		# Cast json to stdClass
+		else $bcdata = json_decode($bcdata);
+		
+		# Cast stdClass to array
+		if (is_a($bcdata, 'stdClass', false)) {
+			$bcdata = (array) $bcdata;
+		}
+
 		if ($result = $this->getOptions($project)) {
 			if (is_string($result['error'])) {
-				$this->addFlashMessage($result['error']. ' (716)', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+				$this->addFlashMessage($result['error']. ' (791)', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 				$this->redirect('show',NULL,NULL, array('project' => $project));
 			}
+			$result['data'] = $bcdata;
 			
-			$result['url_csv'] = $this->settings['downloadurl'];
-			
-			$csv = $this->generateCsvFromArray($result);
-			
-			if (is_string($csv['error'])) {
-				$result['error'] = $csv['error'];
-				$this->addFlashMessage($result['error'] . ' (724)', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+			if ($result['url_csv'] = $this->settings['downloadurl']) {
+				$csv = $this->generateCsvFromArray($result);
+				if (is_string($csv['error'])) {
+					$result['error'] = $csv['error'];
+					$this->addFlashMessage($result['error'] . ' (799-800)', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+				}
 			}
+			
 			
 			$data = array();
 			
@@ -977,7 +1011,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		}
 		else {
 			If($assignment === NULL) {
-				$this->addFlashMessage('Not logged in!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+				$this->addFlashMessage('You aren\'t currently logged in! Please goto <a href="/login/">login</a> or <a href="/register/">register</a>', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 				$this->redirect('list',NULL,NULL, array('project' => $project));
 			}			
 		}
@@ -1015,8 +1049,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		
 		# Check if already sealed
 		if (!$project->getReference() === '') {
-			$this->addFlashMessage('Project already sealed.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-				
+			$this->addFlashMessage('The Project is already sealed. You cannot modify a sealed Project.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);				
 		}
 
 		# The data for sealing ...
@@ -1095,20 +1128,20 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 				
 				# Check connection settings -> should be migrated to method setRpcConnection and checkRpcConnection
 				$rpcServer = trim($this->settings['rpc_server']);
-				if (!$this->request->hasArgument('rpcServer')) {
+				if ($this->request->hasArgument('rpcServer')) {
 					$rpcServer = trim($this->request->getArgument('rpcServer'));
 				}
 				
 				$rpcPort = trim($this->settings['rpc_port']);
-				if (!$this->request->hasArgument('rpcPort')) {
+				if ($this->request->hasArgument('rpcPort')) {
 					$rpcPort = trim($this->request->getArgument('rpcPort'));
 				}
 				$rpcUser = trim($this->settings['rpc_user']);
-				if (!$this->request->hasArgument('rpcUser')) {
+				if ($this->request->hasArgument('rpcUser')) {
 					$rpcUser = trim($this->request->getArgument('rpcUser'));
 				}
 				$rpcPassword = trim($this->settings['rpc_passwd']);
-				if (!$this->request->hasArgument('rpcPassword')) {
+				if ($this->request->hasArgument('rpcPassword')) {
 					$rpcPassword = trim($this->request->getArgument('rpcPassword'));
 				}
 				
@@ -1349,34 +1382,6 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 			$result['txids'] = $txid;
 		}
 		return $result;
-	}
-	
-
-	
-	/**
-	 * @param array $settings
-	 * @param array $request
-	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
-	 */
-	private function setRpcConnection($settings = NULL, $request = NULL, \Goettertz\BcVoting\Domain\Model\Project $project = NULL) {
-		
-		$rpcServer = trim($this->settings['rpc_server']);
-		if (!$this->request->hasArgument('rpcServer')) {
-			$rpcServer = trim($this->request->getArgument('rpcServer'));
-		}
-		
-		$rpcPort = trim($this->settings['rpc_port']);
-		if (!$this->request->hasArgument('rpcPort')) {
-			$rpcPort = trim($this->request->getArgument('rpcPort'));
-		}
-		$rpcUser = trim($this->settings['rpc_user']);
-		if (!$this->request->hasArgument('rpcUser')) {
-			$rpcUser = trim($this->request->getArgument('rpcUser'));
-		}
-		$rpcPassword = trim($this->settings['rpc_passwd']);
-		if (!$this->request->hasArgument('rpcPassword')) {
-			$rpcPassword = trim($this->request->getArgument('rpcPassword'));
-		}
 	}
 }
 ?>
