@@ -25,7 +25,7 @@ namespace Goettertz\BcVoting\Domain\Model;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  *  
- *  Revision 128
+ *  Revision 129
  *  
  *  
  ***************************************************************/
