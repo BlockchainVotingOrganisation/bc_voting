@@ -701,12 +701,15 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 		if (!empty($this->getBallots()))
  		foreach ($this->getBallots() AS $ballot) {
  			if (empty($ballot->getReference())) {
- 				return $result['error'] = 'No ballots\' reference!';
+ 				$result['error'] = 'No ballots\' reference!';
+ 				return $result;
  			}
  			$returnObject->ballots[] = $ballot->getReference();
+ 			
  		}
 		else {
-			return $result['error'] = 'No ballots!'; 
+			$result['error'] = 'No ballots!';
+			return $result;
 		}
 		return json_encode($returnObject, JSON_FORCE_OBJECT);
 	}
