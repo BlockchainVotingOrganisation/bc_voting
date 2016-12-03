@@ -751,7 +751,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
 	 * @return void
 	 */
-	public function evaluationAction(\Goettertz\BcVoting\Domain\Model\Project $project, $reference = '') {
+	public function evaluationAction(\Goettertz\BcVoting\Domain\Model\Project $project) {
 			
 		# Neu: Project (und später Votes) aus Blockchain holen 
 		#   (siehe Import Action, diese sollte in function import und action getrennr werden).
@@ -760,6 +760,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 // 		if ($project === NULL) $project = new \Goettertz\BcVoting\Domain\Model\Project();
 		
 		# Check if rpc-settings are configured
+		
 		$rpc = $project->checkRpc($project,$this->settings);
 		if (is_string($rpc)) {
 			$this->addFlashMessage($rpc, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
@@ -998,8 +999,9 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
 	 */
 	public function sealAction(\Goettertz\BcVoting\Domain\Model\Project $project) {
+		
 		# Get the user assignment and throw an exception if the current user is not a
-		# member of the selected project.
+		# admin of the selected project.
 		if ($feuser = $this->userRepository->getCurrentFeUser()) {
 			$isAssigned = 'false';
 			$assignment = $feuser ? $project->getAssignmentForUser($feuser,'admin') : NULL;
@@ -1060,6 +1062,9 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		if ($json === NULL) {
 			$this->addFlashMessage('Fehler JSON! ', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 			$this->redirect('list');
+		} elseif (isset($json['error'])) {
+			$this->addFlashMessage($json['error'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+			$this->redirect('list');			
 		}
 		
 		$hash = hash('sha256', $json);
