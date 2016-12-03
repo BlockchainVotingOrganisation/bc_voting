@@ -238,6 +238,7 @@ class OptionController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 	 * @return void
 	 */
 	public function updateAction(\Goettertz\BcVoting\Domain\Model\Option $option) {
+		
 		$ballot = $option->getBallot();
 		$project = $ballot->getProject();
 		if ($ballot->getReference() === '') {
@@ -249,13 +250,13 @@ class OptionController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 // 					$blockchain = new \Goettertz\BcVoting\Service\Blockchain();
 					if ($project->getRpcServer() != '') {
 						if (empty($option->getWalletAddress())) {
-							$newAddress = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getaccountaddress($option->getName());
+							$newAddress = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getnewaddress();
 							$option->setWalletAddress($newAddress);
 						}
 					}
 					
 					$this->optionRepository->update($option);
-					$this->addFlashMessage('The option was updated.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+					$this->addFlashMessage('The option was updated. Address:'.$option->getWalletAddress(), '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
 				}
 				else {
 					$this->addFlashMessage('The option was not updated: No admin!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
