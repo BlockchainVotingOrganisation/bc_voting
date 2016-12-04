@@ -25,7 +25,7 @@ namespace Goettertz\BcVoting\Domain\Model;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  *  
- *  Revision 128
+ *  Revision 129
  *  
  *  
  ***************************************************************/
@@ -90,4 +90,3 @@ class Transaction extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $optimalEncodingMessageSize = NULL;
 }
 ?>
-	
