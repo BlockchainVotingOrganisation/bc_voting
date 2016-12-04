@@ -25,28 +25,136 @@ namespace Goettertz\BcVoting\Service;
 /**
  * 
  * @author louis
- * Rev. 118
+ * Rev. 129
  */
 
-interface Rpc {
+// interface Rpc {
+	
+// 	/**
+// 	 * @param string $rpcServer
+// 	 * @param string $rpcPort
+// 	 * @param string $rpcUser
+// 	 * @param string $rpcPassword
+// 	 */
+// 	public static function getRpcResult($rpcServer, $rpcPort, $rpcUser, $rpcPassword);
+// }
+
+
+define('const_issue_custom_fields', 10);
+
+class Blockchain {
+	
+	protected $multichain_chain = '';
+	
+	public function set_multichain_chain($chain)
+	{
+		$this->multichain_chain=$chain;
+	}
+	
+	protected $multichain_labels;
+	
+	protected $multichain_getinfo;
+	
+	protected $multichain_max_data_size;
 	
 	/**
-	 * @param string $rpcServer
-	 * @param string $rpcPort
-	 * @param string $rpcUser
-	 * @param string $rpcPassword
+	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
+	 * 
+	 * @return void
 	 */
-	public static function getRpcResult($rpcServer, $rpcPort, $rpcUser, $rpcPassword);
-}
-
-
-/**
- * @author louis
- * 
- * Blockchain Communication Service
- *
- */
-class Blockchain implements Rpc {
+	public function setConfig(\Goettertz\BcVoting\Domain\Model\Project $project) {
+		$this->multichain_chain['rpchost'] = $project->getRpcServer();
+		$this->multichain_chain['rpcport'] = $project->getRpcPort();
+		$this->multichain_chain['rpcport'] = $project->getRpcUser();
+		$this->multichain_chain['rpcpassword'] = $project->getRpcPassword();
+	}
+	
+	public function output_rpc_error($error)
+	{
+		echo '<div class="bg-danger" style="padding:1em;">Error: '.html($error['code']).'<br/>'.html($error['message']).'</div>';
+	}
+	
+	public function no_displayed_error_result(&$result, $response)
+	{
+		if (is_array($response['error'])) {
+			$result=null;
+			$this->output_rpc_error($response['error']);
+			return false;
+	
+		} else {
+			$result=$response['result'];
+			return true;
+		}
+	}
+	
+	public function json_rpc_send($host, $port, $user, $password, $method, $params=array())
+	{
+		$url='http://'.$host.':'.$port.'/';
+		$agent = 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.0.3705; .NET CLR 1.1.4322)';
+	
+		$payload=json_encode(array(
+				'id' => time(),
+				'method' => $method,
+				'params' => $params,
+		));
+	
+		//	echo '<PRE>'; print_r($payload); echo '</PRE>';
+	
+		$ch=curl_init($url);
+		curl_setopt($ch, CURLOPT_POST, true);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_USERPWD, $user.':'.$password);
+		curl_setopt($ch, CURLOPT_USERAGENT, $agent);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+				'Content-Type: application/json',
+				'Content-Length: '.strlen($payload)
+		));
+	
+		$response=curl_exec($ch);
+	
+// 		echo '<PRE>'; print_r($response); echo '</PRE>';
+	
+		$result=json_decode($response, true);
+	
+		if (!is_array($result)) {
+			$info=curl_getinfo($ch);
+			$result=array('error' => array(
+					'code' => 'HTTP '.$info['http_code'],
+					'message' => strip_tags($response).' '.$url
+			));
+		}
+	
+		return $result;
+	}
+		
+		
+	/**
+	 * @param string $method
+	 * @return mixed
+	 */
+	public function multichain($method) // other params read from func_get_args()
+	{
+		$args=func_get_args();
+	
+		return self::json_rpc_send($this->multichain_chain['rpchost'], $this->multichain_chain['rpcport'], $this->multichain_chain['rpcuser'],
+				$this->multichain_chain['rpcpassword'], $method, array_slice($args, 1));
+	}
+	
+	public function multichain_max_data_size()
+	{
+// 		global $multichain_max_data_size;
+	
+		if (!isset($this->multichain_max_data_size))
+			if ($this->no_displayed_error_result($params, $this->multichain('getblockchainparams')))
+				$this->multichain_max_data_size=min(
+						$params['maximum-block-size']-80-320,
+						$params['max-std-tx-size']-320,
+						$params['max-std-op-return-size']
+						);
+	
+				return $multichain_max_data_size;
+	}
 	
 	/**
 	 * getRpcResult ob static gut ist?
@@ -147,6 +255,105 @@ class Blockchain implements Rpc {
 	 */
 	public static function sendassettoaddress($rpcServer, $rpcPort, $rpcUser, $rpcPassword, $toAddress, $asset, $amount) {
 		return self::getRpcResult($rpcServer, $rpcPort, $rpcUser, $rpcPassword)->sendassettoaddress($toAddress, $asset, $amount);
+	}
+	
+	
+	/**
+	 * @param unknown $address
+	 * @return mixed|string[][]
+	 */
+	public function validateAddress($address) {
+// 		$result = array('isvalid' => false);
+		$result = self::multichain('validateaddress', $address);
+		return $result;
+	}
+	
+	/**
+	 * @param unknown $issueasset
+	 * @param unknown $to
+	 * @param unknown $from
+	 * @param unknown $to
+	 * @param unknown $qty
+	 * @param unknown $units
+	 */
+	public function issueAsset($issueasset, $to, $from, $to, $qty, $units) {
+				
+		$max_upload_size=$this->multichain_max_data_size()-512; // take off space for file name and mime type
+		
+		if (@$_POST['issueasset']) {
+			$multiple=(int)round(1/$_POST['units']);
+		
+			$addresses=array( // array of addresses to issue units to
+					$_POST['to'] => array(
+							'issue' => array(
+									'raw' => (int)($_POST['qty']*$multiple)
+							)
+					)
+			);
+		
+			$custom=array();
+		
+			for ($index=0; $index<const_issue_custom_fields; $index++)
+				if (strlen(@$_POST['key'.$index]))
+					$custom[$_POST['key'.$index]]=$_POST['value'.$index];
+		
+					$datas=array( // to create array of data items
+							array( // metadata for issuance details
+									'name' => $_POST['name'],
+									'multiple' => $multiple,
+									'open' => true,
+									'details' => $custom,
+							)
+					);
+		
+					$upload=@$_FILES['upload'];
+					$upload_file=@$upload['tmp_name'];
+		
+					if (strlen($upload_file)) {
+						$upload_size=filesize($upload_file);
+		
+						if ($upload_size>$max_upload_size) {
+							echo '<div class="bg-danger" style="padding:1em;">Uploaded file is too large ('.number_format($upload_size).' > '.number_format($max_upload_size).' bytes).</div>';
+							return;
+		
+						} else {
+							$datas[0]['details']['@file']=fileref_to_string(2, $upload['name'], $upload['type'], $upload_size); // will be in output 2
+							$datas[1]=bin2hex(file_to_txout_bin($upload['name'], $upload['type'], file_get_contents($upload_file)));
+						}
+					}
+		
+					if (!count($datas[0]['details'])) // to ensure it's converted to empty JSON object rather than empty JSON array
+						$datas[0]['details']=new stdClass();
+		
+						$success=no_displayed_error_result($issuetxid, multichain('createrawsendfrom', $_POST['from'], $addresses, $datas, 'send'));
+		
+						if ($success)
+							output_success_text('Asset successfully issued in transaction '.$issuetxid);
+		}
+		
+		$getinfo=multichain_getinfo();
+		
+		$issueaddresses=array();
+		$keymyaddresses=array();
+		$receiveaddresses=array();
+		$labels=array();
+		
+		if (no_displayed_error_result($getaddresses, multichain('getaddresses', true))) {
+		
+			if (no_displayed_error_result($listpermissions,
+					multichain('listpermissions', 'issue', implode(',', array_get_column($getaddresses, 'address')))
+					))
+				$issueaddresses=array_get_column($listpermissions, 'address');
+		
+				foreach ($getaddresses as $address)
+					if ($address['ismine'])
+						$keymyaddresses[$address['address']]=true;
+		
+						if (no_displayed_error_result($listpermissions, multichain('listpermissions', 'receive')))
+							$receiveaddresses=array_get_column($listpermissions, 'address');
+		
+							$labels=multichain_labels();
+		}		
 	}
 }
 ?>

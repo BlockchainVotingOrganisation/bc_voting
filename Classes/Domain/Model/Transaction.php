@@ -63,12 +63,31 @@ class Transaction extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @cascade remove
 	 */
 	protected $outputs = NULL;
+
 	
 	/**
-	 * @var integer
+	 * @var long
 	 */
 	protected $locktime = 0;
+	protected $version = 0;
+	protected $updatedAt = 0;
+	protected $hash	 = NULL;
+	protected $exchangeRate = NULL;
+	protected $memo	= NULL;
+
+	/**
+	 * 
+	 * @var unknown
+	 */
+	protected $confidence = NULL;
 	
+	/**
+	 * 
+	 * @var boolean
+	 */
+	protected $appearsInHashes = false;
+	
+	protected $optimalEncodingMessageSize = NULL;
 }
 ?>
 	

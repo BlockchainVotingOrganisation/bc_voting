@@ -25,19 +25,7 @@ namespace Goettertz\BcVoting\Domain\Model;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  *
- *  Re. 99:
- *   - getJson: color
- *  
- *  Rev.98
- *  - getJson: parent
- *  
- *  Rev. 93:
- *  - new property parent
- *  - new property votings
- *  - function getVotings
- *  
- *  Rev. 84:
- *  - new property color
+ * Revision 129
  *  
  **********************************************************************/
 
@@ -184,7 +172,13 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return string $walletAddress
 	 */
 	public function getWalletAddress() {
-		return $this->walletAddress;
+		$bc = new \Goettertz\BcVoting\Service\Blockchain();
+		$ballot = $this->getBallot();
+		$project = $ballot->getProject();
+		if ($result = $bc->getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->validateaddress($this->walletAddress)) {
+			if ($result) return $result['address'];
+		}
+		return NULL;
 	}
 
 	/**
@@ -273,6 +267,20 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	public function setBalance($balance) {
 		$this->balance = $balance;
 	}
+
+	/**
+	 * gets (voting) balance from BC
+	 *
+	 * @return NULL|mixed
+	 */
+	public function getVotings() {
+	
+		# getAssetBalance (ballot->getAssest())
+		$ballot = $this->getBallot();
+		$project = $ballot->getProject();
+		$fromAddress = $ballot->getWalletAddress();
+		return $this->votings = ($fromAddress && $project) ? (\Goettertz\BcVoting\Service\Blockchain::getAssetBalanceFromAddress($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), $fromAddress)) : NULL;
+	}
 	
 	/**
 	 *
@@ -296,19 +304,5 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 		$returnObject->walletaddress = trim($this->getWalletAddress());
 	
 		return json_encode($returnObject, JSON_FORCE_OBJECT);
-	}
-	
-	/**
-	 * gets (voting) balance from BC
-	 * 
-	 * @return NULL|mixed
-	 */
-	public function getVotings() {
-		
-		# getAssetBalance (ballot->getAssest())
-		$ballot = $this->getBallot();
-		$project = $ballot->getProject();
-		$fromAddress = $ballot->getWalletAddress();
-		return $this->votings = ($fromAddress && $project) ? (\Goettertz\BcVoting\Service\Blockchain::getAssetBalanceFromAddress($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), $fromAddress)) : NULL; 		
 	}
 }

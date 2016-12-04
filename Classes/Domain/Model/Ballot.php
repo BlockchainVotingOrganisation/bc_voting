@@ -27,7 +27,7 @@ namespace Goettertz\BcVoting\Domain\Model;
  ***************************************************************/
 
 /**
- * Revision 123
+ * Revision 129
  
  */
  
@@ -223,7 +223,13 @@ class Ballot extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return string $walletAddress
 	 */
 	public function getWalletAddress() {
-		return $this->walletAddress;
+		
+		$bc = new \Goettertz\BcVoting\Service\Blockchain();
+		$project = $this->getProject();
+		if ($result = $bc->getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->validateaddress($this->walletAddress)) {
+			if ($result) return $result['address'];
+		}
+		return NULL;
 	}
 	
 	/**

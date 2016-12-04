@@ -1,6 +1,8 @@
 <?php
 namespace Goettertz\BcVoting\Domain\Model;
 
+use Goettertz\BcVoting\Service\Blockchain;
+
 /***************************************************************
  *
  *  Copyright notice
@@ -27,7 +29,7 @@ namespace Goettertz\BcVoting\Domain\Model;
  ***************************************************************/
 
 /**
- * Revision 128
+ * Revision 129
  */
 
 /**
@@ -200,6 +202,18 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $nodes = 0;
 	
 	/**
+	 * 
+	 * @var string
+	 */
+	protected $publicKey1 = NULL;
+	
+	/**
+	 * 
+	 * @var string
+	 */	
+	protected $publicKey2 = NULL; 
+	
+	/**
 	 * returns nodes #
 	 */
 	public function getNodes() {
@@ -212,6 +226,7 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	public function setNodes($nodes) {
 		$this->nodes = $nodes;
 	}
+	
 	
 	/**
 	 * Returns the name
@@ -513,7 +528,11 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return string $walletAddress
 	 */
 	public function getWalletAddress() {
-		return $this->walletAddress;
+		$bc = new Blockchain();
+		if ($result = $bc->getRpcResult($this->rpcServer, $this->rpcPort, $this->rpcUser, $this->rpcPassword)->validateaddress($this->walletAddress)) {
+			if ($result) return $result['address'];
+		}
+		return NULL;
 	}
 	
 	/**
@@ -668,7 +687,7 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	public function getJson() {
 		
 		# check data: ballots
-		
+		$result = array();
 	
 		$returnObject = new \stdClass();
 		
@@ -687,9 +706,17 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 		
 		if (!empty($this->getBallots()))
  		foreach ($this->getBallots() AS $ballot) {
- 			$returnObject->ballots[] = $ballot->getJson();
+ 			if (empty($ballot->getReference())) {
+ 				$result['error'] = 'No ballots\' reference!';
+ 				return $result;
+ 			}
+ 			$returnObject->ballots[] = $ballot->getReference();
+ 			
  		}
-
+		else {
+			$result['error'] = 'No ballots!';
+			return $result;
+		}
 		return json_encode($returnObject, JSON_FORCE_OBJECT);
 	}
 	
@@ -717,7 +744,6 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 */
 	public function checkRpc(\Goettertz\BcVoting\Domain\Model\Project $project, $default = FALSE) {
 		
-		
 		if (empty($project->getRpcServer())) {
 			if ($default) {
 				if (!empty($default['rpc_server'])) {
@@ -731,7 +757,7 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 				$msg = 'No RPC-Server! (721)';
 			}
 		}
-		
+
 		if (empty($project->getRpcPort())) {
 			if ($default) {
 				if (!empty($default['rpc_port'])) {
@@ -745,7 +771,6 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 				$msg = 'No RPC-Port! (735)';
 			}
 		}
-		
 
 		if (empty($project->getRpcUser())) {
 			if ($default) {

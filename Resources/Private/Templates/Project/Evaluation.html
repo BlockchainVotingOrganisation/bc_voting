@@ -1,11 +1,11 @@
-<!-- Rev. 125 -->
+<!-- Rev. 129 -->
 <f:layout name="Default" />
 <f:section name="main">
 
 <f:render partial="MenuSelect" arguments="{project : project, isAssigned:isAssigned,isAdmin:isAdmin, feuser:feuser}" />
 <f:flashMessages renderMode="div" />
 <f:render partial="FormErrors" arguments="{object:Project}" />
-
+<f:debug>{result}</f:debug>
 <h3>{project.name}</h3>
 <div>{result.error}</div>
 
