@@ -392,8 +392,8 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 							$newAsset->setName($ballot->getName());
 							$newAsset->setQuantity(20000000);
 							$newAsset->setDivisibility(1);
-							
-							if ($result = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->issue($issueAddress, $newAsset->getName(), $newAsset->getQuantity(), $newAsset->getDivisibility())) {
+							$params = array('name' => $newAsset->getName(), 'open' => true);
+							if ($result = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->issue($issueAddress, $params, $newAsset->getQuantity(), $newAsset->getDivisibility())) {
 									
 							
 								$asset = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->listassets($result);
@@ -414,6 +414,9 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 							$ballot->setAsset($asset[0]['assetref']);
 							$this->ballotRepository->update($ballot);
 						}
+ 					}
+ 					else {
+ 						# verify asset
  					}
 
 		
