@@ -1402,7 +1402,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 <?php
 namespace Goettertz\BcVoting\Controller;
 
-//ini_set("display_errors", 1);
+// ini_set("display_errors", 1);
 
 /***************************************************************
  *
@@ -1786,7 +1786,8 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 				$rpcServer = $project->getRpcServer();
 				if (is_string($rpcServer) && $rpcServer !== '') {
 					try {
-						$bcArray = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getinfo();
+						$bc = new \Goettertz\BcVoting\Service\Blockchain();
+						$bcArray = $bc::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getinfo();
 						if(is_array($bcArray)) {
 							$this->view->assign('blockchain', $bcArray);
 						}
@@ -1975,7 +1976,8 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 	protected function allocateAssets(\Goettertz\BcVoting\Domain\Model\Assignment $assignment) {
 		
 		$project = $assignment->getProject();
-		$newAddress = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getnewaddress();
+		$bc = new \Goettertz\BcVoting\Service\Blockchain();
+		$newAddress = $bc::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getnewaddress();
 		$assignment->setWalletAddress($newAddress);
 		$this->assignmentRepository->update($assignment);
 		
@@ -1986,7 +1988,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		
 		# Für jeden Stimmzettel Assets senden
 		foreach ($project->getBallots() as $ballot) {
-			if ($bcArray = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->sendassettoaddress($newAddress,$ballot->getAsset(),$ballot->getVotes())) {
+			if ($bcArray = $bc::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->sendassettoaddress($newAddress,$ballot->getAsset(),$ballot->getVotes())) {
 				$this->addFlashMessage($ballot->getName().': sending assets...ok ', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
 				# VTC für Transaktionen bereitstellen ...
 				if (!$bcArray['error']) $this->addFlashMessage('Send '.$ballot->getVotes().' Asset "'.$ballot->getAsset().'" to '.$newAddress.' ... ok!','', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
@@ -2067,7 +2069,8 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 
 		# Daten aus BC
 		if ($project) {
-			if (!$result['secretBC']  = Blockchain::retrieveData($project->getRpcServer(),$project->getRpcPort(),$project->getRpcUser(), $project->getRpcPassword(), $txid)) {
+			$bc = new \Goettertz\BcVoting\Service\Blockchain();
+			if (!$result['secretBC']  = $bc::retrieveData($project->getRpcServer(),$project->getRpcPort(),$project->getRpcUser(), $project->getRpcPassword(), $txid)) {
 				$result['error'] = 'No blockchain data!';
 				$this->addFlashMessage($result['error'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 			}
@@ -2174,8 +2177,8 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 			$this->addFlashMessage('Unkown error.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 			$this->redirect('show',NULL,NULL, array('project' => $project));		
 		}
-		
-		$bcdata = Blockchain::retrieveData($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), trim($project->getReference()));
+		$bc = new \Goettertz\BcVoting\Service\Blockchain();
+		$bcdata = $bc::retrieveData($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), trim($project->getReference()));
 		if (isset($bcdata['error'])) {
 			$this->addFlashMessage($bcdata['error'].' (776)', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 		}
@@ -2224,7 +2227,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		}
 
 		# Begin old methods from db - should be replaced by bc		
-		if($bcArray = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getinfo()) {
+		if($bcArray = $bc::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getinfo()) {
 			$this->view->assign('bcResult', $bcArray);
 		}
 
@@ -2247,7 +2250,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 			$ref = $vote->getReference();
 			$secretDB = $vote->getSecret();
 			
-			$secretBC = Blockchain::retrieveData($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), $vote->getTxid());
+			$secretBC = $bc::retrieveData($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), $vote->getTxid());
 
 			if (isset($secretBC['error'])) {
 				$this->addFlashMessage(implode($secretBC).' : "'.$vote->getTxid().'"', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
@@ -2445,8 +2448,9 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		
 		# wallet address
 		$walletAddress = $project->getWalletAddress();
+		$bc = new \Goettertz\BcVoting\Service\Blockchain();
 		if (empty($walletAddress)) {
-			$newAddress = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getnewaddress();
+			$newAddress = $bc::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getnewaddress();
 			$project->setWalletAddress($newAddress);
 			$this->projectRepository->update($project);
 			$this->addFlashMessage('No wallet address. Got new one. '.$newAddress, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
@@ -2472,10 +2476,10 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		
 		# Saving data in the blockchain ...			
 		$vtc_amount = $this->settings['payment_sealing'];
-// 		if ($vtc_amount < 0.00000001) $vtc_amount = 0.00000001;
+		if ($vtc_amount < 0.00000001) $vtc_amount = 0.00000001;
 			
 		# check if balance is enough
-		$balance = Blockchain::getRpcResult($project->getRpcServer(),$project->getRpcPort(),$project->getRpcUser(),$project->getRpcPassword())->getaddressbalances($project->getWalletAddress());
+		$balance = $bc::getRpcResult($project->getRpcServer(),$project->getRpcPort(),$project->getRpcUser(),$project->getRpcPassword())->getaddressbalances($project->getWalletAddress());
 		if (is_double($balance[0]['qty'])) {
 			$balance = $balance[0]['qty'];
 		}
@@ -2491,7 +2495,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 			
 // 		$this->addFlashMessage('From: '.$project->getWalletAddress().' Amount: '.doubleval($vtc_amount).' to '.$paymentAddress, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
 		
-		if ($ref = Blockchain::storeData($project->getRpcServer(),$project->getRpcPort(),$project->getRpcUser(),$project->getRpcPassword(), trim($project->getWalletAddress()), trim($paymentAddress), doubleval($vtc_amount), $json)  ) {				
+		if ($ref = $bc::storeData($project->getRpcServer(),$project->getRpcPort(),$project->getRpcUser(),$project->getRpcPassword(), trim($project->getWalletAddress()), trim($paymentAddress), doubleval($vtc_amount), $json)  ) {				
 			// wenn ein array zurückgegeben wird ist irgendetwas schiefgelaufen ...
 			if (!is_array($ref)) {					
 				// wenn erolgreich wird ein string mit txid zurückgegeben
@@ -2553,9 +2557,9 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 				if ($this->request->hasArgument('rpcPassword')) {
 					$rpcPassword = trim($this->request->getArgument('rpcPassword'));
 				}
-				
+				$bc = new \Goettertz\BcVoting\Service\Blockchain();
 				# Try to get data from blockchain
-				$data = Blockchain::retrieveData($rpcServer, $rpcPort, $rpcUser, $rpcPassword, trim($reference));
+				$data = $bc::retrieveData($rpcServer, $rpcPort, $rpcUser, $rpcPassword, trim($reference));
 				if (isset($data['error'])) {
  					$this->addFlashMessage($data['error'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 				}
@@ -2772,7 +2776,8 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		
 			# Find transactions
 			$txid = array();
-			$result['transactions'] = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->listaddresstransactions($address, 1000000);
+			$bc = new \Goettertz\BcVoting\Service\Blockchain();
+			$result['transactions'] = $bc::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->listaddresstransactions($address, 1000000);
 			
 			foreach ($result['transactions'] AS $transaction) {
 				
@@ -2784,8 +2789,8 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 				$assetAmount = array($asset => 1);
 			
 				# if balance > 0
-				if (Blockchain::getAssetBalanceFromAddress($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), $fromaddress, $asset) > 0) {
-					$txid[] = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->sendwithmetadatafrom($fromaddress,$toaddress,$assetAmount,$transaction['txid']);
+				if ($bc::getAssetBalanceFromAddress($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), $fromaddress, $asset) > 0) {
+					$txid[] = $bc::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->sendwithmetadatafrom($fromaddress,$toaddress,$assetAmount,$transaction['txid']);
 				}
 			}
 			$result['txids'] = $txid;
