@@ -1,6 +1,8 @@
 <?php
 namespace Goettertz\BcVoting\Domain\Model;
 
+use Goettertz\BcVoting\Service\Blockchain;
+
 /***************************************************************
  *
  *  Copyright notice
@@ -27,7 +29,7 @@ namespace Goettertz\BcVoting\Domain\Model;
  ***************************************************************/
 
 /**
- * Revision 129
+ * Revision 130
  
  */
  
@@ -436,13 +438,15 @@ class Ballot extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 					
 					if (empty($result['ballot'][$i]['logo'])) $result['ballot'][$i]['logo'] = '----';
 					$result['ballot'][$i]['walletaddress'] = $result['ballot'][$i]['walletaddress'];
+					$bc = new Blockchain();
 					
-					$balance = \Goettertz\BcVoting\Service\Blockchain::getAssetBalanceFromAddress($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), $result['ballot'][$i]['walletaddress'], self::getAsset());
-					$result['ballot'][$i]['balance'] = $balance;
-					
+					If ($balance = $bc->getAssetBalanceFromAddress($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), $result['ballot'][$i]['walletaddress'], self::getAsset())) {
+						if (is_double($balance)) {
+							$result['ballot'][$i]['balance'] = $balance;
+							$allBalance = $balance + $allBalance;
+						}
+					}
 
-							
-					$allBalance = $balance + $allBalance;
 					$i++;
 				}
 				
@@ -495,6 +499,9 @@ class Ballot extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 		return json_encode($returnObject, JSON_FORCE_OBJECT);
 	}
 
+	public function import($reference) {
+		
+	}
 }
 
 ?>

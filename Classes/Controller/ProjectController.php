@@ -792,7 +792,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 
 		if ($result = $this->getOptions($project)) {
 			if (is_string($result['error'])) {
-				$this->addFlashMessage($result['error']. ' (791)', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+				$this->addFlashMessage($result['error']. ' (793)', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 				$this->redirect('show',NULL,NULL, array('project' => $project));
 			}
 			$result['data'] = $bcdata;
@@ -820,7 +820,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		}
 		else 
 		{
-			$result['error'] = 'Can\'t get project options from blockchain! (789)';
+			$result['error'] = 'Can\'t get project options from blockchain! (793)';
 			$this->addFlashMessage($result['error'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 			$this->redirect('show',NULL,NULL, array('project' => $project));
 		}
@@ -1320,7 +1320,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 				$result[$ballot->getName()]['options'] = $options;				
 			}
 			else {
-// 				$result['error'] = 'Kein Asset generiert!';
+ 				$result['error'] = 'Kein Asset generiert!';
 			}
 
 		}
