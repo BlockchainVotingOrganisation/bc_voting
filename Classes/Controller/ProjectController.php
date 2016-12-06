@@ -1223,55 +1223,9 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 				foreach ($data['ballots'] AS $ballot) {
 					$this->addFlashMessage($ballot, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 					$newBallot = new \Goettertz\BcVoting\Domain\Model\Ballot();
-					
-					# Cast json to stdClass and array -old
-					
-					# new: import ballot
-					$ballot = json_decode($ballot);
-					$ballot = (array) $ballot;
-	
-					$newBallot->setProject($newproject);
-					
-					$newBallot->setReference($ballot['reference']);
-					$newBallot->setName($ballot['name']);
-					$newBallot->setStart($ballot['start']);
-					$newBallot->setEnd($ballot['end']);
-					$newBallot->setText($ballot['text']);
-					$newBallot->setFooter($ballot['footer']);
-					$newBallot->setAsset($ballot['asset']);
-					$newBallot->setReference($ballot['reference']);
-					$newBallot->setWalletAddress($ballot['walletaddress']);
-					
+					$newBallot->import($ballot, $newproject);
 					$this->ballotRepository->add($newBallot);
-					$persistenceManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
-					$persistenceManager->persistAll();
-
-// 					# Import options
-					foreach ($ballot['options'] AS $option) {
-						$newOption = new \Goettertz\BcVoting\Domain\Model\Option();
-							
-// 						# Cast json to stdClass and array
-						$option = json_decode($option);
-						$option = (array) $option;
-						
-						# Set option
-						$newOption->setBallot($newBallot);
-						$newOption->setName($option['name']);
-						$newOption->setDescription($option['description']);
-						
-						$newOption->setWalletAddress($option['walletaddress']);
-						$newOption->setColor($option['color']);
-						$newOption->setParent($option['parent']);
-						
-						# Add option
-						$this->optionRepository->add($newOption);
-						$persistenceManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
-						$persistenceManager->persistAll();
-						
-					}
-
 				}
-				
 				$this->view->assign('project',$newproject);
 			}
 			

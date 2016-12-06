@@ -25,7 +25,7 @@ namespace Goettertz\BcVoting\Service;
 /**
  * 
  * @author louis
- * Rev. 129
+ * Rev. 130
  */
 
 // interface Rpc {
@@ -270,13 +270,12 @@ class Blockchain {
 	
 	/**
 	 * @param unknown $issueasset
-	 * @param unknown $to
 	 * @param unknown $from
 	 * @param unknown $to
 	 * @param unknown $qty
 	 * @param unknown $units
 	 */
-	public function issueAsset($issueasset, $to, $from, $to, $qty, $units) {
+	public function issueAsset($issueasset, $from, $to, $qty, $units) {
 				
 		$max_upload_size=$this->multichain_max_data_size()-512; // take off space for file name and mime type
 		

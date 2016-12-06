@@ -150,7 +150,15 @@ class Ballot extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @var string
 	 */
 	protected $walletAddress = NULL;	
-
+	
+	/**
+	 * ballotRepository
+	 *
+	 * @var \Goettertz\BcVoting\Domain\Repository\BallotRepository
+	 * @inject
+	 */
+	protected $ballotRepository = NULL;
+	
 	/**
 	 * Returns the project
 	 *
@@ -499,7 +507,62 @@ class Ballot extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 		return json_encode($returnObject, JSON_FORCE_OBJECT);
 	}
 
-	public function import($reference) {
+	/**
+	 * @param string $reference
+	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
+	 */
+	public static function import($reference, \Goettertz\BcVoting\Domain\Model\Project $project) {
+		
+		# get data from bc
+		$bc = new \Goettertz\BcVoting\Service\Blockchain();
+		$data = $bc::retrieveData($rpcServer, $rpcPort, $rpcUser, $rpcPassword, trim($reference));
+		
+		$data = json_decode($data);
+		if (is_a($data, 'stdClass', false)) {
+			$ballot = (array) $data;
+		}
+		else die ('No JSON object!');
+		
+		$this->setProject($project);
+			
+		$this->setReference($reference);
+		$this->setName($ballot['name']);
+		$this->setStart($ballot['start']);
+		$this->setEnd($ballot['end']);
+		$this->setText($ballot['text']);
+		$this->setFooter($ballot['footer']);
+		$this->setAsset($ballot['asset']);
+		$this->setWalletAddress($ballot['walletaddress']);		
+
+		$this->ballotRepository->add($this);
+		
+		$persistenceManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
+		$persistenceManager->persistAll();
+		
+		# Import options
+		foreach ($ballot['options'] AS $option) {
+			$newOption = new \Goettertz\BcVoting\Domain\Model\Option();
+				
+			# Cast json to stdClass and array
+			$option = json_decode($option);
+			$option = (array) $option;
+		
+			# Set option
+			$newOption->setBallot($this);
+			$newOption->setName($option['name']);
+			$newOption->setDescription($option['description']);
+		
+			$newOption->setWalletAddress($option['walletaddress']);
+			$newOption->setColor($option['color']);
+			$newOption->setParent($option['parent']);
+		
+			# Add option
+			$this->optionRepository->add($newOption);
+			$persistenceManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
+			$persistenceManager->persistAll();
+		
+		}		
+		
 		
 	}
 }
