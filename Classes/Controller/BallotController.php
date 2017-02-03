@@ -1,7 +1,7 @@
 <?php
 namespace Goettertz\BcVoting\Controller;
 
-ini_set("display_errors", 1);
+//ini_set("display_errors", 1);
 
 /***************************************************************
  *
@@ -29,8 +29,8 @@ ini_set("display_errors", 1);
  ***************************************************************/
 
 /**
- * Revision 129:
- * - Bugfix #15
+ * Revision 131:
+ * 
  * 
  */
 
@@ -309,10 +309,11 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 						if ($end > 0) $ballot->setEnd($end);
 					}
 					if (empty($ballot->getWalletAddress())) {
-						if ($project->getRpcServer() != '') {
-							$newAddress = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getaccountaddress($ballot->getName());
+						if (is_string($project->getRpcServer()) && $project->getRpcServer() != '') {
+// 							$bc = new Blockchain();
+							$newAddress = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getnewaddress();
 						}
-					$ballot->setWalletAddress($newAddress);
+ 					$ballot->setWalletAddress($newAddress);
 					}
 				
 					$this->ballotRepository->update($ballot);
