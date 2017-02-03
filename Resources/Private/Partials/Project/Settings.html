@@ -1,22 +1,18 @@
-<!-- Rev. 102 -->
-<f:debug title="Template Properties">{project.category}</f:debug>
+<!-- Rev. 131 -->
 <div style="width:100%; margin: 10px 0px; display: inline-block;">
-	<div>	
-		<label for="category">
-			<f:translate key="tx_bcvoting_domain_model_project.category" /> <span class="required">(required)</span>
-		</label>
-		<br />
-		<f:for each="{categories}" as="category">
-			<f:form.radio property="category" value="{category}" checked="{category}=={project.category}" /> 
-				{category.name} <br />
-		</f:for>
+	<hr />
+	<div>
+		<label for="Closed">Closed</label> (If yes, only invited users can assign)<br />
+		<f:form.radio name="closed" value="1" /> Yes <f:form.radio name="closed" value="0" /> No<br />
 		<hr />
-		<h5><f:translate key="template" /> <f:translate key="properties" /></h5>
-		<pre>
-			{project.category.name}
-			{project.category.closed}
-			{project.category.ulterior}
-		</pre>
+		<label for="Anonym">Anonym</label> (If yes, assigning requires existing voter wallets with assets belonging to the project)<br />
+		<f:form.radio name="anonym" value="1" /> Yes <f:form.radio name="anonym" value="0" /> No<br /><br />
+	</div>
+	<hr />
+	<div>
+		<label for="Deposit">Current Deposit (BTC)</label><br />
+		<f:form.textfield name="depositBtc" size="7" placeholder="0 BTC" readonly="1" style="text-align:right;" />
+		{Fund Current Deposit]
 	</div>
 	<hr />
 	<div>
