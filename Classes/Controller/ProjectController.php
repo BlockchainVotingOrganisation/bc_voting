@@ -1,7 +1,7 @@
 <?php
 namespace Goettertz\BcVoting\Controller;
-
-ini_set("display_errors", 1);
+//error_reporting(E_ALL);
+//ini_set("display_errors", 1);
 
 /***************************************************************
  *
@@ -296,9 +296,9 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 			$assignment = $user ? $project->getAssignmentForUser($user,'admin') : NULL;
 			If($assignment != NULL) {
 				
-				$categories = $this->categoryRepository->findAll();
+// 				$categories = $this->categoryRepository->findAll();
 				
-				$this->view->assign('categories', $categories);
+// 				$this->view->assign('categories', $categories);
 				$this->view->assign('project', $project);
 				$this->view->assign('isAdmin', 'true');
 			}
@@ -315,10 +315,6 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		if ($user = $this->userRepository->getCurrentFeUser()) {			
 			$assignment = $user ? $project->getAssignmentForUser($user,'admin') : NULL;
 			If($assignment != NULL) {
-				
-				$categories = $this->categoryRepository->findAll();
-				
-				$this->view->assign('categories', $categories);
 				$this->view->assign('project', $project);
 				$this->view->assign('isAdmin', 'true');
 			}
@@ -344,9 +340,9 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 				$isAdmin = 'true';
 				$role = $assignment->getRole($assignment);
 				$roleName = $role->getName($role);
-				$categories = $this->categoryRepository->findAll();
+// 				$categories = $this->categoryRepository->findAll();
 				if (empty($project->getReference())) {
-					$this->view->assignMultiple(array('project' => $project, 'isAssigned' => $isAssigned, 'isAdmin' => $isAdmin, 'categories' => $categories, 'feuser' => $user));
+					$this->view->assignMultiple(array('project' => $project, 'isAssigned' => $isAssigned, 'isAdmin' => $isAdmin, 'feuser' => $user));
 				}
 				else {
 					$this->addFlashMessage('Project already sealed!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
@@ -957,7 +953,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 	
 		# Checks
 		$isAdmin = 'false';
-		if ($user = $this->userRepository->getCurrentFeUser()) {
+ 		if ($user = $this->userRepository->getCurrentFeUser()) {
 	
 			$assignment = $user ? $project->getAssignmentForUser($user, 'admin') : NULL;
 			If($assignment != NULL) {
@@ -970,7 +966,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 				// 				break;
 			}
 				
-			# Blockchain eingetragen?
+ 			# Blockchain eingetragen?
 			if (empty($project->getRpcServer()) || !is_string($project->getRpcServer())) {
 	
 				# Fehlermeldung und break
@@ -979,11 +975,13 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 			}
 			$end = $project->getEnd();
 			if ($end <  time()) {
-				if ($this->request->hasArgument('password')) {
+ 				if ($this->request->hasArgument('password')) {
 					$result['msg'] = '1';
 					if (!empty($this->request->getArgument('password'))) {
-						$result = $this->execute($project);
-// 						$result['msg'] = '2';
+						if ($result = $this->execute($project)) {
+							if (is_string($result['error'])) $this->addFlashMessage($result['error'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+						}
+// // 						$result['msg'] = '2';
 					}
 				 else $result['error'] = '2';
 				}
@@ -1158,17 +1156,17 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 				}
 		
 				
-				# Check existing projects
-				$projects = $this->projectRepository->findByReference($reference);
-				if (count($projects) > 0) {
-					$this->addFlashMessage('Error: Project with same reference already exists on this server:<br /> <b>&quot;'.$projects[0]->getName().'&quot;</b>', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-					$this->redirect('list');					
-				}
-				$projects = $this->projectRepository->findByName($data['name']);
-				if (count($projects) > 0) {
-					$this->addFlashMessage('Error: Project with same name already exists on this server. Please rename or delete the old Project.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-					$this->redirect('list');
-				}
+// 				# Check existing projects
+// 				$projects = $this->projectRepository->findByReference($reference);
+// 				if (count($projects) > 0) {
+// 					$this->addFlashMessage('Error: Project with same reference already exists on this server:<br /> <b>&quot;'.$projects[0]->getName().'&quot;</b>', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+// 					$this->redirect('list');					
+// 				}
+// 				$projects = $this->projectRepository->findByName($data['name']);
+// 				if (count($projects) > 0) {
+// 					$this->addFlashMessage('Error: Project with same name already exists on this server. Please rename or delete the old Project.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+// 					$this->redirect('list');
+// 				}
 				
 				# End of checks!!! #####################################################
 				# get data from blockchain
@@ -1329,12 +1327,19 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		foreach ($project->getBallots() AS $ballot) {
 			
 			# Temp address for encrypted votings
+			$result = array();
 			$address = $ballot->getWalletAddress();
+			if (is_string($address) && strlen($address) > 16) $result['address'] = $address;
+			else {
+				$result['error'] = 'The project is not properly configured. No address in ballot configuration!';
+				return $result;
+			}
 		
 			# Find transactions
 			$txid = array();
 			$bc = new \Goettertz\BcVoting\Service\Blockchain();
-			$result['transactions'] = $bc::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->listaddresstransactions($address, 1000000);
+ 			$result['transactions'] = 
+ 			$bc::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->listaddresstransactions($address, 1000000);
 			
 			foreach ($result['transactions'] AS $transaction) {
 				
@@ -1351,7 +1356,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 				}
 			}
 			$result['txids'] = $txid;
-		}
+ 		}
 		return $result;
 	}
 }
