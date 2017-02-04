@@ -1,7 +1,7 @@
 <?php
 namespace Goettertz\BcVoting\Controller;
 
-//ini_set("display_errors", 1);
+ini_set("display_errors", 1);
 
 /***************************************************************
  *
@@ -30,7 +30,6 @@ namespace Goettertz\BcVoting\Controller;
 
 /**
  * Revision 131:
- * 
  * 
  */
 
@@ -226,10 +225,23 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 			
 				$assignment = $user ? $project->getAssignmentForUser($user, 'admin') : NULL;
 				If($assignment != NULL) {
+					$bcArray = array();
+					$rpcServer = $project->getRpcServer();
 					
-					if (!empty($project->getRpcUser())) $bcArray = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->listpermissions('issue');
+					if (is_string($rpcServer) && $rpcServer !== '') {
+						try {
+							if($bcArray = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->listpermissions('issue')) {
+								$this->view->assign('issuePermission', $bcArray[0]['address']);
+							}
+
+							
+						} catch (\Exception $e) {
+							$this->addFlashMessage('No Blockchain configured!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+						}	
+					}		
+				
+									
 					
-					$this->view->assign('issuePermission', $bcArray[0]['address']);
 					$this->view->assign('ballot', $ballot);
 					$this->view->assign('assigned', true);
 					$this->view->assign('admin', 'true');
