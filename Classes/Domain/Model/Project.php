@@ -213,9 +213,17 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 */	
 	protected $publicKey2 = NULL; 
 	
-	protected $closed;
+	/**
+	 * 
+	 * @var boolean;
+	 */
+	protected $closed = false;
 	
-	protected $anonym;
+	/**
+	 * anonym
+	 * @var boolean;
+	 */
+	protected $anonym=FALSE;
 	
 	public function getClosed() {
 		return $this->getClosed();
