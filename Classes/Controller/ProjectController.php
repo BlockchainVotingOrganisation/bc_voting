@@ -1,11 +1,7 @@
 <?php
 namespace Goettertz\BcVoting\Controller;
 //error_reporting(E_ALL);
-<<<<<<< HEAD
 ini_set("display_errors", 1);
-=======
-//ini_set("display_errors", 1);
->>>>>>> d75d16d8fca1a4894b963dab23e2a035cf2526db
 
 /***************************************************************
  *
@@ -33,7 +29,7 @@ ini_set("display_errors", 1);
  ***************************************************************/
 
 /**
- * Revision 130
+ * Revision 132
  */
 
 use \Goettertz\BcVoting\Service\Blockchain;
