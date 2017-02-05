@@ -1,0 +1,18 @@
+<f:layout name="Default" />
+Rev. 132
+<f:section name="main">
+
+<f:flashMessages renderMode="div" />
+
+<!-- List -->
+<f:for each="{projects}" as="project">
+	<f:cycle values="{0: 'whitesmoke', 1: '#fff'}" as="color">
+		<div style="background-color: {color}">
+			<div><f:link.action controller="Election" action="show" arguments="{project: project}" title="{project.description}">{project.name}</f:link.action></div>
+			<div><f:format.date format="d.m.Y">{project.start}</f:format.date> - <f:format.date format="d.m.Y">{project.end}</f:format.date></div>
+		</div>
+	</f:cycle>
+</f:for>
+<!-- End List -->
+
+</f:section>

@@ -29,7 +29,7 @@ use Goettertz\BcVoting\Service\Blockchain;
  ***************************************************************/
 
 /**
- * Revision 130
+ * Revision 131
  */
 
 /**
@@ -67,12 +67,12 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 */
 	protected $logo = NULL;
 	
-	/**
-	 * 
-	 * @var \Goettertz\BcVoting\Domain\Model\Category
-	 * 
-	 */
-	protected $category = null;
+// 	/**
+// 	 * 
+// 	 * @var \Goettertz\BcVoting\Domain\Model\Category
+// 	 * 
+// 	 */
+// 	protected $category = null;
 	
 	/**
 	 * 
@@ -214,6 +214,34 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $publicKey2 = NULL; 
 	
 	/**
+	 * 
+	 * @var boolean;
+	 */
+	protected $closed = false;
+	
+	/**
+	 * anonym
+	 * @var boolean;
+	 */
+	protected $anonym=FALSE;
+	
+	public function getClosed() {
+		return $this->getClosed();
+	}
+	
+	public function setClosed($closed) {
+		$this->closed = $closed;
+	}
+	
+	public function getAnonym() {
+		return $this->anonym;
+	}
+	
+	public function setAnonym($anonym) {
+		$this->anonym = $anonym;
+	}
+	
+	/**
 	 * returns nodes #
 	 */
 	public function getNodes() {
@@ -272,25 +300,25 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 		return $this->logo->getOriginalResource();
 	}
 
-	/**
-	 * Returns the category
-	 *
-	 * @return \Goettertz\BcVoting\Domain\Model\Category $category
-	 */
-	public function getCategory() {
-		return $this->category;
-	}
+// 	/**
+// 	 * Returns the category
+// 	 *
+// 	 * @return \Goettertz\BcVoting\Domain\Model\Category $category
+// 	 */
+// 	public function getCategory() {
+// 		return $this->category;
+// 	}
 	
 	
-	/**
-	 * Sets the category
-	 *
-	 * @param string $category
-	 * @return void
-	 */
-	public function setCategory($category) {
-		$this->category = $category;
-	}
+// 	/**
+// 	 * Sets the category
+// 	 *
+// 	 * @param string $category
+// 	 * @return void
+// 	 */
+// 	public function setCategory($category) {
+// 		$this->category = $category;
+// 	}
 
 	/**
 	 * Returns the description
@@ -804,9 +832,8 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 	
 	public function importArray($data) {
-		# Import array project data into DB ...
 		
-// 		$newproject = new \Goettertz\BcVoting\Domain\Model\Project();
+		# Import array project data into DB ...
 		$this->setName($data['name']);
 		$this->setDescription($data['description']);
 		//logo -> importLogo($uri)

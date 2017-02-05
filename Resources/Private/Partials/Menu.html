@@ -14,7 +14,8 @@
 	
 	<f:if condition="{isAdmin} == 'true'">
 		
-			| <f:link.action action="edit" controller="Project" arguments="{project:project}">Admin</f:link.action>
+			| <f:link.action action="edit" controller="Project" arguments="{project:project}">Edit</f:link.action>
+			| <f:link.action action="settings" controller="Project" arguments="{project:project}">Settings</f:link.action>
 		
 	</f:if>
 	

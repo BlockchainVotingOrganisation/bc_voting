@@ -1,6 +1,6 @@
 <?php
 /**
- * Rev.76
+ * Rev.132
  */
 if (!defined('TYPO3_MODE')) {
 	die('Access denied.');
@@ -26,8 +26,14 @@ if (!defined('TYPO3_MODE')) {
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
 		$_EXTKEY,
-		'BVS_personalWallet',
-		'BVS Personal Wallet'
+		'BVS_Main',
+		'BVS Main PlugIn'
+		);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+		$_EXTKEY,
+		'BVS_Office',
+		'BVS Office'
 		);
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript', 'bc_voting');
@@ -55,7 +61,7 @@ $GLOBALS['TCA']['tx_bcvoting_domain_model_project'] = array(
 			'starttime' => 'starttime',
 			'endtime' => 'endtime',
 		),
-		'searchFields' => 'name,description,start,end,assignments,',
+		'searchFields' => 'name,description,start,end,assignments,reference',
 		'dynamicConfigFile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY) . 'Configuration/TCA/Project.php',
 		'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($_EXTKEY) . 'Resources/Public/Icons/tx_bcvoting_domain_model_project.gif'
 	),
@@ -64,7 +70,7 @@ $GLOBALS['TCA']['tx_bcvoting_domain_model_project'] = array(
 # Asset
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addLLrefForTCAdescr('tx_bcvoting_domain_model_asset', 'EXT:bc_voting/Resources/Private/Language/locallang_csh_tx_bcvoting_domain_model_asset.xlf');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages('tx_bcvoting_domain_model_asset');
-$GLOBALS['TCA']['tx_bcvoting_domain_model_ballot'] = array(
+$GLOBALS['TCA']['tx_bcvoting_domain_model_asset'] = array(
 		'ctrl' => array(
 				'title'	=> 'LLL:EXT:bc_voting/Resources/Private/Language/locallang_db.xlf:tx_bcvoting_domain_model_asset',
 				'label' => 'name',
@@ -333,6 +339,7 @@ $GLOBALS['TCA']['fe_users']['types']['Tx_BcVoting_User']['showitem'] .= ',--div-
 $GLOBALS['TCA']['fe_users']['types']['Tx_BcVoting_User']['showitem'] .= '';
 
 $GLOBALS['TCA']['fe_users']['columns'][$TCA['fe_users']['ctrl']['type']]['config']['items'][] = array('LLL:EXT:bc_voting/Resources/Private/Language/locallang_db.xlf:fe_users.tx_extbase_type.Tx_BcVoting_User','Tx_BcVoting_User');
+
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('fe_users', $GLOBALS['TCA']['fe_users']['ctrl']['type'],'','after:' . $TCA['fe_users']['ctrl']['label']);
 

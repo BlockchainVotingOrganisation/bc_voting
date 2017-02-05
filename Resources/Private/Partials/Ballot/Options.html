@@ -1,4 +1,4 @@
-<!-- Rev. 78 -->
+<!-- Rev. 130 -->
 <f:if condition="{admin}== 'true'">
 	<f:link.action action="new" controller="Option" arguments="{ballot : ballot}">+ Create new option</f:link.action>
 </f:if>
@@ -24,6 +24,9 @@
 					<a href="https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=bitcoin:{option.walletAddress}?amount=1"><img style="max-width:100%; height: auto;" src="https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=bitcoin:{option.walletAddress}?amount=1" width="150" height="150" title="{option.walletAddress}" /></a>
 				</f:else>
 				</f:if>
+			</td>
+			<td style="border-bottom: 1px dotted black; border-top: 1px dotted black; padding:20px; vertical-align: middle;">
+				[a,b,c,[...],z]
 			</td>
 		</tr>
 		<f:if condition="{admin}== 'true'">

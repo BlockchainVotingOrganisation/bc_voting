@@ -29,8 +29,7 @@ ini_set("display_errors", 1);
  ***************************************************************/
 
 /**
- * Revision 129:
- * - Bugfix #15
+ * Revision 131:
  * 
  */
 
@@ -226,10 +225,23 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 			
 				$assignment = $user ? $project->getAssignmentForUser($user, 'admin') : NULL;
 				If($assignment != NULL) {
+					$bcArray = array();
+					$rpcServer = $project->getRpcServer();
 					
-					if (!empty($project->getRpcUser())) $bcArray = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->listpermissions('issue');
+					if (is_string($rpcServer) && $rpcServer !== '') {
+						try {
+							if($bcArray = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->listpermissions('issue')) {
+								$this->view->assign('issuePermission', $bcArray[0]['address']);
+							}
+
+							
+						} catch (\Exception $e) {
+							$this->addFlashMessage('No Blockchain configured!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+						}	
+					}		
+				
+									
 					
-					$this->view->assign('issuePermission', $bcArray[0]['address']);
 					$this->view->assign('ballot', $ballot);
 					$this->view->assign('assigned', true);
 					$this->view->assign('admin', 'true');
@@ -309,10 +321,11 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 						if ($end > 0) $ballot->setEnd($end);
 					}
 					if (empty($ballot->getWalletAddress())) {
-						if ($project->getRpcServer() != '') {
-							$newAddress = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getaccountaddress($ballot->getName());
+						if (is_string($project->getRpcServer()) && $project->getRpcServer() != '') {
+// 							$bc = new Blockchain();
+							$newAddress = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getnewaddress();
 						}
-					$ballot->setWalletAddress($newAddress);
+ 					$ballot->setWalletAddress($newAddress);
 					}
 				
 					$this->ballotRepository->update($ballot);

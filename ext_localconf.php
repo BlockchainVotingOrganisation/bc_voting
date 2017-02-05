@@ -1,14 +1,14 @@
 <?php
-// Rev. 123
+// Rev. 132
 if (!defined('TYPO3_MODE')) {
 	die('Access denied.');
 }
-
+// Obsolete:
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
 	'Goettertz.' . $_EXTKEY,
 	'Project',
 	array(
- 		'Project' => 'list, show, new, create, edit, editbcparams, update, delete, assign, evaluation, arguments, settings, createSettings, removeLogo, checkVoting, execute, seal, import',
+ 		'Project' => 'list, new, create, edit, editbcparams, update, delete, assign, evaluation, arguments, settings, createSettings, removeLogo, checkVoting, execute, seal, import',
  		'Option' => 'list, show, new, create, edit, update, delete, vote, removeLogo',
  		'Wallet' => 'show, importWallet, import',
  		'User' => 'list, show, new, create, edit, update, delete, import, upload, sendAssets, getNewAddress, removeAssignment',
@@ -18,16 +18,17 @@ if (!defined('TYPO3_MODE')) {
 		
 	),
 	// non-cacheable actions
+	
 	array(
-		'Project' => 'list, show, new, create, edit, editbcparams, update, delete, assign, evaluation, arguments, settings, createSettings, removeLogo, checkVoting, execute, seal, import',
+		'Project' => 'list, new, create, edit, editbcparams, update, delete, assign, evaluation, arguments, settings, createSettings, removeLogo, checkVoting, execute, seal, import',
 		'Option' => 'list, show, new, create, edit, update, delete, vote, removeLogo',
 		'Wallet' => 'show, importWallet, import',
  		'User' => 'list, show, new, create, edit, update, delete, import, upload, sendAssets, getNewAddress, removeAssignment',
 		'Blockchain' => 'show',
 		'Argument' => 'list, show, new, create, edit, update, delete',
-		'Ballot' => 'list, show, new, create, edit, update, delete, sealBallot, vote, removeLogo',
-		
+		'Ballot' => 'list, show, new, create, edit, update, delete, sealBallot, vote, removeLogo',		
 	)
+	
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerTypeConverter('Goettertz\\BcVoting\\Property\\TypeConverter\\UploadedFileReferenceConverter');
@@ -52,16 +53,32 @@ if (!defined('TYPO3_MODE')) {
 		)
 );
 
+
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
 		'Goettertz.' . $_EXTKEY,
-		'BVS_personalWallet',
+		'BVS_Main',
 		array(
-				
-				'Wallet' => 'show, send'
+				'Election' => 'list,show'
 		),
 		array(
-				
-				'Wallet' => 'show, send'
+				'Election' => 'list,show'
 		)
+);
+
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+		'Goettertz.' . $_EXTKEY,
+		'BVS_Office',
+		array(
+
+				'Project' => 'list, show, edit, new, create',
+				'Assignment' => 'list, show, edit, new, create'
+		),
+		array(
+
+				'Project' => 'list, show, edit, new, create',
+				'Assignment' => 'list, show, edit, new, create'
+		)
+
 );
 ?>

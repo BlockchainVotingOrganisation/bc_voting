@@ -1,24 +1,15 @@
-{namespace bvs=Goettertz\BcVoting\ViewHelpers}
 <f:layout name="Default" />
-Rev. 64
+Rev. 131
 <f:section name="main">
-<f:render partial="Project/Menu" arguments="{project : project, action:'edit'}" />
+<f:render partial="Project/Menu" arguments="{project : project, isAdmin : isAdmin, isAssigned : isAssigned}" />
 <f:flashMessages renderMode="div" />
-<h4>{project.name}</h4>
-<f:translate key="tx_bcvoting_edit_project" />
+<h4>Settings - {project.name}</h4>
+
 <f:render partial="FormErrors" arguments="{object:Project}" />
 
-<f:for each="{project.assignments}" as="assignment">
-	<f:if condition="{assignment.user.uid} == <bvs:GetUserId/>">
-		<f:then>
-			<f:if condition="{assignment.role.name} == 'admin'">
-				<f:form action="update" name="project" object="{project}" >
-					<f:render partial="Project/Settings" arguments="{action : 'update', project : project, roles : roles, assigned: assigned, role: role, categories: categories}" />
-					<f:render partial="Project/Links" arguments="{action : 'update', project : project}" />
-					<f:form.submit value="Save" /><br />
-				</f:form>
-			</f:if>
-		</f:then>
-	</f:if>
-</f:for>
+<f:form action="update" name="project" object="{project}" >
+	<f:render partial="Project/Links" arguments="{action : 'update', project : project}" />
+	<f:render partial="Project/Settings" arguments="{action : 'update', project : project, categories: categories}" />
+	<f:form.submit value="{f:translate(key:'save')}" /><br />
+</f:form>
 </f:section>

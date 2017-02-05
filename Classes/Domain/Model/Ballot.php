@@ -234,12 +234,13 @@ class Ballot extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 */
 	public function getWalletAddress() {
 		
-		$bc = new \Goettertz\BcVoting\Service\Blockchain();
-		$project = $this->getProject();
-		if ($result = $bc->getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->validateaddress($this->walletAddress)) {
-			if ($result) return $result['address'];
-		}
-		return NULL;
+// 		$bc = new \Goettertz\BcVoting\Service\Blockchain();
+// 		$project = $this->getProject();
+// 		if ($result = $bc->getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->validateaddress($this->walletAddress)) {
+// 			if ($result) return $result['address'];
+// 		}
+// 		return NULL;
+		return $this->walletAddress;
 	}
 	
 	/**
