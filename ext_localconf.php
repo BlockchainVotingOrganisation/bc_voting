@@ -8,25 +8,25 @@ if (!defined('TYPO3_MODE')) {
 	'Goettertz.' . $_EXTKEY,
 	'Project',
 	array(
- 		'Project' => 'list, new, create, edit, editbcparams, update, delete, assign, evaluation, arguments, settings, createSettings, removeLogo, checkVoting, execute, seal, import',
+ 		'Project' => 'admin, new, create, edit, editbcparams, update, delete, assign, evaluation, arguments, createSettings, removeLogo, checkVoting, execute, seal, import',
  		'Option' => 'list, show, new, create, edit, update, delete, vote, removeLogo',
  		'Wallet' => 'show, importWallet, import',
  		'User' => 'list, show, new, create, edit, update, delete, import, upload, sendAssets, getNewAddress, removeAssignment',
 		'Blockchain' => 'show',
 		'Argument' => 'list, show, new, create, edit, update, delete',
-		'Ballot' => 'list, show, new, create, edit, update, delete, sealBallot, vote, removeLogo',
+		'Ballot' => 'admin, show, new, create, edit, update, delete, sealBallot, vote, removeLogo',
 		
 	),
 	// non-cacheable actions
 	
 	array(
-		'Project' => 'list, new, create, edit, editbcparams, update, delete, assign, evaluation, arguments, settings, createSettings, removeLogo, checkVoting, execute, seal, import',
+		'Project' => 'admin, new, create, edit, editbcparams, update, delete, assign, evaluation, arguments, createSettings, removeLogo, checkVoting, execute, seal, import',
 		'Option' => 'list, show, new, create, edit, update, delete, vote, removeLogo',
 		'Wallet' => 'show, importWallet, import',
  		'User' => 'list, show, new, create, edit, update, delete, import, upload, sendAssets, getNewAddress, removeAssignment',
 		'Blockchain' => 'show',
 		'Argument' => 'list, show, new, create, edit, update, delete',
-		'Ballot' => 'list, show, new, create, edit, update, delete, sealBallot, vote, removeLogo',		
+		'Ballot' => 'admin, show, new, create, edit, update, delete, sealBallot, vote, removeLogo',		
 	)
 	
 );
@@ -46,10 +46,12 @@ if (!defined('TYPO3_MODE')) {
 		'Goettertz.' . $_EXTKEY,
 		'BVS_newProjectWizard',
 		array(
-				'Project' => 'new, create, createSettings, update'
+				'Project' => 'new, create, createSettings',
+				
 		),
 		array(
-				'Project' => 'new, create, createSettings, update'
+				'Project' => 'new, create, createSettings',
+				
 		)
 );
 
@@ -58,10 +60,12 @@ if (!defined('TYPO3_MODE')) {
 		'Goettertz.' . $_EXTKEY,
 		'BVS_Main',
 		array(
-				'Election' => 'list,show'
+				'Election' => 'list, show',
+				'Ballot' => 'list, show'
 		),
 		array(
-				'Election' => 'list,show'
+				'Election' => 'list, show',
+				'Ballot' => 'list, show'
 		)
 );
 
@@ -70,14 +74,19 @@ if (!defined('TYPO3_MODE')) {
 		'Goettertz.' . $_EXTKEY,
 		'BVS_Office',
 		array(
-
-				'Project' => 'list, show, edit, new, create',
-				'Assignment' => 'list, show, edit, new, create'
+				
+				'Project' => 'list, show, edit, settings, new, create, update',
+				'Assignment' => 'list, show, settings, edit, new, create',
+				'Ballot' => 'list,show, new, create, edit, update, delete, sealBallot, vote, removeLogo',
+				'User' => 'list, show',
+				
 		),
 		array(
-
-				'Project' => 'list, show, edit, new, create',
-				'Assignment' => 'list, show, edit, new, create'
+				
+				'Project' => 'list, show, edit, new, create, update',
+				'Assignment' => 'list, show, edit, new, create',
+				'Ballot' => 'list, show, new, create, edit, update, delete, sealBallot, vote, removeLogo',
+				'User' => 'list, show',
 		)
 
 );

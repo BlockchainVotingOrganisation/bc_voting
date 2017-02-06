@@ -57,6 +57,12 @@
 			<trans-unit id="tx_bcvoting_domain_model_project.end">
 				<source>End</source>
 			</trans-unit>
+			<trans-unit id="tx_bcvoting_domain_model_project.open">
+				<source>Open</source>
+			</trans-unit>
+			<trans-unit id="tx_bcvoting_domain_model_project.anonym">
+				<source>Anonym</source>
+			</trans-unit>
 			<trans-unit id="tx_bcvoting_domain_model_project.assignments">
 				<source>Assignments</source>
 			</trans-unit>

@@ -4,30 +4,83 @@
 
 <f:flashMessages renderMode="div" />
 <h2>{project.name}</h2>
-Txid: <a href="http://www.blockchain-voting.org:9333/BVS/tx/{project.reference}">{project.reference}</a>
 <f:render partial="Project/Properties" arguments="{project:project}" />
-
 
 <div class="tx-bc-voting link">
 	<f:for each="{project.ballots}" as="ballot">
+	
 		<f:if condition="{ballot.reference} != ''">
 			<div>
 				<f:link.action action="show" controller="Ballot" arguments="{ballot : ballot}">{ballot.name}</f:link.action> <br />
-				<f:if condition="{isAssigned} == 'true'">
-					<f:if condition="{ballot.balance} != 0">
-						<f:then>
-							<small>(You have {ballot.balance} votes.)</small>
-						</f:then>
-						<f:else>
-							<small>(0 Votes. Probably, you have already voted.)</small>
-						</f:else>
+					<f:if condition="{isAssigned} == 'true'">
+						
+						<f:if condition="{ballot.balance} != 0">
+							<f:then>
+								<small>(You have {ballot.balance} votes.)</small>
+							</f:then>
+							<f:else>
+								<small>(0 Votes. Probably, you have already voted.)</small>
+							</f:else>
+						</f:if>
 					</f:if>
-				</f:if>
 			</div>			
 		</f:if>
 	</f:for>
-</div>
+<div class="tx-bc-voting">
+	<hr /><h4>Wahlmodus</h4>
+	<f:if condition="{project.anonym}">
+	<f:then>
+	<b>Anonym:</b> es dürfen keine Benutzerkonten verwendet werden, 
+	die außer dem Benutzernamen z.B. Klar-Namen, Anschrift, Geburtsdatum etc. enthalten. 
+	Als E-Mail-Adresse sollte eine anonyme Einmal-Adresse verwendet werden.
+	<br />
+	<b>Geheim:</b> vor dem Benutzen des Online-Stimmzettels bestätigen Sie, dass Sie allein 
+	vor dem Wahlgerät sind und niemand Einsicht bei Ihrer Wahlentscheidung hat.
+	</f:then>
+	</f:if>
 
-<f:render partial="Blockchain/ShortInfo" arguments="{bcResult:bcResult}" />
+	<br />
+	<f:if condition="{project.open}">
+	<f:then>
+	<b>Offen:</b>jeder registrierte Benutzer kann teilnehmen.
+	</f:then>
+	<f:else>
+	<b>Geschlossen:</b> nur wahlberechtigte Benutzer können teilnehmen. 
+	Sie erhalten vom Wahlamt die nötigen Unterlagen*, 
+	um die Wahlberechtigung für diese Wahl Ihrem Account hinzuzufügen.
+	</f:else>
+	</f:if>
+	<br />
+	<b>Weitere Informationen:</b> klicken Sie auf den nachfolgenden Link, 
+	um zur offiziellen Website zu gelangen, die Ihnen Informationen zum Wahlgesetz, 
+	Kontaktinformationen zum Wahlleiter und zum Wahlamt bietet. 
+	<blockquote><a href="{project.infosite}" target="_blank">Info-Site</a></blockquote>
+</div>
+	<f:security.ifAuthenticated>
+		<f:then>
+			<f:if condition="{isAssigned} == 'true'">
+				<f:then>
+				</f:then>
+				<f:else>
+					<hr />
+					You're not assigned!
+				</f:else>
+			</f:if>
+		</f:then>
+		<f:else>	
+			<hr />	
+			You're not logged in! Please <f:link.page pageUid="41">Login</f:link.page> or <f:link.page pageUid="40">Register</f:link.page>.
+		</f:else>
+	</f:security.ifAuthenticated>	
+	
+	<f:if condition="{bcResult}">
+		<hr />
+		<f:if condition="{project.reference}">
+			Referenz-Nummer (Txid): <br />
+			<a target="_blank" href="{bcResult.nodeaddress}/{bcResult.chainname}/tx/{project.reference}">{project.reference}</a>
+		</f:if>
+		<f:render partial="Blockchain/ShortInfo" arguments="{result:bcResult}" />
+	</f:if>	
+</div>
 
 </f:section>

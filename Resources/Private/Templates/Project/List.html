@@ -7,7 +7,7 @@ Rev. 131
 <f:for each="{projects}" as="project">
 	<f:cycle values="{0: 'whitesmoke', 1: '#fff'}" as="color">
 		<div style="background-color: {color}">
-			<div><f:link.action action="show" arguments="{project: project}" title="{project.description}">{project.name}</f:link.action></div>
+			<div><f:link.action action="edit" arguments="{project: project}" title="{project.description}">{project.name}</f:link.action></div>
 			<div><f:format.date format="d.m.Y">{project.start}</f:format.date> - <f:format.date format="d.m.Y">{project.end}</f:format.date></div>
 		</div>
 	</f:cycle>

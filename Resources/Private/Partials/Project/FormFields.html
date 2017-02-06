@@ -35,11 +35,11 @@
 <div style="width:100%; margin: 10px 0px; display: inline-block;">
 	<hr />
 	<div>
-		<label for="Closed">Closed Project</label> (If yes, only invited users can assign)<br />
-		<f:form.radio name="closed" value="1" /> Yes <f:form.radio name="closed" value="0" /> No<br />
+		<label for="Open">Open Election</label> (If no, only invited users can assign)<br />
+		<f:form.radio property="open" value="1" /> Yes <f:form.radio name="open" value="0" /> No<br />
 		<hr />
 		<label for="Anonym">Anonymous assignments</label> (If yes, assigning requires existing voter wallets with assets belonging to the project)<br />
-		<f:form.radio name="anonym" value="1" /> Yes <f:form.radio name="anonym" value="0" /> No<br /><br />
+		<f:form.radio property="anonym" value="1" /> Yes <f:form.radio name="anonym" value="0" /> No<br /><br />
 	</div>
 	<hr />
 	<!-- div>
@@ -47,8 +47,4 @@
 		<f:form.textfield name="depositBtc" size="7" placeholder="0 BTC" readonly="1" style="text-align:right;" />
 		{Fund Current Deposit]
 	</div -->
-<<<<<<< HEAD
 </div>
-=======
-</div>
->>>>>>> d75d16d8fca1a4894b963dab23e2a035cf2526db

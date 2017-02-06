@@ -83,9 +83,13 @@ class ElectionController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	public function showAction(\Goettertz\BcVoting\Domain\Model\Project $project) {
 		$isAssigned = 'false';
 		$isAdmin 	= 'false';
+		$isLoggedin = 'false';
 		
 		$amount = 0;
 		// Benutzerdaten projektbezogen laden
+		if ($project->getReference() !== '') {
+			$this->addFlashMessage('No Reference-ID.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+		}
 		
 		if ($feuser = $this->userRepository->getCurrentFeUser()) {
 			$this->view->assign('feuser', $feuser);
@@ -111,9 +115,11 @@ class ElectionController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 				try {
 					if($bcArray = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getinfo()) {
 						$this->view->assign('bcResult', $bcArray);
+
+// 						$this->addFlashMessage($bcArray['nodeaddress'].' 118', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 					}
 					else {
-						$this->addFlashMessage('No Blockchain configured!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+						$this->addFlashMessage('Blockchain not properly configured.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 					}
 						
 					if ($assets = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getmultibalances($walletAddress)) {
@@ -138,13 +144,18 @@ class ElectionController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 					}
 				}
 				catch (\Exception $e) {
-					
+//					$this->addFlashMessage('Error 146: '.$e, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+				}
+				if (!is_string($bcArray['nodeaddress'])) {
+					$this->addFlashMessage('Blockchain not properly configured.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 				}
 			}
-// 			else {
-// 				$this->view->assign('blockchain', 'No rpc.');
-// 			}
+ 			else {
+				$this->addFlashMessage('Blockchain not configured.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+ 			}
  		}
+
+ 		
 		$this->view->assign('project', $project);
 		$this->view->assign('isAdmin', $isAdmin);
 		$this->view->assign('isAssigned', $isAssigned);

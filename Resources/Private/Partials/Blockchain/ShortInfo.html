@@ -1,12 +1,13 @@
-<f:if condition="{bcResult}">
+<!-- Revision 132 -->
+<f:if condition="{result.nodeaddress}">
 <f:then>
 	<h3>Blockchain-Info:</h3>
 	<table>
 		<tr>
-			<td>Node address:</td><td>{bcResult.nodeaddress}</td>
+			<td>Node address:</td><td>{result.nodeaddress}</td>
 		</tr>
 		<tr>
-			<td>Blocks:</td><td>{bcResult.blocks}</td>
+			<td>Blocks:</td><td>{result.blocks}</td>
 		</tr>
 	</table>
 </f:then>

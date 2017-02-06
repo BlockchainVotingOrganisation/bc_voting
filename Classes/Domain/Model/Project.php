@@ -214,10 +214,10 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $publicKey2 = NULL; 
 	
 	/**
-	 * 
+	 * open
 	 * @var boolean;
 	 */
-	protected $closed = false;
+	protected $open = false;
 	
 	/**
 	 * anonym

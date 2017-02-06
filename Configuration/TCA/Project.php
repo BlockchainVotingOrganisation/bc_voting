@@ -9,10 +9,10 @@ if (!defined ('TYPO3_MODE')) {
 $GLOBALS['TCA']['tx_bcvoting_domain_model_project'] = array(
 	'ctrl' => $GLOBALS['TCA']['tx_bcvoting_domain_model_project']['ctrl'],
 	'interface' => array(
-		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, name, password, reference, logo, category, description, start, end, ballots, infosite, forum_url, blockchain_name, rpc_server, rpc_password, rpc_user, rpc_port, assignments, wallet_address',
+		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, name, password, reference, logo, category, description, start, end, open, anonym, ballots, infosite, forum_url, blockchain_name, rpc_server, rpc_password, rpc_user, rpc_port, assignments, wallet_address',
 	),
 	'types' => array(
-		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, name, password, reference, logo, category, description, start, end, ballots, infosite, forum_url, blockchain_name, rpc_server, rpc_password, rpc_user, rpc_port, assignments, wallet_address, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime'),
+		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, name, password, reference, logo, category, description, start, end, open, anonym, ballots, infosite, forum_url, blockchain_name, rpc_server, rpc_password, rpc_user, rpc_port, assignments, wallet_address, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime'),
 	),
 	'palettes' => array(
 		'1' => array('showitem' => ''),
@@ -344,6 +344,23 @@ $GLOBALS['TCA']['tx_bcvoting_domain_model_project'] = array(
 						'type' => 'input',
 						'size' => 30,
 						'max' => 255,
+				)
+		),
+			
+		'anonym' => array(
+				'label' => 'LLL:EXT:bc_voting/Resources/Private/Language/locallang_db.xlf:tx_bcvoting_domain_model_project.anonym',
+				'config' => array(
+						'type' => 'check',
+						'default' => '0',
+				)
+		),
+			
+		'open' => array(
+				'label' => 'LLL:EXT:bc_voting/Resources/Private/Language/locallang_db.xlf:tx_bcvoting_domain_model_project.open',
+				'config' => array(
+						'type' => 'check',
+						'size' => 1,
+						'default' => '0',
 				)
 		),
 	),

@@ -6,12 +6,14 @@ Rev. 132
 
 <!-- List -->
 <f:for each="{projects}" as="project">
+<f:if condition="{project.reference} != ''">
 	<f:cycle values="{0: 'whitesmoke', 1: '#fff'}" as="color">
 		<div style="background-color: {color}">
 			<div><f:link.action controller="Election" action="show" arguments="{project: project}" title="{project.description}">{project.name}</f:link.action></div>
 			<div><f:format.date format="d.m.Y">{project.start}</f:format.date> - <f:format.date format="d.m.Y">{project.end}</f:format.date></div>
 		</div>
 	</f:cycle>
+</f:if>
 </f:for>
 <!-- End List -->
 
