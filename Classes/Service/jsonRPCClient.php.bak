@@ -27,6 +27,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * http://json-rpc.org/wiki/specification
  *
  * @author sergio <jsonrpcphp@inservibile.org>
+ *
+ * @Changes: Louis Göttertz <info2016@goettertz.de>
+ * @Revision 104
  */
 class jsonRPCClient {
 	
@@ -96,7 +99,8 @@ class jsonRPCClient {
 		
 		// check
 		if (!is_scalar($method)) {
-			throw new Exception('Method name has no scalar value');
+			$response['error'] = 'Method name has no scalar value';
+			return $response;
 		}
 		
 		// check
@@ -104,7 +108,9 @@ class jsonRPCClient {
 			// no keys
 			$params = array_values($params);
 		} else {
-			throw new Exception('Params must be given as array');
+			$response['error'] = 'Params must be given as array';
+// 			throw new Exception('Params must be given as array');
+			return $response;
 		}
 		
 		// sets notification or request task
@@ -130,24 +136,19 @@ class jsonRPCClient {
 							'content' => $request
 							));
 		$context  = stream_context_create($opts);
-		try {
-			if ($fp = fopen($this->url, 'r', false, $context)) {
-				$response = '';
-				while($row = fgets($fp)) {
-					$response.= trim($row)."\n";
-				}
-				$this->debug && $this->debug.='***** Server response *****'."\n".$response.'***** End of server response *****'."\n";
-				$response = json_decode($response,true);
-			
-			} else {
-				//throw new Exception('Unable to connect to '.$this->url);
-				return NULL;
-			}			
+		
+		if ($fp = fopen($this->url, 'r', false, $context)) {
+			$response = '';
+			while($row = fgets($fp)) {
+				$response.= trim($row)."\n";
+			}
+			$this->debug && $this->debug.='***** Server response *****'."\n".$response.'***** End of server response *****'."\n";
+			$response = json_decode($response,true);
+		
+		} else {
+			$response['error'] = 'Unable to connect to '.$this->url;
+			return $response;
 		}
-		catch (\Exception $e) {
-			return NULL;
-		}
-
 		
 		// debug output
 		if ($this->debug) {
@@ -158,10 +159,11 @@ class jsonRPCClient {
 		if (!$this->notification) {
 			// check
 			if ($response['id'] != $currentId) {
-				throw new Exception('Incorrect response id (request id: '.$currentId.', response id: '.$response['id'].')');
+				$response['error'] = 'Incorrect response id (request id: '.$currentId.', response id: '.$response['id'].')';
+				return $response;
 			}
 			if (!is_null($response['error'])) {
-				throw new Exception('Request error: '.$response['error']);
+				return $response;
 			}
 			
 			return $response['result'];

@@ -14,7 +14,7 @@ if (!defined('TYPO3_MODE')) {
  		'User' => 'list, show, new, create, edit, update, delete, import, upload, sendAssets, getNewAddress, removeAssignment',
 		'Blockchain' => 'show',
 		'Argument' => 'list, show, new, create, edit, update, delete',
-		'Ballot' => 'admin, show, new, create, edit, update, delete, sealBallot, vote, removeLogo',
+		'Ballot' => 'admin, show, new, create, edit, update, delete, sealBallot, removeLogo',
 		
 	),
 	// non-cacheable actions
@@ -26,7 +26,7 @@ if (!defined('TYPO3_MODE')) {
  		'User' => 'list, show, new, create, edit, update, delete, import, upload, sendAssets, getNewAddress, removeAssignment',
 		'Blockchain' => 'show',
 		'Argument' => 'list, show, new, create, edit, update, delete',
-		'Ballot' => 'admin, show, new, create, edit, update, delete, sealBallot, vote, removeLogo',		
+		'Ballot' => 'admin, show, new, create, edit, update, delete, sealBallot, removeLogo',		
 	)
 	
 );
@@ -79,6 +79,7 @@ if (!defined('TYPO3_MODE')) {
 				'Assignment' => 'list, show, settings, edit, new, create',
 				'Ballot' => 'list,show, new, create, edit, update, delete, sealBallot, vote, removeLogo',
 				'User' => 'list, show',
+				'Option' => 'edit, update',
 				
 		),
 		array(
@@ -87,6 +88,7 @@ if (!defined('TYPO3_MODE')) {
 				'Assignment' => 'list, show, edit, new, create',
 				'Ballot' => 'list, show, new, create, edit, update, delete, sealBallot, vote, removeLogo',
 				'User' => 'list, show',
+				'Option' => 'edit, update',
 		)
 
 );

@@ -51,7 +51,7 @@ class jsonRPCClient {
 	 *
 	 * @var integer
 	 */
-	private $id;
+	private $id = 0;
 	/**
 	 * If true, notifications are performed instead of requests
 	 *
@@ -131,24 +131,30 @@ class jsonRPCClient {
 		
 		// performs the HTTP POST
 		$opts = array ('http' => array (
-							'method'  => 'POST',
-							'header'  => 'Content-type: application/json',
-							'content' => $request
-							));
+				'method'  => 'POST',
+				'header'  => 'Content-type: application/json',
+				'content' => $request
+		));
 		$context  = stream_context_create($opts);
-		
-		if ($fp = fopen($this->url, 'r', false, $context)) {
-			$response = '';
-			while($row = fgets($fp)) {
-				$response.= trim($row)."\n";
-			}
-			$this->debug && $this->debug.='***** Server response *****'."\n".$response.'***** End of server response *****'."\n";
-			$response = json_decode($response,true);
-		
-		} else {
-			$response['error'] = 'Unable to connect to '.$this->url;
+		try {			
+			if ($fp = fopen($this->url, 'r', false, $context)) {
+				$response = '';
+				while($row = fgets($fp)) {
+					$response.= trim($row)."\n";
+				}
+				$this->debug && $this->debug.='***** Server response *****'."\n".$response.'***** End of server response *****'."\n";
+				$response = json_decode($response,true);
+			
+			} else {
+				$response['error'] = 'Unable to connect to '.$this->url;
+				return $response;
+			}	
+		} catch (Exception $e) {
+			$response['error'] = $e;
 			return $response;
 		}
+
+
 		
 		// debug output
 		if ($this->debug) {
@@ -166,7 +172,7 @@ class jsonRPCClient {
 				return $response;
 			}
 			
-			return $response['result'];
+			return $response['result']; // Blockchain-Result
 			
 		} else {
 			return true;

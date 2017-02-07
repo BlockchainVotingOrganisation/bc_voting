@@ -87,7 +87,7 @@ class ElectionController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		
 		$amount = 0;
 		// Benutzerdaten projektbezogen laden
-		if ($project->getReference() !== '') {
+		if (empty($project->getReference())) {
 			$this->addFlashMessage('No Reference-ID.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 		}
 		

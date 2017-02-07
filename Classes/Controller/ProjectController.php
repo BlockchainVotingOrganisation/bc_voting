@@ -382,7 +382,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 				$rpcServer = $project->getRpcServer();
 				if (is_string($rpcServer) && $rpcServer !== '') {
 					try {
-// 						$bc = new \Goettertz\BcVoting\Service\Blockchain();
+
 						$bcArray = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getinfo();
 						if(is_array($bcArray)) {
 							$this->view->assign('blockchain', $bcArray);
@@ -390,7 +390,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 						}
 					}
 					catch (\Exception $e) {
-						// 			echo $e.' '.$project->getName();
+						
 					}
 				}
 				else {
@@ -1027,10 +1027,10 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		# Checks
 		// VTC payment address
 		$paymentAddress = $this->settings['payment_vtc_address'];
-		if (empty($paymentAddress)) {
-			$this->addFlashMessage('No payment address! '.$this->settings['payment_vtc_address'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-			$this->redirect('edit',NULL,NULL, array('project' => $project));			
-		}
+// 		if (empty($paymentAddress)) {
+// 			$this->addFlashMessage('No payment address! '.$this->settings['payment_vtc_address'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+// 			$this->redirect('edit',NULL,NULL, array('project' => $project));			
+// 		}
 		
 		# Check if rpc-settings are configured
 		$rpc = $project->checkRpc($project,$this->settings);
@@ -1079,7 +1079,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		if ($vtc_amount < 0.00000001) $vtc_amount = 0.00000001;
 			
 		# check if balance is enough
-		$balance = $bc::getRpcResult($project->getRpcServer(),$project->getRpcPort(),$project->getRpcUser(),$project->getRpcPassword())->getaddressbalances($project->getWalletAddress());
+		$balance = Blockchain::getRpcResult($project->getRpcServer(),$project->getRpcPort(),$project->getRpcUser(),$project->getRpcPassword())->getaddressbalances($project->getWalletAddress());
 		if (is_double($balance[0]['qty'])) {
 			$balance = $balance[0]['qty'];
 		}
@@ -1095,7 +1095,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 			
 // 		$this->addFlashMessage('From: '.$project->getWalletAddress().' Amount: '.doubleval($vtc_amount).' to '.$paymentAddress, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
 		
-		if ($ref = $bc::storeData($project->getRpcServer(),$project->getRpcPort(),$project->getRpcUser(),$project->getRpcPassword(), trim($project->getWalletAddress()), trim($paymentAddress), doubleval($vtc_amount), $json)  ) {				
+		if ($ref = Blockchain::storeData($project->getRpcServer(),$project->getRpcPort(),$project->getRpcUser(),$project->getRpcPassword(), trim($project->getWalletAddress()), $project->getWalletAddress(), doubleval($vtc_amount), $json)  ) {				
 			// wenn ein array zurückgegeben wird ist irgendetwas schiefgelaufen ...
 			if (!is_array($ref)) {					
 				// wenn erolgreich wird ein string mit txid zurückgegeben

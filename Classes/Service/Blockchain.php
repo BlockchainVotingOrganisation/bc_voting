@@ -25,37 +25,42 @@ namespace Goettertz\BcVoting\Service;
 /**
  * 
  * @author louis
- * Rev. 130
+ * Rev. 132
  */
-
-// interface Rpc {
-	
-// 	/**
-// 	 * @param string $rpcServer
-// 	 * @param string $rpcPort
-// 	 * @param string $rpcUser
-// 	 * @param string $rpcPassword
-// 	 */
-// 	public static function getRpcResult($rpcServer, $rpcPort, $rpcUser, $rpcPassword);
-// }
-
 
 define('const_issue_custom_fields', 10);
 
+use \Goettertz\BcVoting\Service\jsonRPCClient;
+
 class Blockchain {
 	
+	/**
+	 * @var string
+	 */
 	protected $multichain_chain = '';
 	
+	/**
+	 * @param unknown $chain
+	 */
 	public function set_multichain_chain($chain)
 	{
 		$this->multichain_chain=$chain;
 	}
 	
+	/**
+	 * @var unknown
+	 */
 	protected $multichain_labels;
 	
+	/**
+	 * @var unknown
+	 */
 	protected $multichain_getinfo;
 	
-	protected $multichain_max_data_size;
+	/**
+	 * @var integer
+	 */
+	protected $multichain_max_data_size = 3072;
 	
 	/**
 	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
@@ -171,7 +176,11 @@ class Blockchain {
 	 * @return \Goettertz\BcVoting\Service\jsonRPCClient $blockchain
 	 */
 	public static function getRpcResult($rpcServer, $rpcPort, $rpcUser, $rpcPassword) {		
-		return $blockchain =  new \Goettertz\BcVoting\Service\jsonRPCClient('http://'.$rpcUser.':'.$rpcPassword.'@'.$rpcServer.':'.$rpcPort.'/');
+		$blockchain =  new \Goettertz\BcVoting\Service\jsonRPCClient('http://'.$rpcUser.':'.$rpcPassword.'@'.$rpcServer.':'.$rpcPort.'/');
+// 		if (is_string($blockchain['error'])) {
+			
+// 		}
+		return $blockchain;
 	}
 	
 	/**
