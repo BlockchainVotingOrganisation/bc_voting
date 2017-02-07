@@ -1,7 +1,7 @@
 <?php
 namespace Goettertz\BcVoting\Controller;
-// error_reporting(E_ALL);
-// ini_set("display_errors", 1);
+//error_reporting(E_ALL);
+ini_set("display_errors", 1);
 
 /***************************************************************
  *
@@ -382,10 +382,11 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 				$rpcServer = $project->getRpcServer();
 				if (is_string($rpcServer) && $rpcServer !== '') {
 					try {
-						$bc = new \Goettertz\BcVoting\Service\Blockchain();
-						$bcArray = $bc::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getinfo();
+// 						$bc = new \Goettertz\BcVoting\Service\Blockchain();
+						$bcArray = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getinfo();
 						if(is_array($bcArray)) {
 							$this->view->assign('blockchain', $bcArray);
+							if (empty($project->getWalletAddress())) $this->setWalletAddress($project);
 						}
 					}
 					catch (\Exception $e) {
@@ -572,7 +573,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 	protected function allocateAssets(\Goettertz\BcVoting\Domain\Model\Assignment $assignment) {
 		
 		$project = $assignment->getProject();
-		$bc = new \Goettertz\BcVoting\Service\Blockchain();
+// 		$bc = new \Goettertz\BcVoting\Service\Blockchain();
 		$newAddress = $bc::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getnewaddress();
 		$assignment->setWalletAddress($newAddress);
 		$this->assignmentRepository->update($assignment);
@@ -1046,13 +1047,14 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		
 		# wallet address
 		$walletAddress = $project->getWalletAddress();
-		$bc = new \Goettertz\BcVoting\Service\Blockchain();
+// 		$bc = new \Goettertz\BcVoting\Service\Blockchain();
 		if (empty($walletAddress)) {
-			$newAddress = $bc::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getnewaddress();
-			$project->setWalletAddress($newAddress);
-			$this->projectRepository->update($project);
-			$this->addFlashMessage('No wallet address. Got new one. '.$newAddress, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
-			// 			$this->redirect('edit',NULL,NULL, array('project' => $project));
+			$this->setWalletAddress($project);
+// 			$newAddress = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getnewaddress();
+// 			$project->setWalletAddress($newAddress);
+// 			$this->projectRepository->update($project);
+// 			$this->addFlashMessage('No wallet address. Got new one. '.$newAddress, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+// 			// 			$this->redirect('edit',NULL,NULL, array('project' => $project));
 		}
 		
 		# Check if already sealed
@@ -1359,6 +1361,19 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 			$result['txids'] = $txid;
  		}
 		return $result;
+	}
+	
+	private function setWalletAddress(\Goettertz\BcVoting\Domain\Model\Project $project) {
+		try {
+			$newAddress = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getnewaddress();
+			$project->setWalletAddress($newAddress);
+			$this->projectRepository->update($project);
+			$this->addFlashMessage('No wallet address. Got new one. '.$newAddress, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+		} catch (Exception $e) {
+			$this->addFlashMessage('Error: '.$e, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+		}
+			// 			$this->redirect('edit',NULL,NULL, array('project' => $project));
+				
 	}
 }
 ?>

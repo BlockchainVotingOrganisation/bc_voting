@@ -10,10 +10,7 @@ Rev. 109
 
 	<div width="100%">
 		<f:form action="update" name="project" object="{project}">
-			<div class="tx-bc-voting_inner">
-				<h4>Wallet Address:</h4>
-				<f:form.textfield name="walletAddress" size="64" />
-			</div>
+
 			<div style="border: 0px solid black; margin:0;" class="tx-bc-voting_inner">
 				<f:render partial="Project/BlockchainParams" arguments="{action : 'update', project : project}" />
 				<f:form.submit value="Save" /><f:form.submit value="Test" />
@@ -22,6 +19,10 @@ Rev. 109
 				<f:if condition="{blockchain}">
 					<f:render partial="Blockchain/Parameter" arguments="{action : 'update', project : project, blockchain: blockchain}" />	
 				</f:if>
+			</div>
+			<div class="tx-bc-voting_inner">
+				<h4>Wallet Address:</h4>
+				<f:form.textfield property="walletAddress" size="64" />
 			</div>
 		</f:form>
 	</div>

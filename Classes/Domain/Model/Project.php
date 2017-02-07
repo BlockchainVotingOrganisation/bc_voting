@@ -556,11 +556,12 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return string $walletAddress
 	 */
 	public function getWalletAddress() {
-		$bc = new Blockchain();
-		if ($result = $bc->getRpcResult($this->rpcServer, $this->rpcPort, $this->rpcUser, $this->rpcPassword)->validateaddress($this->walletAddress)) {
-			if ($result) return $result['address'];
-		}
-		return NULL;
+// 		$bc = new Blockchain();
+// 		if ($result = $bc->getRpcResult($this->rpcServer, $this->rpcPort, $this->rpcUser, $this->rpcPassword)->validateaddress($this->walletAddress)) {
+// 			if ($result) return $result['address'];
+// 		}
+// 		return NULL;
+	return $this->walletAddress;
 	}
 	
 	/**
