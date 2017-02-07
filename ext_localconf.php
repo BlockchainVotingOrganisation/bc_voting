@@ -75,7 +75,7 @@ if (!defined('TYPO3_MODE')) {
 		'BVS_Office',
 		array(
 				
-				'Project' => 'list, show, edit, settings, new, create, update, editbcparams',
+				'Project' => 'list, show, edit, settings, new, create, update, editbcparams, seal, import',
 				'Assignment' => 'list, show, settings, edit, new, create',
 				'Ballot' => 'list,show, new, create, edit, update, delete, sealBallot, vote, removeLogo',
 				'User' => 'list, show',
@@ -83,7 +83,7 @@ if (!defined('TYPO3_MODE')) {
 		),
 		array(
 				
-				'Project' => 'list, show, edit, new, create, update, editbcparams',
+				'Project' => 'list, show, edit, new, create, update, editbcparams, seal, import',
 				'Assignment' => 'list, show, edit, new, create',
 				'Ballot' => 'list, show, new, create, edit, update, delete, sealBallot, vote, removeLogo',
 				'User' => 'list, show',
