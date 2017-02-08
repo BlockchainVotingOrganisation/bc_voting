@@ -1,7 +1,7 @@
 <?php
 namespace Goettertz\BcVoting\Controller;
 
-ini_set("display_errors", 1);
+// ini_set("display_errors", 1);
 
 /***************************************************************
  *
@@ -29,7 +29,7 @@ ini_set("display_errors", 1);
  ***************************************************************/
 
 /**
- * Revision 131:
+ * Revision 132:
  * 
  */
 
@@ -231,17 +231,19 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 					if (is_string($rpcServer) && $rpcServer !== '') {
 						try {
 							if($bcArray = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->listpermissions('issue')) {
-								$this->view->assign('issuePermission', $bcArray[0]['address']);
+								if (!is_string($bcArray['error'])) {
+									$this->view->assign('issuePermission', $bcArray[0]['address']);
+								}
+								else {
+									$this->addFlashMessage('Blockchain not properly configured!<br />'.$bcArray['error'].'<br />(238)', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+								}
 							}
 
 							
 						} catch (\Exception $e) {
-							$this->addFlashMessage('No Blockchain configured!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+							$this->addFlashMessage('Blockchain not properly configured!<br /><br />(238)', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 						}	
 					}		
-				
-									
-					
 					$this->view->assign('ballot', $ballot);
 					$this->view->assign('assigned', true);
 					$this->view->assign('admin', 'true');
@@ -397,8 +399,7 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 // // 						} catch (Exception $e) {
 // // 							$result['error'] = $e;
 // // 						}
-						
-						
+												
 						# no asset in bc
 						if (count($asset) === 0) {
 							$newAsset = new \Goettertz\BcVoting\Domain\Model\Asset();
@@ -407,11 +408,9 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 							$newAsset->setDivisibility(1);
 							$params = array('name' => $newAsset->getName(), 'open' => true);
 							if ($result = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->issue($issueAddress, $params, $newAsset->getQuantity(), $newAsset->getDivisibility())) {
-									
-							
+															
 								$asset = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->listassets($result);
-							
-									
+															
 								$newAsset->setAssetId($asset[0]['assetref']);
 									
 								$this->assetRepository->add($newAsset);
@@ -431,7 +430,6 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
  					else {
  						# verify asset
  					}
-
 		
 					# Check if sealed
 					if ($ballot->getReference() === '') {
@@ -510,7 +508,7 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 					}
 			
 					if(!isset($result['error'])) {
-						$this->addFlashMessage($result, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+						$this->addFlashMessage($result['msg'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
 					}
 					else {
 						$this->addFlashMessage($result['error'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
@@ -530,7 +528,7 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 		}
 		
 		#Finally
-		$this->redirect('evaluation', 'Project', NULL, array('project' => $project, 'count' => $countVotings));
+		$this->redirect('show', 'Election', NULL, array('project' => $project, 'count' => $countVotings));
 	}
 	
 	/**
@@ -559,15 +557,15 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 				return $result['error'] = 'Error (525): no address to send from!';
 			}
 			
-			if ($project->getCategory()->getUlterrior() == true) {
+// 			if ($project->getCategory()->getUlterrior() == true) {
 				
-				#prüfen, ob es schon eine addresse gibt...
-				# wenn nicht, dann neue addresse erzeugen...
+// 				#prüfen, ob es schon eine addresse gibt...
+// 				# wenn nicht, dann neue addresse erzeugen...
 				
-				$toaddress = $ballot->getWalletAddress(); // ballot-address, wenn geheime Wahl
-			}
-			else $toaddress = $option->getWalletAddress(); // option-address, wenn nicht geheim
-			
+// 				$toaddress = $ballot->getWalletAddress(); // ballot-address, wenn geheime Wahl
+// 			}
+// 			else $toaddress = $option->getWalletAddress(); // option-address, wenn nicht geheim
+			$toaddress = $ballot->getWalletAddress(); // ballot-address, wenn geheime Wahl			
 			$votes = Blockchain::getAssetBalanceFromAddress($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), $fromaddress, $asset);
 
 			# Stimmrechte Anzahl
@@ -593,7 +591,8 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 			
 						$this->votingRepository->add($voting);
 						$strVotes = print_r($votes[$fromaddress][0]['qty'],true);
-						$result['msg'] = 'Voting '.$project->getName().': success!<br />TxId: '.$ref.' Address: '.$toaddress.' Amount: '.implode(':',$amount);
+						$result['msg'] = 'Voting success!<br />TxId: '.$ref;
+						$result['msg'] .='<br />Encrypted option text:<pre>'.$secret.'</pre>';
 					}
 					else {
 						$result['error'] = 'Voting failed (545). RPC-Error: '.$ref['error'].' '.$hash.' '.$ref['ref'];

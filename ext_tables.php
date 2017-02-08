@@ -6,17 +6,11 @@ if (!defined('TYPO3_MODE')) {
 	die('Access denied.');
 }
 
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-	$_EXTKEY,
-	'Project',
-	'BVS-Project'
-);
-
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-		$_EXTKEY,
-		'Bvs_nav1',
-		'BVS-Navigation'
-		);
+// \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+// 	$_EXTKEY,
+// 	'Project',
+// 	'BVS-Project'
+// );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
 		$_EXTKEY,

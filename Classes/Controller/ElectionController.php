@@ -57,6 +57,14 @@ class ElectionController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	protected $userRepository = NULL;
 	
 	/**
+	 * ballotRepository
+	 *
+	 * @var \Goettertz\BcVoting\Domain\Repository\BallotRepository
+	 * @inject
+	 */
+	protected $ballotRepository = NULL;
+	
+	/**
 	 * action list
 	 *
 	 * @return void

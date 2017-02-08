@@ -138,6 +138,9 @@
 			<trans-unit id="tx_bcvoting_domain_model_assignment.votes">
 				<source>Votes</source>
 			</trans-unit>
+			<trans-unit id="tx_bcvoting_domain_model_assignment.wallet_address">
+				<source>Wallet Address</source>
+			</trans-unit>
 			<trans-unit id="tx_bcvoting_domain_model_role">
 				<source>Role</source>
 			</trans-unit>
