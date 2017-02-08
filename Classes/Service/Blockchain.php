@@ -25,7 +25,7 @@ namespace Goettertz\BcVoting\Service;
 /**
  * 
  * @author louis
- * Rev. 132
+ * Rev. 133
  */
 
 define('const_issue_custom_fields', 10);
@@ -176,7 +176,7 @@ class Blockchain {
 	 * @return \Goettertz\BcVoting\Service\jsonRPCClient $blockchain
 	 */
 	public static function getRpcResult($rpcServer, $rpcPort, $rpcUser, $rpcPassword) {		
-		$blockchain =  new \Goettertz\BcVoting\Service\jsonRPCClient('http://'.$rpcUser.':'.$rpcPassword.'@'.$rpcServer.':'.$rpcPort.'/');
+		$blockchain =  new jsonRPCClient('http://'.$rpcUser.':'.$rpcPassword.'@'.$rpcServer.':'.$rpcPort.'/');
 // 		if (is_string($blockchain['error'])) {
 			
 // 		}
@@ -362,6 +362,31 @@ class Blockchain {
 		
 							$labels=multichain_labels();
 		}		
+	}
+	
+	/**
+	 * checkWalletAddress
+	 * @param string $rpcServer
+	 * @param string $rpcPort
+	 * @param string $rpcUser
+	 * @param string $rpcPassword
+	 * @param string $address
+	 * @param bool $createWatchonlyAddress
+	 * @return bool
+	 */
+	public static function checkWalletAddress($rpcServer, $rpcPort, $rpcUser, $rpcPassword, $address, $createWatchonlyAddress = FALSE) {
+		if ($walletaddresses =  self::getRpcResult($rpcServer, $rpcPort, $rpcUser, $rpcPassword)->getaddresses())
+		foreach ($walletaddresses AS $myaddress) {
+			if ($myaddress === $address) {
+				return true;
+			}
+		}
+		# else if not found: create watchonly address
+		if (self::getRpcResult($rpcServer, $rpcPort, $rpcUser, $rpcPassword)->importaddress($address) === false)
+			return true;
+		# else if import failed
+		return false;
+		
 	}
 }
 ?>

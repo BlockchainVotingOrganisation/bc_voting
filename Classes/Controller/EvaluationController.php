@@ -170,8 +170,11 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
  			$ballotO = json_decode($result['Project']['Blockchain']['Ballot Information'][$i]['Json']);
  			
  			$result['Project']['Blockchain']['Ballot Information'][$i]['Address'] = $ballotO->walletaddress;
- 			$result['Project']['Blockchain']['Ballot Information'][$i]['TxIds'] =
- 			$data = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->listaddresstransactions($ballotO->walletaddress, 100);
+ 			if ($obj = Blockchain::checkWalletAddress($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), $ballotO->walletaddress, true))
+ 			{
+ 				$result['Project']['Blockchain']['Ballot Information'][$i]['TxIds'] =
+ 				$data = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->listaddresstransactions($ballotO->walletaddress, 100);
+ 			}
  			$result['Project']['Blockchain']['Ballot Information'][$i]['Option Results'] = 'Noch nich fertich.';
  			$i++;
  		}
