@@ -1,0 +1,23 @@
+<!-- Revision 133 -->
+<f:debug>{result}</f:debug>
+<div class="tx-bc-voting">
+	<h5>Results</h5>
+ 	<f:if condition="{result}">
+ 	<f:then>
+		<h6>List result</h6>
+		<f:for each="{result.lists}" as="option" >
+			<f:if condition="{option.parent} == 0">
+				<div>
+					{option.name} (<f:format.number decimals="1" decimalSeparator="," thousandsSeparator=".">{option.percent}</f:format.number> %)
+				</div>
+			</f:if>
+		</f:for>
+		
+		<img src="https://chart.googleapis.com/chart?cht=p3&chd=t:<f:for each="{result.lists}" as="option" iteration="itemIterator">{option.percent}<f:if condition="{itemIterator.cycle}  != {f:count(subject: result.lists)}">,</f:if></f:for>&chs=800x200&chl=<f:for each="{result.lists}" as="option"  iteration="itemIterator">{option.name}<f:if condition="{itemIterator.cycle} != {f:count(subject: result.lists)}">|</f:if></f:for>&chtt=Distribution&chco=<f:for each="{result.lists}" as="option" iteration="itemIterator">{option.color}<f:if condition="{itemIterator.cycle}  != {f:count(subject: result.lists)}">,</f:if></f:for>" alt="Distribution" style="border:1px solid black;" />		
+	</f:then>
+	<f:else>
+		No result!
+	</f:else>
+	</f:if>
+	
+</div>

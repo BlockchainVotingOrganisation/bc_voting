@@ -1,0 +1,28 @@
+<f:layout name="Default" />
+Rev. 133
+<f:section name="main">
+
+<f:flashMessages renderMode="div" />
+
+<!-- List -->
+<f:for each="{projects}" as="project">
+	<f:cycle values="{0: 'whitesmoke', 1: '#fff'}" as="color">
+		<div style="background-color: {color}; padding: 10px;">
+			<f:if condition="{project.reference} != ''">
+			<f:then>
+					
+				<div><f:link.action controller="Evaluation" action="show" arguments="{project: project}" title="{project.description}">{project.name}</f:link.action></div>
+				<div><f:format.date format="d.m.Y">{project.start}</f:format.date> - <f:format.date format="d.m.Y">{project.end}</f:format.date></div>
+					
+			</f:then>
+			<f:else>
+					
+				<div>{project.name} (No approval)</div>
+				<div><f:format.date format="d.m.Y">{project.start}</f:format.date> - <f:format.date format="d.m.Y">{project.end}</f:format.date></div>
+			</f:else>
+			</f:if>
+		</div>
+	</f:cycle>
+</f:for>
+
+</f:section>

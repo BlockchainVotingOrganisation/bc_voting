@@ -1,0 +1,50 @@
+<!-- Rev 133 -->
+<f:layout name="Default" />
+<f:section name="main">
+
+<f:flashMessages renderMode="div" />
+<h3>{project.name}</h3>
+<f:render partial="Project/Properties" arguments="{project:project}" />
+<hr />
+[<b>Checks:</b> Ballot | Voting | Election] [<b>Rohdaten:</b> Stimmabgabe | Auswertung]
+<hr />
+<div>
+	<h4>Übersicht der Ergebnisse</h4>
+	<ul>
+		<li>Beteiligung: abgegebene Stimmen: </li>
+		<li>Auswertung: Verteilung der abgegebenen Stimmen</li>
+	</ul>
+	<f:render partial="Evaluation/Results" arguments="{result:result}" />
+	
+</div>
+
+<div class="tx-bc-voting">
+
+	<f:security.ifAuthenticated>
+		<f:then>
+			<f:if condition="{isAssigned} == 'true'">
+				<f:then>
+				</f:then>
+				<f:else>
+					<hr />
+					You're not assigned!
+				</f:else>
+			</f:if>
+		</f:then>
+		<f:else>	
+			<hr />	
+			You're not logged in! Please <f:link.page pageUid="41">Login</f:link.page> or <f:link.page pageUid="40">Register</f:link.page>.
+		</f:else>
+	</f:security.ifAuthenticated>	
+	
+	<f:if condition="{bcResult}">
+		<hr />
+		<f:if condition="{project.reference}">
+			Referenz-Nummer (Txid): <br />
+			<a target="_blank" href="http://blockchain-voting.org:9333/{project.blockchainName}/tx/{project.reference}">{project.reference}</a>
+		</f:if>
+		<f:render partial="Blockchain/ShortInfo" arguments="{result:bcResult}" />
+	</f:if>	
+</div>
+
+</f:section>
