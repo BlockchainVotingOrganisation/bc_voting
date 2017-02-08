@@ -419,7 +419,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 
 		// Nur update, wenn login noch möglich
 		if ($this->request->hasArgument('save_seal')) {
-			$this->addFlashMessage('The project was sealed.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+			$this->addFlashMessage('The project was sealed.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 		}
 		if ($user = $this->userRepository->getCurrentFeUser()) {
 
@@ -446,7 +446,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 				$this->redirect($redirect['action'],$redirect['controller'],$redirect['extension'], array('project' => $project));
 			}			
 		}
-		$this->redirect('edit','Project','BcVoting',array('project'=>$project));
+		$this->redirect('show','Project','BcVoting',array('project'=>$project));
 	}
 
 	/**

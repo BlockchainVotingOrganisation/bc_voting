@@ -82,4 +82,17 @@ if (!defined('TYPO3_MODE')) {
 				'Wallet' => 'show',
 		)
 );
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+	'Goettertz.' . $_EXTKEY,
+	'BVS_Evaluation',
+	array(
+			'Evaluation' => 'list, show',
+			
+	),
+	array(
+			'Evaluation' => 'list, show',
+			
+	)
+);
 ?>

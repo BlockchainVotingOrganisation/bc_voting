@@ -78,6 +78,9 @@
 			<trans-unit id="tx_bcvoting_domain_model_project.forumUrl">
 				<source>Official Forum Site</source>
 			</trans-unit>
+			<trans-unit id="tx_bcvoting_domain_model_project.blockchainExplorer">
+				<source>Blockchain Explorer URL</source>
+			</trans-unit>
 			<trans-unit id="tx_bcvoting_domain_model_ballot">
 				<source>Ballot</source>
 			</trans-unit>

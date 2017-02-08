@@ -1,6 +1,6 @@
 <?php
 /**
- * Rev.132
+ * Rev.133
  */
 if (!defined('TYPO3_MODE')) {
 	die('Access denied.');
@@ -21,13 +21,19 @@ if (!defined('TYPO3_MODE')) {
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
 		$_EXTKEY,
 		'BVS_Main',
-		'BVS Main PlugIn'
+		'BVS Main'
 		);
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
 		$_EXTKEY,
 		'BVS_Office',
 		'BVS Office'
+		);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+		$_EXTKEY,
+		'BVS_Evaluation',
+		'BVS Evaluation'
 		);
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript', 'bc_voting');

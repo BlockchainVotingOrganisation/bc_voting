@@ -29,7 +29,7 @@ use Goettertz\BcVoting\Service\Blockchain;
  ***************************************************************/
 
 /**
- * Revision 131
+ * Revision 133
  */
 
 /**
@@ -138,10 +138,16 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $infosite = '';
 	
 	/**
-	 *
+	 * forumUrl
 	 * @var string
 	 */
 	protected $forumUrl = '';
+	
+	/**
+	 * blockchainExplorer
+	 * @var string
+	 */
+	protected $blockchainExplorer = '';
 	
 	/**
 	 * 
@@ -710,6 +716,20 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 	
 	/**
+	 * returns the blockchainExplorer
+	 */
+	public function getBlockchainExplorer() {
+		return $this->blockchainExplorer;
+	}
+	
+	/**
+	 * sets the blockchainExplorer
+	 */
+	public function setBlockchainExplorer($blockchainExplorer) {
+		$this->blockchainExplorer = $blockchainExplorer;
+	}
+	
+	/**
 	 *
 	 * @return string | false
 	 */
@@ -768,7 +788,7 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * Check if rpc-settings are configured
 	 * 
 	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
-	 * @param string $default
+	 * @param array $default
 	 * @return \Goettertz\BcVoting\Domain\Model\Project | string
 	 */
 	public function checkRpc(\Goettertz\BcVoting\Domain\Model\Project $project, $default = FALSE) {
