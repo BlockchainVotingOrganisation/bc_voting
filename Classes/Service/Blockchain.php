@@ -366,6 +366,11 @@ class Blockchain {
 	
 	/**
 	 * checkWalletAddress
+	 * 
+	 * checks if address is inside local wallet and creates a watchonly address if not and $createWatchonlyAddress is true.
+	 * 
+	 * returns true if address exists or watchonly address is imported.
+	 *  
 	 * @param string $rpcServer
 	 * @param string $rpcPort
 	 * @param string $rpcUser
