@@ -388,8 +388,8 @@ class Blockchain {
 		}
 		# else if not found: create watchonly address
 		if ($createWatchonlyAddress === true)
-		if (self::getRpcResult($rpcServer, $rpcPort, $rpcUser, $rpcPassword)->importaddress($address) === false)
-			return true;
+			if (self::getRpcResult($rpcServer, $rpcPort, $rpcUser, $rpcPassword)->importaddress($address) === false)
+				return true;
 		# else if import failed
 		return false;
 	}
