@@ -95,35 +95,37 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 		
 		$result = array();
 		
-		# Check if rpc-settings are configured
+		if (empty($project->getReference())) {
+			$this->addFlashMessage('No Reference-ID.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+		}
+
+
+#		#Else ################### Check if rpc-settings are configured -> soll in eingene Funktion! return result[rpc] und result[bcinfo]
+		
 		$rpc = $project->checkRpc($project, $this->settings);
 		if (is_string($rpc)) { // Fehlermeldung wurde ausgegeben
 			$this->addFlashMessage($rpc, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-// 				$this->redirect('show',NULL,NULL, array('project' => $project));
 		}
 		else if (is_object($rpc)){
 			$project = $rpc; // Object 'Project' mit RPC-Eigenschaften wurde ausgegeben
 		}
 		else { // Irgendetwas anderes wurde ausgegeben.
 			$this->addFlashMessage('Unkown error.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-// 				$this->redirect('show',NULL,NULL, array('project' => $project));
 		}
-					
-		$rpcServer = $project->getRpcServer();
 		
-		if (is_string($rpcServer) && $rpcServer !== '') {
+		if (is_string($project->getRpcServer()) && $project->getRpcServer() !== '') {
 			try {
 				if($bcArray = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getinfo()) {
 					$this->view->assign('bcResult', $bcArray);
-// 						$this->addFlashMessage($bcArray['nodeaddress'].' 118', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 				}
 				else {
 					$this->addFlashMessage('Blockchain not properly configured.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 				}						
 			}
 			catch (\Exception $e) {
-//				$this->addFlashMessage('Error 146: '.$e, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+				$this->addFlashMessage('Error 131: '.$e, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 			}
+			
 			if (!is_string($bcArray['nodeaddress'])) {
 				$this->addFlashMessage('Blockchain not properly configured.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 			}
@@ -131,69 +133,101 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
  		else {
 			$this->addFlashMessage('Blockchain not configured.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
  		}
- 		
- 		if (empty($project->getReference())) {
- 			$this->addFlashMessage('No Reference-ID.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
- 		}
+# 		#################################################
  		
  		$result['Database']['TxId'] = $project->getReference();
  		$result['Database']['Name'] = $project->getName();
- 		$result['Database']['Ballots'] = $project->getBallots();
-		
- 		$data = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getwallettransaction($project->getReference(),true);
- 		$result['Blockchain']['Metadata'] = $data[data][0]; 
- 		
- 		$result['Blockchain']['Json'] = Blockchain::retrieveData($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), trim($project->getReference()));
- 		
- 		if (isset($result['Blockchain']['Json']['error'])) {
- 			# On Error
- 			$this->addFlashMessage($bcdata['error'].' (776)', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
- 		}
- 		else { 
- 			# Cast json to stdClass
- 			$result['Blockchain']['ProjectObject'] = json_decode($result['Blockchain']['Json']);
- 		}
- 		
- 		$ballots = $result['Blockchain']['ProjectObject']->ballots;
- 		
- 		$i = 0;
- 		foreach ($ballots AS $ballot) {
- 			if (is_a($ballot, 'stdClass', true)) {
- 				$ballot = (array) $ballot;
- 				
- 			}
- 			$result['Blockchain']['Ballot Information'][$i]['Json'] =
- 			Blockchain::retrieveData($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), trim($ballot));
- 			
- 			$ballotO = json_decode($result['Blockchain']['Ballot Information'][$i]['Json']);
- 			
- 			$result['Blockchain']['Ballot Information'][$i]['Address'] = $ballotO->walletaddress;
- 			if ($obj = Blockchain::checkWalletAddress($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), $ballotO->walletaddress, true))
- 			{
- 				$result['TxIds'] =
- 				$data = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->listaddresstransactions($ballotO->walletaddress, 100);
- 			}
-
- 			$options = (array) $ballotO->options;
- 			$result['Blockchain']['Ballot Information'][$i]['Option Results'] = $options;
- 			$j = 0;
- 			foreach ($options AS $option) {
- 				$result['Blockchain']['Ballot Information'][$i]['Option_'.$j] = json_decode($option);
- 				$balance = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getaddressbalances($result['Blockchain']['Ballot Information'][$i]['Option_'.$j]->walletaddress);
- 				$result['Blockchain']['Ballot Information'][$i]['Option_'.$j]->balance = $balance[1];
- 				$j++;
- 			}
- 			
-//  			$result['Blockchain']['Ballot Information'][$i]['Option Results'] = json_decode($optionsJson);
- 			
- 			$i++;
- 		}
+ 		$result['Database']['ballots'] = $project->getBallots();
+ 		$result = array_merge($result, $this->bcInfo($project));
  		
 		$this->view->assign('project', $project);
 		$this->view->assign('result', $result);
 		$this->view->assign('isAdmin', $isAdmin);
 		$this->view->assign('isAssigned', $isAssigned);
 		$this->view->assign('date_now', new \DateTime());
+	}
+	
+	/**
+	 * 
+	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
+	 * @return array $result
+	 */
+	private function bcInfo(\Goettertz\BcVoting\Domain\Model\Project $project) {
+		# Blockchain Result - in eigene Funktion!
+		
+		$metadata = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getwallettransaction($project->getReference(),true);
+		$result['blockchain']['Metadata'] = $metadata[data][0];
+			
+		$result['blockchain']['json'] = Blockchain::retrieveData($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), trim($project->getReference()));
+			
+		if (isset($result['blockchain']['json']['error'])) {
+			# On Error
+			$this->addFlashMessage($result['blockchain']['json']['error'] . ' (168)', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+		}
+		else {
+			# Cast json to stdClass
+			$result['blockchain']['object'] = json_decode($result['blockchain']['json']);
+		}
+			
+		$ballots = $result['blockchain']['object']->ballots;
+			
+		$i = 0;
+		foreach ($ballots AS $ballot) {
+			$result = $this->bcBallot($project, $ballot, $i, $result);
+			$i++;
+		}
+		return $result;
+	}
+	
+	/**
+	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
+	 * @param unknown $ballot
+	 * @param int $i
+	 * @return array $result
+	 */
+	private function bcBallot(\Goettertz\BcVoting\Domain\Model\Project $project, $ballot, $i, $result) {
+		
+		if (is_a($ballot, 'stdClass', true)) {
+			$ballot = (array) $ballot;
+		}
+		$result['blockchain']['ballots'][$i]['json'] =
+		Blockchain::retrieveData($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), trim($ballot));
+		
+		$ballotO = json_decode($result['blockchain']['ballots'][$i]['json']);
+		if (is_array($result['txIds']))
+			$result['txIds'] = array_merge($result['txIds'], $this->getTxidsAddress($project, $ballotO->walletaddress));
+		else $result['txIds'] = $this->getTxidsAddress($project, $ballotO->walletaddress);
+
+
+		$result['blockchain']['ballots'][$i]['address'] = $ballotO->walletaddress;
+		$result['blockchain']['ballots'][$i]['balance'] = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getaddressbalances($ballotO->walletaddress);
+		$result['blockchain']['ballots'][$i]['balance'] = $result['blockchain']['ballots'][$i]['balance'][0]['qty'];
+
+		$options = (array) $ballotO->options;
+		
+		$j = 0;
+		foreach ($options AS $option) {
+			$result['blockchain']['ballots'][$i]['options'][$j] = json_decode($option);
+			$balance = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getaddressbalances($result['blockchain']['ballots'][$i]['options'][$j]->walletaddress);
+			$result['blockchain']['ballots'][$i]['options'][$j]->balance = $balance[1];
+			$j++;
+		}		
+		return $result;
+	}
+	
+	/**
+	 * getTxidsAddress
+	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
+	 * @param string $address
+	 * @return array $result
+	 */
+	private function getTxidsAddress(\Goettertz\BcVoting\Domain\Model\Project $project, $address) {
+		$result = array();
+		if ($obj = Blockchain::checkWalletAddress($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), $address, true))
+		{
+			$result = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->listaddresstransactions($address, 100);
+		}
+		return $result;
 	}
 }
 ?>

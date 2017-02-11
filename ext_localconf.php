@@ -1,5 +1,5 @@
 <?php
-// Rev. 132
+// Rev. 133
 if (!defined('TYPO3_MODE')) {
 	die('Access denied.');
 }
@@ -33,18 +33,18 @@ if (!defined('TYPO3_MODE')) {
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerTypeConverter('Goettertz\\BcVoting\\Property\\TypeConverter\\UploadedFileReferenceConverter');
 		
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-		'Goettertz.' . $_EXTKEY,
-		'BVS_newProjectWizard',
-		array(
-				'Project' => 'new, create, createSettings',
+// \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+// 		'Goettertz.' . $_EXTKEY,
+// 		'BVS_newProjectWizard',
+// 		array(
+// 				'Project' => 'new, create, createSettings',
 				
-		),
-		array(
-				'Project' => 'new, create, createSettings',
+// 		),
+// 		array(
+// 				'Project' => 'new, create, createSettings',
 				
-		)
-);
+// 		)
+// );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
 		'Goettertz.' . $_EXTKEY,
