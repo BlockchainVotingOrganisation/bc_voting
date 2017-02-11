@@ -1,9 +1,12 @@
 <!-- Revision 133 -->
-
 <div class="tx-bc-voting">
 	
 	<f:for each="{result.blockchain.ballots}" as="ballot">
-	Nicht ausgewertet: {ballot.balance} Stimmen<hr />
+	Nicht ausgewertet: {ballot.balance} Stimmen
+	<f:if condition="{ballot.balance} > 0">
+		[<f:link.action action="proceed" controller="Evaluation" arguments="{address:ballot.address}">Proceed</f:link.action>]
+	</f:if>
+	<hr />
 	<h4>Results</h4>
 		<f:for each="{ballot.options}" as="option" >
 		<div>{option.name}: (<f:format.number decimals="0" decimalSeparator="," thousandsSeparator=".">{option.balance}</f:format.number>)</div>
