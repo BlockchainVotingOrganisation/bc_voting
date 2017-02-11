@@ -173,7 +173,19 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
  				$result['TxIds'] =
  				$data = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->listaddresstransactions($ballotO->walletaddress, 100);
  			}
- 			$result['Blockchain']['Ballot Information'][$i]['Option Results'] = 'Noch nich fertich.';
+
+ 			$options = (array) $ballotO->options;
+ 			$result['Blockchain']['Ballot Information'][$i]['Option Results'] = $options;
+ 			$j = 0;
+ 			foreach ($options AS $option) {
+ 				$result['Blockchain']['Ballot Information'][$i]['Option_'.$j] = json_decode($option);
+ 				$balance = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getaddressbalances($result['Blockchain']['Ballot Information'][$i]['Option_'.$j]->walletaddress);
+ 				$result['Blockchain']['Ballot Information'][$i]['Option_'.$j]->balance = $balance[1];
+ 				$j++;
+ 			}
+ 			
+//  			$result['Blockchain']['Ballot Information'][$i]['Option Results'] = json_decode($optionsJson);
+ 			
  			$i++;
  		}
  		
