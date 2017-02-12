@@ -9,7 +9,8 @@
 	<hr />
 	<h4>Results</h4>
 		<f:for each="{ballot.options}" as="option" >
-		<div>{option.name}: {option.balance.qty}</div>
+		<f:debug title="Options">{option}</f:debug>
+		<div>{option.name}: {option.balance}</div>
 		</f:for>
 	</f:for>
 	
