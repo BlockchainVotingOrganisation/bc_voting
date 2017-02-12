@@ -1,5 +1,5 @@
 <?php
-// Rev. 133
+// Rev. 134
 if (!defined('TYPO3_MODE')) {
 	die('Access denied.');
 }
@@ -87,12 +87,11 @@ if (!defined('TYPO3_MODE')) {
 	'Goettertz.' . $_EXTKEY,
 	'BVS_Evaluation',
 	array(
-			'Evaluation' => 'list, show, proceed',
+			'Evaluation' => 'list, show, proceed, txlog',
 			
 	),
 	array(
-			'Evaluation' => 'list, show, proceed',
-			
+			'Evaluation' => 'list, show, proceed, txlog',
 	)
 );
 ?>

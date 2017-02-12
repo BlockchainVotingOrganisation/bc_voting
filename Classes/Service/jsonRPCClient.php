@@ -1,5 +1,7 @@
 <?php
 namespace Goettertz\BcVoting\Service;
+
+
 /*
 					COPYRIGHT
 
@@ -136,23 +138,20 @@ class jsonRPCClient {
 				'content' => $request
 		));
 		$context  = stream_context_create($opts);
-		try {			
-			if ($fp = fopen($this->url, 'r', false, $context)) {
+					
+			if (!$fp = @fopen($this->url, 'r', false, $context)) {
+				$response['error'] = 'Unable to connect to '.$this->url;
+// 				return $response;
+			} else {
 				$response = '';
 				while($row = fgets($fp)) {
 					$response.= trim($row)."\n";
 				}
 				$this->debug && $this->debug.='***** Server response *****'."\n".$response.'***** End of server response *****'."\n";
 				$response = json_decode($response,true);
-			
-			} else {
-				$response['error'] = 'Unable to connect to '.$this->url;
-				return $response;
+				
 			}	
-		} catch (Exception $e) {
-			$response['error'] = $e;
-			return $response;
-		}
+
 
 
 		
@@ -177,6 +176,8 @@ class jsonRPCClient {
 		} else {
 			return true;
 		}
+		
+
 	}
 }
 ?>

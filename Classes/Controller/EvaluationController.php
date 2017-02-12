@@ -1,7 +1,7 @@
 <?php
 namespace Goettertz\BcVoting\Controller;
 // error_reporting(E_ALL);
-ini_set("display_errors", 1);
+// ini_set("display_errors", 1);
 
 /***************************************************************
  *
@@ -29,7 +29,7 @@ ini_set("display_errors", 1);
  ***************************************************************/
 
 /**
- * Revision 133
+ * Revision 134
  */
 
 use \Goettertz\BcVoting\Service\Blockchain;
@@ -148,6 +148,55 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 	}
 	
 	/**
+	 * proceedAction
+	 * 
+	 * Darf nur einmal pro Stimmzettel ausgeführt werden!
+	 * 
+	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
+	 * @param string $address - ballot walletAddress
+	 * @param string $asset - asset reference
+	 * @return void
+	 */
+	public function proceedAction(\Goettertz\BcVoting\Domain\Model\Project $project, $address, $asset) {
+		
+		$mcrypt = new \Goettertz\BcVoting\Service\MCrypt();
+		# get transactions
+		$result['txIds'] = $this->getTxidsAddress($project, $address);
+		$i = 0;
+		foreach ($result['txIds'] AS $transaction) { // muss sortiert werden absteigend nach Zeit
+			 # Wenn kein Eintrag in Voting (Streams)
+				if (!empty($transaction['balance']['assets'] && !empty($transaction['data']) && $transaction['confirmations'] > 1)) {
+					if (!empty($optionaddress = Blockchain::retrieveData($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), $transaction['txid']))) {
+						$optionaddress = $mcrypt->decrypt($optionaddress);
+						$optionaddress = explode("-", $optionaddress);
+						$optionaddress = $optionaddress[1];
+							
+						if ($balance = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getmultibalances($address, $asset, 1, false))
+							if (!empty($optionaddress)&& $transaction['balance']['assets'][0]['qty'] > 0) {
+								if ($asset === $transaction['balance']['assets'][0]['assetref']) {
+									if ($tx = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->sendassetfrom($address, $optionaddress, $asset, 1)) {
+										if (!is_array($tx)) {
+											# Eintrag in Voting
+											$this->addFlashMessage($tx.' => '.$optionaddress, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+										}
+										else {
+											$this->addFlashMessage(implode($tx), '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+											break;
+										}
+									}
+								}
+							}
+					}
+				}				
+
+
+			$i++;
+		} # end for transactions
+// 		$this->view->assign('result', $result);
+		$this->redirect('show', NULL, NULL, array('project' => $project));
+	}
+	
+	/**
 	 * 
 	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
 	 * @return array $result
@@ -198,11 +247,12 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 			$result['txIds'] = array_merge($result['txIds'], $this->getTxidsAddress($project, $ballotO->walletaddress));
 		else $result['txIds'] = $this->getTxidsAddress($project, $ballotO->walletaddress);
 
-
+		$result['blockchain']['ballots'][$i]['asset'] = $ballotO->asset;
 		$result['blockchain']['ballots'][$i]['address'] = $ballotO->walletaddress;
 		$result['blockchain']['ballots'][$i]['balance'] = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getaddressbalances($ballotO->walletaddress);
 		$result['blockchain']['ballots'][$i]['balance'] = $result['blockchain']['ballots'][$i]['balance'][0]['qty'];
-
+		$result['blockchain']['ballots'][$i]['end'] = $ballotO->end;
+		
 		$options = (array) $ballotO->options;
 		
 		$j = 0;
@@ -215,13 +265,27 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 		return $result;
 	}
 	
+// 	/**
+// 	 * bcOption
+// 	 * @param \stdClass $option
+// 	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
+// 	 * @param int $j Zählvariable
+// 	 * @return array
+// 	 */
+// 	private function bcOption(\Goettertz\BcVoting\Domain\Model\Project $project, $option, $j) {
+// 		$result['blockchain']['ballots'][$i]['options'][$j] = json_decode($option);
+// 		$balance = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getaddressbalances($address);
+// 		$result['blockchain']['ballots'][$i]['options'][$j]->balance = $balance[1];
+// 		return $result;
+// 	}
+	
 	/**
 	 * getTxidsAddress
 	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
 	 * @param string $address
 	 * @return array $result
 	 */
-	private function getTxidsAddress(\Goettertz\BcVoting\Domain\Model\Project $project, $address) {
+	private function getTxidsAddress(\Goettertz\BcVoting\Domain\Model\Project $project, $address, $max = 100) {
 		$result = array();
 		if ($obj = Blockchain::checkWalletAddress($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), $address, true))
 		{

@@ -1,15 +1,15 @@
-<!-- Revision 133 -->
+<!-- Revision 134 -->
 <div class="tx-bc-voting">
-	
+	<f:debug>{result}</f:debug>
 	<f:for each="{result.blockchain.ballots}" as="ballot">
-	Nicht ausgewertet: {ballot.balance} Stimmen
+	Nicht ausgewertet: {ballot.balance} Stimmen {ballot.address} {ballot.asset}
 	<f:if condition="{ballot.balance} > 0">
-		[<f:link.action action="proceed" controller="Evaluation" arguments="{address:ballot.address}">Proceed</f:link.action>]
+		[<f:link.action action="proceed" controller="Evaluation" arguments="{project:project, address: ballot.address, asset: ballot.asset}">Proceed</f:link.action>]
 	</f:if>
 	<hr />
 	<h4>Results</h4>
 		<f:for each="{ballot.options}" as="option" >
-		<div>{option.name}: (<f:format.number decimals="0" decimalSeparator="," thousandsSeparator=".">{option.balance}</f:format.number>)</div>
+		<div>{option.name}: {option.balance.qty}</div>
 		</f:for>
 	</f:for>
 	

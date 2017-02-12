@@ -1,35 +1,29 @@
-<!-- Rev 133 -->
+<!-- Rev 134 -->
 <f:layout name="Default" />
 <f:section name="main">
-
 <f:flashMessages renderMode="div" />
 <h3>{project.name}</h3>
 <f:render partial="Project/Properties" arguments="{project:project}" />
-
 <hr />
 <div>
-	<f:render partial="Evaluation/Results" arguments="{result:result}" />	
+	<f:render partial="Evaluation/Results" arguments="{project:project, result:result}" />	
 </div>
-
 <div class="tx-bc-voting">
-	
-	<f:if condition="{bcResult}">
-		<hr />
-
-		<f:render partial="Blockchain/ShortInfo" arguments="{result:bcResult}" />
-		<f:if condition="{project.reference}">
-			Referenz-Nummer (Txid): <br />
-			<a target="_blank" href="http://blockchain-voting.org:9333/{project.blockchainName}/tx/{project.reference}">{project.reference}</a>
-		</f:if>
+<f:if condition="{bcResult}">
+	<hr />
+	<f:render partial="Blockchain/ShortInfo" arguments="{result:bcResult}" />
+	<f:if condition="{project.reference}">
+		Referenz-Nummer (Txid): <br />
+		<a target="_blank" href="http://blockchain-voting.org:9333/{project.blockchainName}/tx/{project.reference}">{project.reference}</a>
 	</f:if>
-	<f:security.ifAuthenticated>
-		<f:then>
-		</f:then>
-		<f:else>	
-			<hr />	
-			You're not logged in! Please <f:link.page pageUid="41">Login</f:link.page> or <f:link.page pageUid="40">Register</f:link.page>.
-		</f:else>
-	</f:security.ifAuthenticated>	
+</f:if>
+<f:security.ifAuthenticated>
+	<f:then>
+	</f:then>
+	<f:else>	
+		<hr />	
+		You're not logged in! Please <f:link.page pageUid="41">Login</f:link.page> or <f:link.page pageUid="40">Register</f:link.page>.
+	</f:else>
+</f:security.ifAuthenticated>
 </div>
-
 </f:section>
