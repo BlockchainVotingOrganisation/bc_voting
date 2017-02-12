@@ -29,7 +29,7 @@ namespace Goettertz\BcVoting\Controller;
  ***************************************************************/
 
 /**
- * Revision 134
+ * Revision 135
  */
 
 use \Goettertz\BcVoting\Service\Blockchain;
@@ -177,7 +177,11 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 								if ($asset === $transaction['balance']['assets'][0]['assetref']) {
 									if ($tx = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->sendassetfrom($address, $optionaddress, $asset, 1)) {
 										if (!is_array($tx)) {
-											# Eintrag in Voting
+											
+											# Eintrag in Voting-Stream
+											$item = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->publish($project->getReference(),'decrypted',bin2hex($tx));
+											
+											# Eintrag in Flash-Log
 											$this->addFlashMessage($tx.' => '.$secret, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
 										}
 										else {
