@@ -167,6 +167,7 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 			 # Wenn kein Eintrag in Voting (Streams)
 				if (!empty($transaction['balance']['assets'] && !empty($transaction['data']) && $transaction['confirmations'] > 1)) {
 					if (!empty($optionaddress = Blockchain::retrieveData($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), $transaction['txid']))) {
+						$secret = $optionaddress;
 						$optionaddress = $mcrypt->decrypt($optionaddress);
 						$optionaddress = explode("-", $optionaddress);
 						$optionaddress = $optionaddress[1];
@@ -177,10 +178,10 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 									if ($tx = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->sendassetfrom($address, $optionaddress, $asset, 1)) {
 										if (!is_array($tx)) {
 											# Eintrag in Voting
-											$this->addFlashMessage($tx.' => '.$optionaddress, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+											$this->addFlashMessage($tx.' => '.$secret, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
 										}
 										else {
-											$this->addFlashMessage(implode($tx), '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+											$this->addFlashMessage(implode($tx). ' '.$secret, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 											break;
 										}
 									}
