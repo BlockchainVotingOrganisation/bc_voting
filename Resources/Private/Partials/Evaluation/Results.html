@@ -1,4 +1,4 @@
-<!-- Revision 134 -->
+<!-- Revision 135 -->
 <div class="tx-bc-voting">
 	<f:debug>{result}</f:debug>
 	<f:for each="{result.blockchain.ballots}" as="ballot">
@@ -9,24 +9,9 @@
 	<hr />
 	<h4>Results</h4>
 		<f:for each="{ballot.options}" as="option" >
-		<f:debug title="Options">{option}</f:debug>
-		<div>{option.name}: {option.balance}</div>
+		<div style="width: 50%; float:left; border-bottom: 1px solid black;">{option.name}</div>
+		<div style="width: 50%; float:left; border-bottom: 1px solid black; text-align:right">{option.balance}</div>		
 		</f:for>
 	</f:for>
-	
- 	<f:if condition="{result.lists}">
- 	<f:then>
-		<h6>List result</h6>
-		<f:for each="{result.lists}" as="option" >
-			<f:if condition="{option.parent} == 0">
-				<div>
-					{option.name} (<f:format.number decimals="1" decimalSeparator="," thousandsSeparator=".">{option.percent}</f:format.number> %)
-				</div>
-			</f:if>
-		</f:for>
-		
-		<img src="https://chart.googleapis.com/chart?cht=p3&chd=t:<f:for each="{result.lists}" as="option" iteration="itemIterator">{option.percent}<f:if condition="{itemIterator.cycle}  != {f:count(subject: result.lists)}">,</f:if></f:for>&chs=800x200&chl=<f:for each="{result.lists}" as="option"  iteration="itemIterator">{option.name}<f:if condition="{itemIterator.cycle} != {f:count(subject: result.lists)}">|</f:if></f:for>&chtt=Distribution&chco=<f:for each="{result.lists}" as="option" iteration="itemIterator">{option.color}<f:if condition="{itemIterator.cycle}  != {f:count(subject: result.lists)}">,</f:if></f:for>" alt="Distribution" style="border:1px solid black;" />		
-	</f:then>
-	</f:if>
-	
+	<div style="width: 100%; clear:both; min-height:10px;">&nbsp;</div>
 </div>
