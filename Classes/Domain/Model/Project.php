@@ -57,7 +57,7 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 *
 	 * @var string
 	 */
-	protected $publicKey = '';
+	protected $password = '';
 	
 	/**
 	 * publicKey
