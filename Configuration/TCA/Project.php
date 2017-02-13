@@ -1,6 +1,6 @@
 <?php
 /**
- * Rev.135
+ * Rev.136
  */
 if (!defined ('TYPO3_MODE')) {
 	die ('Access denied.');
@@ -121,7 +121,16 @@ $GLOBALS['TCA']['tx_bcvoting_domain_model_project'] = array(
 						'eval' => 'trim'
 				),
 		),
-
+		'stream' => array(
+				'exclude' => 1,
+				'label' => 'LLL:EXT:bc_voting/Resources/Private/Language/locallang_db.xlf:tx_bcvoting_domain_model_project.stream',
+				'config' => array(
+						'type' => 'input',
+						'size' => 15,
+						'eval' => 'trim',
+						'max' => 20
+				),
+		),
 		'privateKey' => array(
 				'exclude' => 1,
 				'label' => 'LLL:EXT:bc_voting/Resources/Private/Language/locallang_db.xlf:tx_bcvoting_domain_model_project.privateKey',
