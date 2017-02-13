@@ -93,6 +93,25 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 		$isAdmin 	= 'false';
 		$isLoggedin = 'false';
 		
+		if ($feuser = $this->userRepository->getCurrentFeUser()) {
+			$isAssigned = 'false';
+			$assignment = $feuser ? $project->getAssignmentForUser($feuser,'admin') : NULL;
+			If($assignment === NULL) {
+// 				$this->addFlashMessage('No admin: '.$feuser.'!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+// 				$this->redirect('list',NULL,NULL, array('project' => $project));
+			}
+			else {
+				$isAssigned = 'true';
+				$isAdmin = 'true';
+			}
+		}
+		else {
+			If($assignment === NULL) {
+				$this->addFlashMessage('You aren\'t currently logged in! Please goto <a href="/login/">login</a> or <a href="/register/">register</a>', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+// 				$this->redirect('list',NULL,NULL, array('project' => $project));
+			}
+		}
+		
 		$result = array();
 		
 		if (empty($project->getReference())) {
@@ -178,6 +197,19 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 			}
 		}
 		
+		
+		# check if project evaluation has started twice: look for stream item.
+		$items = array();
+		
+		if ($items = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->liststreamkeyitems($project->getStream(), 'decrypted')) {
+			$this->addFlashMessage('Evaluation started '.count($items).' times before!', 'Error', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+			$this->redirect('list',NULL,NULL, array('project' => $project));
+		}
+		else {
+			$this->addFlashMessage('Evaluation started! '.implode($items), '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+		}
+		
+		
 		$mcrypt = new \Goettertz\BcVoting\Service\MCrypt();
 		# get transactions
 		$result['txIds'] = $this->getTxidsAddress($project, $address);
@@ -188,7 +220,7 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 			if ($ballot->getEnd() > time()) {
 				$this->addFlashMessage('Voting period is not over!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 				unset($result);
-				$this->redirect('show', NULL, NULL, array('project' => $project));
+				$this->redirect('show', NULL, NULL, array('project' => $project, 'isAdmin' => $isAdmin));
 			}
 		}
 		
@@ -228,7 +260,7 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 				}
 				$i++;
 			} # end for transactions
-		$this->redirect('show', NULL, NULL, array('project' => $project));
+		$this->redirect('show', NULL, NULL, array('project' => $project, 'isAdmin' => $isAdmin));
 	}
 	
 	/**
