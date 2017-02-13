@@ -36,6 +36,15 @@
 			<trans-unit id="tx_bcvoting_domain_model_project.password">
 				<source>Password</source>
 			</trans-unit>
+			<trans-unit id="tx_bcvoting_domain_model_project.stream">
+				<source>Stream</source>
+			</trans-unit>
+			<trans-unit id="tx_bcvoting_domain_model_project.publicKey">
+				<source>Public key</source>
+			</trans-unit>
+			<trans-unit id="tx_bcvoting_domain_model_project.privateKey">
+				<source>Private key</source>
+			</trans-unit>		
 			<trans-unit id="tx_bcvoting_domain_model_project.reference">
 				<source>Reference (Sealing TxId)</source>
 			</trans-unit>

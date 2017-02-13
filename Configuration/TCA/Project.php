@@ -9,10 +9,10 @@ if (!defined ('TYPO3_MODE')) {
 $GLOBALS['TCA']['tx_bcvoting_domain_model_project'] = array(
 	'ctrl' => $GLOBALS['TCA']['tx_bcvoting_domain_model_project']['ctrl'],
 	'interface' => array(
-		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, name, password, reference, logo, category, description, start, end, open, anonym, ballots, infosite, forum_url, blockchain_explorer, blockchain_name, rpc_server, rpc_password, rpc_user, rpc_port, assignments, wallet_address',
+		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, name, password, reference, logo, category, description, start, end, open, anonym, ballots, infosite, forum_url, blockchain_explorer, blockchain_name, rpc_server, rpc_password, rpc_user, rpc_port, assignments, wallet_address, public_key, private_key, stream',
 	),
 	'types' => array(
-		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, name, password, reference, logo, category, description, start, end, open, anonym, ballots, infosite, forum_url, blockchain_explorer, blockchain_name, rpc_server, rpc_password, rpc_user, rpc_port, assignments, wallet_address, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime'),
+		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, name, password, reference, logo, category, description, start, end, open, anonym, ballots, infosite, forum_url, blockchain_explorer, blockchain_name, rpc_server, rpc_password, rpc_user, rpc_port, assignments, wallet_address, public_key, private_key, stream, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime'),
 	),
 	'palettes' => array(
 		'1' => array('showitem' => ''),
@@ -131,7 +131,7 @@ $GLOBALS['TCA']['tx_bcvoting_domain_model_project'] = array(
 						'max' => 20
 				),
 		),
-		'privateKey' => array(
+		'private_key' => array(
 				'exclude' => 1,
 				'label' => 'LLL:EXT:bc_voting/Resources/Private/Language/locallang_db.xlf:tx_bcvoting_domain_model_project.privateKey',
 				'config' => array(
@@ -141,7 +141,7 @@ $GLOBALS['TCA']['tx_bcvoting_domain_model_project'] = array(
 				),
 		),			
 
-		'publicKey' => array(
+		'public_key' => array(
 				'exclude' => 1,
 				'label' => 'LLL:EXT:bc_voting/Resources/Private/Language/locallang_db.xlf:tx_bcvoting_domain_model_project.publicKey',
 				'config' => array(

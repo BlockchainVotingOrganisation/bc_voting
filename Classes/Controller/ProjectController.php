@@ -29,7 +29,7 @@ ini_set("display_errors", 1);
  ***************************************************************/
 
 /**
- * Revision 132
+ * Revision 137
  */
 
 use \Goettertz\BcVoting\Service\Blockchain;
@@ -745,260 +745,6 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 	}
 	
 	/**
-	 * evaluation of voting results
-	 * - data from database compared with bc
-	 * - better would be data only from bc see getOptions()
-	 * 
-	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
-	 * @return void
-	 */
-	public function evaluationAction(\Goettertz\BcVoting\Domain\Model\Project $project) {
-			
-		# Neu: Project (und später Votes) aus Blockchain holen 
-		#   (siehe Import Action, diese sollte in function import und action getrennr werden).
-		
-		
-// 		if ($project === NULL) $project = new \Goettertz\BcVoting\Domain\Model\Project();
-		
-		# Check if rpc-settings are configured
-		
-		$rpc = $project->checkRpc($project,$this->settings);
-		if (is_string($rpc)) {
-			$this->addFlashMessage($rpc, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-			$this->redirect('show',NULL,NULL, array('project' => $project));		
-		}
-		else if (is_object($rpc)){
-			$project = $rpc;
-		}
-		else {
-			$this->addFlashMessage('Unkown error.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-			$this->redirect('show',NULL,NULL, array('project' => $project));		
-		}
-		$bc = new \Goettertz\BcVoting\Service\Blockchain();
-		$bcdata = $bc::retrieveData($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), trim($project->getReference()));
-		if (isset($bcdata['error'])) {
-			$this->addFlashMessage($bcdata['error'].' (776)', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-		}
-		
-		# Cast json to stdClass
-		else $bcdata = json_decode($bcdata);
-		
-		# Cast stdClass to array
-		if (is_a($bcdata, 'stdClass', false)) {
-			$bcdata = (array) $bcdata;
-		}
-
-		if ($result = $this->getOptions($project)) {
-			if (is_string($result['error'])) {
-				$this->addFlashMessage($result['error']. ' (793)', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-				$this->redirect('show',NULL,NULL, array('project' => $project));
-			}
-			$result['data'] = $bcdata;
-			
-			if ($result['url_csv'] = $this->settings['downloadurl']) {
-				$csv = $this->generateCsvFromArray($result);
-				if (is_string($csv['error'])) {
-					$result['error'] = $csv['error'];
-					$this->addFlashMessage($result['error'] . ' (799-800)', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-				}
-			}
-			
-			
-			$data = array();
-			
-			foreach($project->getBallots() AS $ballot) {
-				
-				// Array aus $result (789: DB $result = $this->getOptions($project))
-				$mergeArray = ($result[$ballot->getName()]['options']);
-				//  für alle Stimmzettel einfügen.
-				$data = array_merge($data, (array) $mergeArray);
-			}
-
- 			$result['lists'] = $this->getOptionListResults($data);
-		}
-		else 
-		{
-			$result['error'] = 'Can\'t get project options from blockchain! (793)';
-			$this->addFlashMessage($result['error'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-			$this->redirect('show',NULL,NULL, array('project' => $project));
-		}
-
-		# Begin old methods from db - should be replaced by bc		
-		if($bcArray = $bc::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getinfo()) {
-			$this->view->assign('bcResult', $bcArray);
-		}
-
-		# votes (from db)
-		$votes = $this->votingRepository->findByProject($project);
-		
-		if (count($votes) === 0) {
-			$result['error'] = 'No  votings!';
-			$this->redirect('show',NULL,NULL, array('project' => $project));			
-		}
-		
-		$i = 0;
-		$j = 0;
-		$values = array();
-		$allBalance = 0;
-		
-		if (count($votes) > 0)
-		foreach ($votes as $vote) {
-			
-			$ref = $vote->getReference();
-			$secretDB = $vote->getSecret();
-			
-			$secretBC = $bc::retrieveData($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), $vote->getTxid());
-
-			if (isset($secretBC['error'])) {
-				$this->addFlashMessage(implode($secretBC).' : "'.$vote->getTxid().'"', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-			}
-
-			if ($secretBC === $secretDB) { //Ist gültig
-				$mcrypt = new \Goettertz\BcVoting\Service\MCrypt();
-				$j++;
-				$values[$i] = $mcrypt->decrypt($secretBC);
-				$values[$i] = explode("-", $values[$i]);
-				$values[$i] = $values[$i][0];
-				
-				if (count($options = $this->optionRepository->findByName(trim($values[$i]))) > 0) {
-					
-					$option = $options[0];
-					$ballot = $option->getBallot();
-					if (!$result1[$ballot->getName()]) $result1[$ballot->getName()] = 0;
-					$result1[$ballot->getName()]++;
-				
-				}
-			}
-			else {
-				$values[$i] = 'wrong';
-// 				$this->addFlashMessage(implode($secretBC).' : '.$secretDB.' : '.$vote->getTxid(), '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-			}
-			$i++;
-		}
-
-		# Neues Array: Häufigkeiten der einzelnen Ergebnisse sortiert 
-		$counts = array_count_values($values);
-
-		# Array mit Häufigkeiten und anderen Details
-
-		$i = 0;
-		
-		if (count($counts) > 0) {
-			foreach ($counts as $key => $value) {
-	
-				$counts[$key] = $value;
-				$votings[$i]['name'] = htmlspecialchars(trim($key));
-				$votings[$i]['counts'] = $value; 
-				$votings[$i]['color'] = '#000000';
-				
-					
-				if (count($options = $this->optionRepository->findByName(trim($key))) > 0) {
-					$option = $options[0];
-					$votings[$i]['color'] = str_replace("#","",$option->getColor());
-	
-					$votings[$i]['walletAddress'] = $option->getWalletAddress();
-					$ballot = $option->getBallot();
-					$votings[$i]['ballot'] = $ballot->getName();
-				}
-	
-				# Wichtung
-	 			$votings[$i]['width'] = 100 * ($value/$result1[$ballot->getName()]);
-	
-				$i++;
-			}
-			
-			usort($votings, function ($a, $b) {
-				return $b['counts'] - $a['counts'];
-			});
-		}
-
-		// Benutzerdaten projektbezogen laden
-		$isAssigned = 'false';
-		$isAdmin = 'false';
-		$$assetHolders = 0;			
-
-		if ($feuser = $this->userRepository->getCurrentFeUser()) {
-			$username = $feuser->getUsername();
-					
-			if ($blockchain) {
-				$$assetHolders = $blockchain->getUserBalance($username, $project);
-			}
-					
-			$assignment = $feuser ? $project->getAssignmentForUser($feuser) : NULL;
-			If($assignment != NULL) {
-				$isAssigned = 'true';
-				$role = $assignment->getRole($assignment);
-				$roleName = $role->getName($role);
-				
-			}
-					
-			$assignment = $feuser ? $project->getAssignmentForUser($feuser, 'admin') : NULL;
-			If($assignment != NULL) {
-				$isAdmin = 'true';
-			}
-		}
-		$this->view->assign('feuser', $feuser);
-		$this->view->assign('project', $project);
-		$this->view->assign('isAssigned', $isAssigned);
-		$this->view->assign('isAdmin', $isAdmin);
-		$this->view->assign('counts', $votings);
-		$this->view->assign('result', $result);
-		$this->view->assign('date_now', new \DateTime());
-	}
-
-	/**
-	 * execute votings
-	 * 
-	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
-	 */
-	public function executeAction(\Goettertz\BcVoting\Domain\Model\Project $project) {
-	
-		# Checks
-		$isAdmin = 'false';
- 		if ($user = $this->userRepository->getCurrentFeUser()) {
-	
-			$assignment = $user ? $project->getAssignmentForUser($user, 'admin') : NULL;
-			If($assignment != NULL) {
-				$isAdmin = 'true';
-			}
-			else {
-	
-				#Fehlermeldung und break
-				$this->addFlashMessage('No Admin!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-				// 				break;
-			}
-				
- 			# Blockchain eingetragen?
-			if (empty($project->getRpcServer()) || !is_string($project->getRpcServer())) {
-	
-				# Fehlermeldung und break
-				$this->addFlashMessage('No RPC-Server!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-				// 				break;
-			}
-			$end = $project->getEnd();
-			if ($end <  time()) {
- 				if ($this->request->hasArgument('password')) {
-					$result['msg'] = '1';
-					if (!empty($this->request->getArgument('password'))) {
-						if ($result = $this->execute($project)) {
-							if (is_string($result['error'])) $this->addFlashMessage($result['error'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-						}
-// // 						$result['msg'] = '2';
-					}
-				 else $result['error'] = '2';
-				}
-				else {
-					$result['error'] = '3';
-				}
-			}
-
-			$this->view->assign('result', $result);
-			$this->view->assign('isAdmin', $isAdmin);
-			$this->view->assign('project', $project);
-		}
-	}
-	
-	/**
 	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
 	 */
 	public function sealAction(\Goettertz\BcVoting\Domain\Model\Project $project) {
@@ -1024,14 +770,6 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 			}			
 		}
 		
-		# Checks
-		// VTC payment address
-		$paymentAddress = $this->settings['payment_vtc_address'];
-// 		if (empty($paymentAddress)) {
-// 			$this->addFlashMessage('No payment address! '.$this->settings['payment_vtc_address'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-// 			$this->redirect('edit',NULL,NULL, array('project' => $project));			
-// 		}
-		
 		# Check if rpc-settings are configured
 		$rpc = $project->checkRpc($project,$this->settings);
 		if (is_string($rpc)) {
@@ -1047,14 +785,8 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		
 		# wallet address
 		$walletAddress = $project->getWalletAddress();
-// 		$bc = new \Goettertz\BcVoting\Service\Blockchain();
 		if (empty($walletAddress)) {
 			$this->setWalletAddress($project);
-// 			$newAddress = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getnewaddress();
-// 			$project->setWalletAddress($newAddress);
-// 			$this->projectRepository->update($project);
-// 			$this->addFlashMessage('No wallet address. Got new one. '.$newAddress, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
-// 			// 			$this->redirect('edit',NULL,NULL, array('project' => $project));
 		}
 		
 		# Check if already sealed
@@ -1108,6 +840,8 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 					$persistenceManager->persistAll();
 					$this->addFlashMessage('The project was sealed and project data had been stored in a transaction to propagade to the block chain. Please be patient until confirmation has happened. Returned transaction ID: '.$ref, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
 				}
+				
+				
 			}
 			// wenn string "$ref['error']" existiert, ist ein Fehler in Blockchain:: passiert.
 			elseif (is_string($ref['error']))  {
@@ -1118,6 +852,17 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 			else  $this->addFlashMessage('ERROR:  '.implode('-', $ref), '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 		}
 //  			$this->addFlashMessage('Success:  '.$project->getName().' sealed', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+		
+		# create stream
+		$streamName = substr($project->getReference(), 0, 12);
+		if (!is_array($stream = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->create('stream', $streamName, true))) {
+			$this->addFlashMessage('Stream '.$project->getName().': '.$streamname.' created: '.$stream, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+			$project->setStream($streamName);
+			$this->projectRepository->update($project);
+		}
+		else {
+			$this->addFlashMessage('Stream '.$streamName.' not created! '.implode($stream), '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+		}
 		
 		$this->view->assign('isAdmin', $isAdmin);
 		$this->view->assign('isAssigned', $isAssigned);
@@ -1157,20 +902,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 				if ($this->request->hasArgument('rpcPassword')) {
 					$rpcPassword = trim($this->request->getArgument('rpcPassword'));
 				}
-		
-				
-// 				# Check existing projects
-// 				$projects = $this->projectRepository->findByReference($reference);
-// 				if (count($projects) > 0) {
-// 					$this->addFlashMessage('Error: Project with same reference already exists on this server:<br /> <b>&quot;'.$projects[0]->getName().'&quot;</b>', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-// 					$this->redirect('list');					
-// 				}
-// 				$projects = $this->projectRepository->findByName($data['name']);
-// 				if (count($projects) > 0) {
-// 					$this->addFlashMessage('Error: Project with same name already exists on this server. Please rename or delete the old Project.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-// 					$this->redirect('list');
-// 				}
-				
+			
 				# End of checks!!! #####################################################
 				# get data from blockchain
 				$bc = new \Goettertz\BcVoting\Service\Blockchain();
@@ -1283,86 +1015,8 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 	}
 	
 	/**
-	 * @param array $array
-	 * @return array
+	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
 	 */
-	private function generateCsvFromArray($array) {
-		$result = false;
-		if (file_exists($this->settings['downloadpath'])) {
-			$filename = $this->settings['downloadpath'];
-			try {
-				if (!$fp = fopen($filename, 'w')) {
-					return $result['error'] = 'Can\'t open file!';
-				}
-				fwrite($fp, 'Uid,Name,Parent,Ballot,Description,Color,Logo,Walletaddress,Balance,Percent,Base'."\n");
-				$i = 0;
-				if (is_array($array)) {
-					foreach ($array as $record) {
-						if (is_array($record)) {
-							foreach($record AS $options) {
-								if (is_array($options)) {
-									foreach($options AS $option) {
-										fwrite($fp, implode(",",$option)."\n");
-										$result = true;
-									}
-								}
-							}
-							$i++;
-						}
-					}
-				}
-				if ($fp) fclose($fp);
-				
-			} catch (Exception $e) {
-				$result['error'] = $e;
-			}
-		}
-		else $result['error'] = 'No csv path!';
-
-		return $result;
-	}
-	
-	private function execute(\Goettertz\BcVoting\Domain\Model\Project $project) {
-		
-		$result = array();
-		
-		# Foreach ballot ...
-		foreach ($project->getBallots() AS $ballot) {
-			
-			# Temp address for encrypted votings
-			$result = array();
-			$address = $ballot->getWalletAddress();
-			if (is_string($address) && strlen($address) > 16) $result['address'] = $address;
-			else {
-				$result['error'] = 'The project is not properly configured. No address in ballot configuration!';
-				return $result;
-			}
-		
-			# Find transactions
-			$txid = array();
-			$bc = new \Goettertz\BcVoting\Service\Blockchain();
- 			$result['transactions'] = 
- 			$bc::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->listaddresstransactions($address, 1000000);
-			
-			foreach ($result['transactions'] AS $transaction) {
-				
-				$decrypted = MCrypt::decrypt(hex2bin($transaction['data'][0]));
-				$decrypted = explode("-", $decrypted);
-				$fromaddress = $transaction['myaddresses'][0];
-				$toaddress = $decrypted[1];
-				$asset = $transaction['balance']['assets'][0]['assetref'];				
-				$assetAmount = array($asset => 1);
-			
-				# if balance > 0
-				if ($bc::getAssetBalanceFromAddress($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), $fromaddress, $asset) > 0) {
-					$txid[] = $bc::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->sendwithmetadatafrom($fromaddress,$toaddress,$assetAmount,$transaction['txid']);
-				}
-			}
-			$result['txids'] = $txid;
- 		}
-		return $result;
-	}
-	
 	private function setWalletAddress(\Goettertz\BcVoting\Domain\Model\Project $project) {
 		try {
 			$newAddress = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getnewaddress();

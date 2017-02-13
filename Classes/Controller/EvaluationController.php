@@ -179,7 +179,9 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 										if (!is_array($tx)) {
 											
 											# Eintrag in Voting-Stream
-											$item = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->publish($project->getReference(),'decrypted',bin2hex($tx));
+											if (is_array($item = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->publish($project->getStream(),'decrypted',bin2hex($secret)))) {
+												$this->addFlashMessage('Item creation faild'.implode($item). ' ', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+											}
 											
 											# Eintrag in Flash-Log
 											$this->addFlashMessage($tx.' => '.$secret, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
