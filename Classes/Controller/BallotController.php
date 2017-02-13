@@ -29,7 +29,7 @@ namespace Goettertz\BcVoting\Controller;
  ***************************************************************/
 
 /**
- * Revision 132:
+ * Revision 135:
  * 
  */
 
@@ -85,6 +85,14 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 	 * @inject
 	 */
 	protected $ballotRepository = NULL;
+	
+	/**
+	 * optionRepository
+	 *
+	 * @var \Goettertz\BcVoting\Domain\Repository\OptionRepository
+	 * @inject
+	 */
+	protected $optionRepository = NULL;
 	
 	/**
 	 * assetRepository
@@ -374,13 +382,10 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 	public function sealBallotAction(\Goettertz\BcVoting\Domain\Model\Ballot $ballot) {
 
 		$project = $ballot->getProject();
-		
-		# Check options
-		$options = $ballot->getOptions();
-		if (count($options) === 0) die ('options not complete (365)');
-		foreach ($options as $option) {
-			if (empty($option->getWalletAddress())) die ('ERROR: options not complete (367)');
-		}
+	
+// 		foreach ($options as $option) {
+// 			if (empty($option->getWalletAddress())) die ('ERROR: options not complete (367)');
+// 		}
 
 		if ($project->getRpcPassword() !== '') {
 			if ($user = $this->userRepository->getCurrentFeUser()) {
@@ -394,11 +399,6 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
  						$bcArray = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->listpermissions('issue');
 						$issueAddress = $bcArray[0]['address'];
  						$asset = array();
-// // 						try {
-// // 							$asset = Blockchain::getRpcResult($project)->listassets($ballot->getName());
-// // 						} catch (Exception $e) {
-// // 							$result['error'] = $e;
-// // 						}
 												
 						# no asset in bc
 						if (count($asset) === 0) {
@@ -421,11 +421,6 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 							}
 							else die ('No asset "'.$newAsset->getName().'" issued!');
 						}
-						# asset already in bc
-						else {
-							$ballot->setAsset($asset[0]['assetref']);
-							$this->ballotRepository->update($ballot);
-						}
  					}
  					else {
  						# verify asset
@@ -434,7 +429,9 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 					# Check if sealed
 					if ($ballot->getReference() === '') {
 						
-						# The data for sealing ...
+						$this->setNewAddresses($ballot);
+						
+						# The current data for sealing ...
 						$json = $ballot->getJson($ballot);
 						$hash = $this->getHash($json);
 
@@ -648,6 +645,34 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 				$uploadConfiguration
 				);
 	}
-
+	
+	/**
+	 * @param \Goettertz\BcVoting\Domain\Model\Ballot $ballot
+	 */
+	private function setNewAddresses(\Goettertz\BcVoting\Domain\Model\Ballot $ballot) {
+		$project = $ballot->getProject();
+		
+		# Ballot
+		$walletAddress = Blockchain::getNewAddress($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword());
+		$ballot->setWalletAddress($walletAddress);
+		$this->ballotRepository->update($ballot);
+		# Options
+		# Check options
+		$options = $ballot->getOptions();
+		if (count($options) === 0) $result['error'] = ('No options available (383)');
+		else {
+			foreach ($options AS $option) {
+				$walletaddress = Blockchain::getNewAddress($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword());
+				$option->setWalletAddress($walletaddress);
+				$this->optionRepository->update($option);
+			}
+		}
+		return $result;
+	}
+	
+	private function verifyAsset(\Goettertz\BcVoting\Domain\Model\Asset $asset) {
+		$result = false;
+		return $result;
+	}
 }
 ?>
