@@ -87,11 +87,11 @@ if (!defined('TYPO3_MODE')) {
 	'Goettertz.' . $_EXTKEY,
 	'BVS_Evaluation',
 	array(
-			'Evaluation' => 'list, show, proceed, txlog',
+			'Evaluation' => 'list, show, proceed, txlog, streamlog',
 			
 	),
 	array(
-			'Evaluation' => 'list, show, proceed, txlog',
+			'Evaluation' => 'list, show, proceed, txlog, streamlog',
 	)
 );
 ?>

@@ -29,7 +29,7 @@ use Goettertz\BcVoting\Service\Blockchain;
  ***************************************************************/
 
 /**
- * Revision 133
+ * Revision 135
  */
 
 /**
@@ -53,11 +53,25 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $reference = '';
 	
 	/**
-	 * password
+	 * publicKey
 	 *
 	 * @var string
 	 */
-	protected $password = '';
+	protected $publicKey = '';
+	
+	/**
+	 * publicKey
+	 *
+	 * @var string
+	 */
+	protected $publicKey = '';
+	
+	/**
+	 * publicKey
+	 *
+	 * @var string
+	 */
+	protected $privateKey = '';
 	
 	/**
 	 * logo
@@ -452,7 +466,7 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 	
 	/**
-	 * sets RPC password
+	 * sets RPC publicKey
 	 *
 	 * @param $rpcPassword
 	 * @return void
@@ -540,20 +554,55 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 	
 	/**
-	 * gets password
+	 * gets publicKey
 	 *
 	 * @return string
 	 */
 	public function getPassword() {
-		return $this->password;
+		return $this->publicKey;
 	}
 	
 	/**
-	 * @param string $password
+	 * @param string $publicKey
 	 * @return void
 	 */
-	public function setPassword($password) {
-		$this->password = $password;
+	public function setPassword($publicKey) {
+		$this->publicKey = $publicKey;
+	}
+	
+	/**
+	 * gets privateKey
+	 *
+	 * @return string
+	 */
+	public function getPrivateKey() {
+		return $this->privateKey;
+	}
+	
+	/**
+	 * @param string $privateKey
+	 * @return void
+	 */
+	public function setPrivateKey($privateKey) {
+		$this->privateKey = $privateKey;
+	}
+	
+	/**
+	 * gets publicKey
+	 *
+	 * @return string
+	 */
+	public function getPublicKey() {
+		return $this->publicKey;
+	}
+	
+	/**
+	 * sets publicKey
+	 * @param string $publicKey
+	 * @return void
+	 */
+	public function setPublicKey($publicKey) {
+		$this->publicKey = $publicKey;
 	}
 	
 	/**

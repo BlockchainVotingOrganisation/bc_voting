@@ -121,6 +121,26 @@ $GLOBALS['TCA']['tx_bcvoting_domain_model_project'] = array(
 						'eval' => 'trim'
 				),
 		),
+
+		'privateKey' => array(
+				'exclude' => 1,
+				'label' => 'LLL:EXT:bc_voting/Resources/Private/Language/locallang_db.xlf:tx_bcvoting_domain_model_project.privateKey',
+				'config' => array(
+						'type' => 'input',
+						'size' => 30,
+						'eval' => 'trim'
+				),
+		),			
+
+		'publicKey' => array(
+				'exclude' => 1,
+				'label' => 'LLL:EXT:bc_voting/Resources/Private/Language/locallang_db.xlf:tx_bcvoting_domain_model_project.publicKey',
+				'config' => array(
+						'type' => 'input',
+						'size' => 30,
+						'eval' => 'trim'
+				),
+		),
 			
 		'reference' => array(
 				'exclude' => 1,
