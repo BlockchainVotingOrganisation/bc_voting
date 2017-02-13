@@ -29,7 +29,7 @@ use Goettertz\BcVoting\Service\Blockchain;
  ***************************************************************/
 
 /**
- * Revision 135
+ * Revision 136
  */
 
 /**
@@ -51,6 +51,13 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @var string
 	 */
 	protected $reference = '';
+	
+	/**
+	 * stream
+	 *
+	 * @var string
+	 */
+	protected $stream = '';
 	
 	/**
 	 * publicKey
@@ -551,6 +558,23 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 */
 	public function setReference($reference) {
 		$this->reference = $reference;
+	}
+	
+	/**
+	 * gets the stream
+	 *
+	 * @return string
+	 */
+	public function getStream() {
+		return $this->stream;
+	}
+	
+	/**
+	 * @param string $stream
+	 * @return void
+	 */
+	public function setStream($stream) {
+		$this->stream = $stream;
 	}
 	
 	/**
