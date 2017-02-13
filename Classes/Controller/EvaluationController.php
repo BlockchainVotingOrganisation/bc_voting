@@ -29,7 +29,7 @@ namespace Goettertz\BcVoting\Controller;
  ***************************************************************/
 
 /**
- * Revision 135
+ * Revision 137
  */
 
 use \Goettertz\BcVoting\Service\Blockchain;
@@ -159,9 +159,23 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 	 */
 	public function proceedAction(\Goettertz\BcVoting\Domain\Model\Project $project, $address, $asset) {
 		
+		
+		
 		$mcrypt = new \Goettertz\BcVoting\Service\MCrypt();
 		# get transactions
 		$result['txIds'] = $this->getTxidsAddress($project, $address);
+		
+		# if voting period has ended
+		$ballots = $this->ballotRepository->findByWalletAddress($address);
+		foreach ($ballots AS $ballot) {
+			if ($ballot->getEnd() < time()) {
+				$this->addFlashMessage('Voting period is not over!'. ' ', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+			}
+			unset($result);
+			$this->redirect('show', NULL, NULL, array('project' => $project));
+		}
+		
+		
 		$i = 0;
 		foreach ($result['txIds'] AS $transaction) { // muss sortiert werden absteigend nach Zeit
 			 # Wenn kein Eintrag in Voting (Streams)
@@ -172,7 +186,7 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 						$optionaddress = explode("-", $optionaddress);
 						$optionaddress = $optionaddress[1];
 							
-						if ($balance = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getmultibalances($address, $asset, 1, false))
+						if ($balance = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getmultibalances($address, $asset, 1, false)) {		
 							if (!empty($optionaddress)&& $transaction['balance']['assets'][0]['qty'] > 0) {
 								if ($asset === $transaction['balance']['assets'][0]['assetref']) {
 									if ($tx = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->sendassetfrom($address, $optionaddress, $asset, 1)) {
@@ -193,13 +207,11 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 									}
 								}
 							}
+						}
 					}
-				}				
-
-
-			$i++;
-		} # end for transactions
-// 		$this->view->assign('result', $result);
+				}
+				$i++;
+			} # end for transactions
 		$this->redirect('show', NULL, NULL, array('project' => $project));
 	}
 	
