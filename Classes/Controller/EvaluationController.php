@@ -159,7 +159,24 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 	 */
 	public function proceedAction(\Goettertz\BcVoting\Domain\Model\Project $project, $address, $asset) {
 		
-		
+		if ($feuser = $this->userRepository->getCurrentFeUser()) {
+			$isAssigned = 'false';
+			$assignment = $feuser ? $project->getAssignmentForUser($feuser,'admin') : NULL;
+			If($assignment === NULL) {
+				$this->addFlashMessage('No admin: '.$feuser.'!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+				$this->redirect('list',NULL,NULL, array('project' => $project));
+			}
+			else {
+				$isAssigned = 'true';
+				$isAdmin = 'true';
+			}
+		}
+		else {
+			If($assignment === NULL) {
+				$this->addFlashMessage('You aren\'t currently logged in! Please goto <a href="/login/">login</a> or <a href="/register/">register</a>', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+				$this->redirect('list',NULL,NULL, array('project' => $project));
+			}
+		}
 		
 		$mcrypt = new \Goettertz\BcVoting\Service\MCrypt();
 		# get transactions
@@ -168,13 +185,12 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 		# if voting period has ended
 		$ballots = $this->ballotRepository->findByWalletAddress($address);
 		foreach ($ballots AS $ballot) {
-			if ($ballot->getEnd() < time()) {
-				$this->addFlashMessage('Voting period is not over!'. ' ', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+			if ($ballot->getEnd() > time()) {
+				$this->addFlashMessage('Voting period is not over!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+				unset($result);
+				$this->redirect('show', NULL, NULL, array('project' => $project));
 			}
-			unset($result);
-			$this->redirect('show', NULL, NULL, array('project' => $project));
 		}
-		
 		
 		$i = 0;
 		foreach ($result['txIds'] AS $transaction) { // muss sortiert werden absteigend nach Zeit
@@ -193,8 +209,8 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 										if (!is_array($tx)) {
 											
 											# Eintrag in Voting-Stream
-											if (is_array($item = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->publish($project->getStream(),'decrypted',bin2hex($secret)))) {
-												$this->addFlashMessage('Item creation faild'.implode($item). ' ', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+											if (is_array($item = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->publish($project->getStream(),'decrypted',$secret))) {
+												$this->addFlashMessage('Item creation failed'.implode($item). ' ', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 											}
 											
 											# Eintrag in Flash-Log

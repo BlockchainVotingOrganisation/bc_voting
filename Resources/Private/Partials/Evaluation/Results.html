@@ -1,10 +1,12 @@
-<!-- Revision 135 -->
+<!-- Revision 137 -->
 <div class="tx-bc-voting">
-	<f:debug>{result}</f:debug>
+	<!-- f:debug>{result}</f:debug -->
 	<f:for each="{result.blockchain.ballots}" as="ballot">
 	Nicht ausgewertet: {ballot.balance} Stimmen {ballot.address} {ballot.asset}
 	<f:if condition="{ballot.balance} > 0">
-		[<f:link.action action="proceed" controller="Evaluation" arguments="{project:project, address: ballot.address, asset: ballot.asset}">Proceed</f:link.action>]
+		<f:if condition="{isAdmin} == 'true'">
+			[<f:link.action action="proceed" controller="Evaluation" arguments="{project:project, address: ballot.address, asset: ballot.asset}">Proceed</f:link.action>]
+		</f:if>
 	</f:if>
 	<hr />
 	<h4>Results</h4>
