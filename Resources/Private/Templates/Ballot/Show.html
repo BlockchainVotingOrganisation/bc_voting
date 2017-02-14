@@ -19,11 +19,16 @@ Rev. 138
 	<f:if condition="{isAssigned} == 'true'">
 	<f:then>
 		<div style="text-align:center; font-size:2em;"><f:form.submit value="Send ballot!" style="background-color:white" /></div>
+
 	</f:then>
 	<f:else>
-		<div id="hint" style="text-align:center; font-size:0.8em;">You can scan the QR-code with your election app to vote (recommended) or <f:link.page pageUid="41">log in</f:link.page> to vote with your browser (not recommended). See <f:link.page pageUid="93">help</f:link.page>.</div>
-		<div id ="register" style="text-align:left;"><f:link.page pageUid="40">Register</f:link.page></div>
-		<div id ="assign" style="text-align:left;"><f:link.action action="assign" controller="Project" arguments="{project:ballot.project}">Assign</f:link.action></div>
+		<div id="hint" style="text-align:center; font-size:1em;">You can scan the QR-code with your election app to vote (recommended) or <f:link.page pageUid="41">log in</f:link.page> to vote with your browser (not recommended). See <f:link.page pageUid="93">help</f:link.page>.</div>
+		<div style="text-align:center; font-size:1em;" id="qr">
+			<label for"LoginWithQrCode">
+				<span><a>Register and assign with QR-Code</a></span>
+				<input type="file" accept="image/*;capture=camera" name="Schnappschuss" style="display:none;">
+			</label>		
+		</div>
 	</f:else>
 	</f:if>
 	
