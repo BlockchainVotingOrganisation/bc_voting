@@ -1,4 +1,4 @@
-<!-- Rev 137 -->
+<!-- Rev 138 -->
 <f:layout name="Default" />
 <f:section name="main">
 <f:flashMessages renderMode="div" />
@@ -18,13 +18,5 @@
 		<a target="_blank" href="http://blockchain-voting.org:9333/{project.blockchainName}/tx/{project.reference}">{project.reference}</a>
 	</f:if>
 </f:if>
-<f:security.ifAuthenticated>
-	<f:then>
-	</f:then>
-	<f:else>	
-		<hr />	
-		You're not logged in! Please <f:link.page pageUid="41">Login</f:link.page> or <f:link.page pageUid="40">Register</f:link.page>.
-	</f:else>
-</f:security.ifAuthenticated>
 </div>
 </f:section>

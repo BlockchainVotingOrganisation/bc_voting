@@ -29,7 +29,7 @@ namespace Goettertz\BcVoting\Controller;
  ***************************************************************/
 
 /**
- * Revision 137
+ * Revision 138
  */
 
 use \Goettertz\BcVoting\Service\Blockchain;
@@ -103,12 +103,6 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 			else {
 				$isAssigned = 'true';
 				$isAdmin = 'true';
-			}
-		}
-		else {
-			If($assignment === NULL) {
-				$this->addFlashMessage('You aren\'t currently logged in! Please goto <a href="/login/">login</a> or <a href="/register/">register</a>', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-// 				$this->redirect('list',NULL,NULL, array('project' => $project));
 			}
 		}
 		
@@ -196,7 +190,6 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 				$this->redirect('list',NULL,NULL, array('project' => $project));
 			}
 		}
-		
 		
 		# check if project evaluation has started twice: look for stream item.
 		$items = array();
@@ -331,20 +324,6 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 		}		
 		return $result;
 	}
-	
-// 	/**
-// 	 * bcOption
-// 	 * @param \stdClass $option
-// 	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
-// 	 * @param int $j Zählvariable
-// 	 * @return array
-// 	 */
-// 	private function bcOption(\Goettertz\BcVoting\Domain\Model\Project $project, $option, $j) {
-// 		$result['blockchain']['ballots'][$i]['options'][$j] = json_decode($option);
-// 		$balance = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getaddressbalances($address);
-// 		$result['blockchain']['ballots'][$i]['options'][$j]->balance = $balance[1];
-// 		return $result;
-// 	}
 	
 	/**
 	 * getTxidsAddress

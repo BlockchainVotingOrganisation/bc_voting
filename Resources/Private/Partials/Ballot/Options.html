@@ -1,4 +1,4 @@
-<!-- Rev. 130 -->
+<!-- Rev. 138 -->
 <f:if condition="{admin}== 'true'">
 	<f:link.action action="new" controller="Option" arguments="{ballot : ballot}">+ Create new option</f:link.action>
 </f:if>
@@ -26,7 +26,7 @@
 				</f:if>
 			</td>
 			<td style="border-bottom: 1px dotted black; border-top: 1px dotted black; padding:20px; vertical-align: middle;">
-				[a,b,c,[...],z]
+				<f:form.textfield name="ocode" value="0123456789" size="10" />
 			</td>
 		</tr>
 		<f:if condition="{admin}== 'true'">
