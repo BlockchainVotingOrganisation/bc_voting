@@ -200,9 +200,11 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
 	 */
 	public function showAction(\Goettertz\BcVoting\Domain\Model\Ballot $ballot) {
+
 		$project = $ballot->getProject();
 		$isAssigned = 'false';
 		$isAdmin 	= 'false';
+		$result = array();
 
 		if ($user = $this->userRepository->getCurrentFeUser()) {
 
@@ -211,12 +213,20 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 				If($assignment != NULL) {
 					$isAssigned = 'true';
 					$this->view->assign('isAssigned', $isAssigned);
-				}							
+				}
+				
+				# OptionCodes
+				foreach ($project->getBallots() AS $ballot) {
+					foreach ($ballot->getOptions() AS $option) {
+						$option->setOptionCode($this->getOptionCode($option));
+					}
+				}
 			}
+
 		}
 		$this->view->assign('ballot', $ballot);
 		$this->view->assign('isAssigned', $isAssigned);
-
+		$this->view->assign('result', $result);
 	}
 	
 	/**
@@ -670,9 +680,38 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 		return $result;
 	}
 	
+	/**
+	 * @param \Goettertz\BcVoting\Domain\Model\Asset $asset
+	 * @return boolean
+	 */
 	private function verifyAsset(\Goettertz\BcVoting\Domain\Model\Asset $asset) {
 		$result = false;
 		return $result;
+	}
+	
+	/**
+	 * @return NULL
+	 */
+	private function getOptionCode(\Goettertz\BcVoting\Domain\Model\Option $option) {
+		
+		$result = NULL;
+		
+		$result = $this->getHash($option->getWalletAddress().$this->rand_string(5));
+		
+		return $result;
+	}
+	
+	/**
+	 * @param integer $length
+	 * @return string
+	 */
+	private function rand_string( $length ) {
+		$chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+		$size = strlen( $chars );
+		for( $i = 0; $i < $length; $i++ ) {
+			$str .= $chars[ rand( 0, $size - 1 ) ];
+		}
+		return $str;
 	}
 }
 ?>
