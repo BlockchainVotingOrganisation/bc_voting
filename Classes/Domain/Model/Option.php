@@ -25,7 +25,7 @@ namespace Goettertz\BcVoting\Domain\Model;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  *
- * Revision 129
+ * Revision 138
  *  
  **********************************************************************/
 
@@ -87,6 +87,15 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @var string
 	 */
 	protected $color = '';
+	
+	/**
+	 * optionCode
+	 * 
+	 * temp indovidual code - not in db
+	 * 
+	 * @var string
+	 */
+	protected $optionCode = '';
 	
 	/**
 	 * computed balance from db
@@ -251,6 +260,20 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 */
 	public function setColor($color) {
 		$this->color = $color;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getOptionCode() {
+		return $this->optionCode;
+	}
+	
+	/**
+	 * @param string $optionCode
+	 */
+	public function setOptionCode($optionCode) {
+		$this->optionCode = $optionCode;
 	}
 
 	/**
