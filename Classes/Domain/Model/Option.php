@@ -96,6 +96,15 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @var string
 	 */
 	protected $optionCode = '';
+
+	/**
+	 * optionHash
+	 *
+	 * temp indovidual code - not in db
+	 *
+	 * @var string
+	 */
+	protected $optionHash = '';
 	
 	/**
 	 * computed balance from db
@@ -274,6 +283,20 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 */
 	public function setOptionCode($optionCode) {
 		$this->optionCode = $optionCode;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getOptionHash() {
+		return $this->optionHash;
+	}
+	
+	/**
+	 * @param string $optionHash
+	 */
+	public function setOptionHash($optionHash) {
+		$this->optionHash = $optionHash;
 	}
 
 	/**

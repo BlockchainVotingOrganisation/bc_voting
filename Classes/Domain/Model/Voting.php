@@ -25,11 +25,11 @@ namespace Goettertz\BcVoting\Domain\Model;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  *  
- *  Rev. 81
+ *  Rev. 138
  ***************************************************************/
 
 /**
- * User
+ * Voting
  */
 class Voting extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject {
 	
@@ -38,6 +38,13 @@ class Voting extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject {
 	 * @var \Goettertz\BcVoting\Domain\Model\Project
 	 */
 	protected $project = null;
+	
+
+	/**
+	 * ballot
+	 * @var \Goettertz\BcVoting\Domain\Model\Ballot
+	 */
+	protected $ballot = null;
 	
 	/**
 	 * 
@@ -57,6 +64,49 @@ class Voting extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject {
 	protected $secret;
 	
 	/**
+	 * @var array
+	 */
+	protected $optionCode = array();
+	
+	/**
+	 * option
+	 * @var \Goettertz\BcVoting\Domain\Model\Option 
+	 */
+	protected $option;
+
+	/**
+	 * gets the option
+	 * @return \Goettertz\BcVoting\Domain\Model\Option 
+	 */
+	public function getOption() {
+		return $this->option;
+	}
+	
+	/**
+	 * @param \Goettertz\BcVoting\Domain\Model\Option  $option
+	 * @return void
+	 */
+	public function setOption($option) {
+		$this->option = $option;
+	}
+	
+	/**
+	 * gets the optionCode
+	 * @return array
+	 */
+	public function getOptionCode() {
+		return $this->optionCode;
+	}
+	
+	/**
+	 * @param array $optionCode
+	 * @return void
+	 */
+	public function setOptionCode($optionCode) {
+		$this->optionCode = $optionCode;
+	}
+	
+	/**
 	 * gets txid
 	 * @return string
 	 */
@@ -66,7 +116,7 @@ class Voting extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject {
 	
 	/**
 	 * sets txid
-	 * @param unknown $txid
+	 * @param string $txid
 	 * @return void 
 	 */
 	public function setTxid($txid) {
@@ -105,7 +155,23 @@ class Voting extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject {
 	public function setSecret($secret) {
 		$this->secret = $secret;
 	}
+
+	/**
+	 * gets ballot
+	 * @return \Goettertz\BcVoting\Domain\Model\Ballot
+	 */
+	public function getBallot() {
+		return $this->ballot;
+	}
 	
+	/**
+	 * sets ballot
+	 * @param \Goettertz\BcVoting\Domain\Model\Ballot $ballot
+	 * @return void
+	 */
+	public function setBallot($ballot) {
+		$this->ballot = $ballot;
+	}	
 
 	/**
 	 * gets project

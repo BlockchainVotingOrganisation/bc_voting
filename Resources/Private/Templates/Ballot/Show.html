@@ -5,8 +5,11 @@ Rev. 138
 <f:flashMessages renderMode="div" />
 
 <div style="min-height:500px; background-color: white; padding: 10px; border: 1px solid red;">
-<f:form action="vote" controller="Ballot" object="voting" arguments="{ballot:ballot}">
-<f:form.hidden name="project" value="{ballot.project}" />
+
+
+<f:form action="create" controller="Voting" object="{newVoting}" name="newVoting" arguments="{ballot:ballot}">
+
+<f:form.hidden property="project" value="{ballot.project}" />
 
 	<div id="logo"><h1><f:if condition="{ballot.logo} != 0"><f:image image="{ballot.logo}" alt="{ballot.logo.originalResource.title}" style="max-width: 100%; height: auto; padding:20px;" /></f:if> {project.name}</h1></div>
 	 
@@ -18,7 +21,9 @@ Rev. 138
 
 	<f:if condition="{isAssigned} == 'true'">
 	<f:then>
-		<div style="text-align:center; font-size:2em;"><f:form.submit value="Send ballot!" style="background-color:white" /></div>
+		<div style="text-align:center; font-size:2em;">
+			<f:form.submit value="Send ballot!" style="background-color:white" />
+		</div>
 
 	</f:then>
 	<f:else>

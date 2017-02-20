@@ -1,6 +1,6 @@
 <?php
 /**
- * Rev.122
+ * Rev.138
  * - votes
  */
 if (!defined ('TYPO3_MODE')) {
@@ -10,10 +10,10 @@ if (!defined ('TYPO3_MODE')) {
 $GLOBALS['TCA']['tx_bcvoting_domain_model_ballot'] = array(
 	'ctrl' => $GLOBALS['TCA']['tx_bcvoting_domain_model_ballot']['ctrl'],
 	'interface' => array(
-		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, starttime, endtime, name, logo, description, text, footer, options, reference, votes, project, asset, start, end, wallet_address',
+		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, starttime, endtime, name, logo, description, text, footer, options, votes, project, asset, start, end, wallet_address, reference',
 	),
 	'types' => array(
-		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, name, logo, text, footer, options, reference, votes, project, asset, start, end, wallet_address, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime'),
+		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, name, logo, text, footer, options, votes, project, asset, start, end, wallet_address, reference, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime'),
 	),
 	'palettes' => array(
 		'1' => array('showitem' => ''),

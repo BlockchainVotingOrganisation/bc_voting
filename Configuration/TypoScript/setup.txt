@@ -28,6 +28,12 @@ plugin.tx_bcvoting._CSS_DEFAULT_STYLE (
 	td {
 		padding: 10px;
 	}
+	
+	input[type="radio"] {
+  		margin-top: -1px;
+  		vertical-align: middle;
+  		font-size: 3em;
+	}
 
 	textarea.f3-form-error {
 		background-color:#FF9F9F;
@@ -95,6 +101,33 @@ plugin.tx_bcvoting._CSS_DEFAULT_STYLE (
 	.tx-bc-voting input {
 		font-weight:bold;
 	}
+	
+	.options {
+		vertical-align: middle; 
+	}
+	
+	tr.options td {
+		border-bottom: 1px dotted black; 
+		border-top: 1px dotted black; 
+		padding:10px;
+		vertical-align: middle; 
+		border-collapse: collapse;	
+	}
+	
+	tr.options td td {
+		border: none;
+		font-size: 0.8em;
+		padding: 0 10px;
+	]
+	
+	tr.options td.left {
+		width:85%;	
+	}
+	
+	tr.options td.right {
+		width:15%;	
+	}
+	
 	.tx-bc-voting_Menu {
 		margin: 10px 0px;
 		background-color: whitesmoke;
@@ -106,6 +139,7 @@ plugin.tx_bcvoting._CSS_DEFAULT_STYLE (
 	div {
 		background-color: inherit;
 	}
+	
 	div.tx-bc-voting {
 		padding: 5px;
 		background-color: inherit;

@@ -1,5 +1,5 @@
 <?php
-// Rev. 134
+// Rev. 138
 if (!defined('TYPO3_MODE')) {
 	die('Access denied.');
 }
@@ -51,11 +51,13 @@ if (!defined('TYPO3_MODE')) {
 		'BVS_Main',
 		array(
 				'Election' => 'list, show',
-				'Ballot' => 'list, show, vote'
+				'Ballot' => 'list, show',
+				'Voting' => 'create'
 		),
 		array(
 				'Election' => 'list, show',
-				'Ballot' => 'list, show, vote'
+				'Ballot' => 'list, show',
+				'Voting' => 'create'
 		)
 );
 

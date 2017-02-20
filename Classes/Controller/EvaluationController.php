@@ -191,68 +191,98 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 			}
 		}
 		
-		# check if project evaluation has started twice: look for stream item.
-		$items = array();
+// 		# check if project evaluation has started twice: look for stream item.
+// 		$items = array();
 		
-		if ($items = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->liststreamkeyitems($project->getStream(), 'decrypted')) {
-			$this->addFlashMessage('Evaluation started '.count($items).' times before!', 'Error', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-			$this->redirect('list',NULL,NULL, array('project' => $project));
-		}
-		else {
-			$this->addFlashMessage('Evaluation started! '.implode($items), '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
-		}
+// 		if ($items = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->liststreamkeyitems($project->getStream(), 'decrypted')) {
+// 			$this->addFlashMessage('Evaluation started '.count($items).' times before!', 'Error', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+// 			$this->redirect('list',NULL,NULL, array('project' => $project));
+// 		}
+// 		else {
+// 			$msg = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->publish($project->getStream(),'decrypted',bin2hex('test'));
+// 			if (!is_array($msg)) {
+// 				$this->addFlashMessage('Evaluation started! '.$msg, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+// 			}
+// 			else $this->addFlashMessage('Evaluation not started! '.implode($msg), '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+// 		}
 		
 		
 		$mcrypt = new \Goettertz\BcVoting\Service\MCrypt();
 		# get transactions
 		$result['txIds'] = $this->getTxidsAddress($project, $address);
 		
-		# if voting period has ended
-		$ballots = $this->ballotRepository->findByWalletAddress($address);
-		foreach ($ballots AS $ballot) {
-			if ($ballot->getEnd() > time()) {
-				$this->addFlashMessage('Voting period is not over!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-				unset($result);
-				$this->redirect('show', NULL, NULL, array('project' => $project, 'isAdmin' => $isAdmin));
-			}
-		}
+// 		# if voting period has ended
+// 		$ballots = $this->ballotRepository->findByWalletAddress($address);
+// 		foreach ($ballots AS $ballot) {
+// 			if ($ballot->getEnd() > time()) {
+// 				$this->addFlashMessage('Voting period is not over!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+// 				unset($result);
+// 				$this->redirect('show', NULL, NULL, array('project' => $project, 'isAdmin' => $isAdmin));
+// 			}
+// 		}
 		
 		$i = 0;
 		foreach ($result['txIds'] AS $transaction) { // muss sortiert werden absteigend nach Zeit
 			 # Wenn kein Eintrag in Voting (Streams)
-				if (!empty($transaction['balance']['assets'] && !empty($transaction['data']) && $transaction['confirmations'] > 1)) {
-					if (!empty($optionaddress = Blockchain::retrieveData($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), $transaction['txid']))) {
-						$secret = $optionaddress;
-						$optionaddress = $mcrypt->decrypt($optionaddress);
-						$optionaddress = explode("-", $optionaddress);
-						$optionaddress = $optionaddress[1];
+			if (!empty($transaction['balance']['assets'] && !empty($transaction['data']) && $transaction['confirmations'] > 1)) {
+				if (!empty($secret = Blockchain::retrieveData($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), $transaction['txid']))) {
+						
+					$json = trim($mcrypt->decrypt($secret));
+//  					$this->addFlashMessage($json. ' ', 'JSON', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+					# depreceated
+					if (is_string($json)) {
+// 						$json = str_replace('""', '"0"', $json);
+// 						$array = explode("-", $json);
+// 						if (is_array($array) && count($array) > 1) { // obsolete!
+// 							$targetAddress = $array[1];
+// 							$this->addFlashMessage($targetAddress. ' Old', 'Test 2!', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+// 						}
+// 						else {
+							$sendOption = json_decode($json, true);
+// 							$sendAddress = $sendOption['address'];
+// 						}
+					}
+					else {
+						$this->addFlashMessage($transaction['txid'] .'No JSON !', 'JSON Error', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+					}
+
+					if (!is_string($sendOption['address'])) {
+						$this->addFlashMessage($transaction['txid'] .' '.json_last_error_msg().'!<br />'.$json, 'JSON Error', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+					}
+					else {
+// 						$this->addFlashMessage($i .' '.$sendOption['address'],'OK', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+					}
 							
-						if ($balance = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getmultibalances($address, $asset, 1, false)) {		
-							if (!empty($optionaddress)&& $transaction['balance']['assets'][0]['qty'] > 0) {
-								if ($asset === $transaction['balance']['assets'][0]['assetref']) {
-									if ($tx = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->sendassetfrom($address, $optionaddress, $asset, 1)) {
-										if (!is_array($tx)) {
-											
-											# Eintrag in Voting-Stream
-											if (is_array($item = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->publish($project->getStream(),'decrypted',$secret))) {
-												$this->addFlashMessage('Item creation failed'.implode($item). ' ', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-											}
-											
-											# Eintrag in Flash-Log
-											$this->addFlashMessage($tx.' => '.$secret, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+					if ($balance = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getmultibalances($address, $asset, 0, false) >= 1) {		
+						if (!empty($sendOption['address'])&& $transaction['balance']['assets'][0]['qty'] > 0) {
+							if ($asset === $transaction['balance']['assets'][0]['assetref']) {
+								$amount = array($asset => 1);
+								if ($tx = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->sendwithmetadatafrom($address, $sendOption['address'], $amount, bin2hex($sendOption['label']))) {
+									
+									if (!is_array($tx)) {
+										
+										# Eintrag in Voting-Stream
+										
+										if (is_array($item = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->publish($project->getStream(),substr($address, 0, 10), bin2hex($sendOption['code'])))) {
+											$this->addFlashMessage('Item creation failed'.implode($item). ' ', 'Stream Error 267', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 										}
-										else {
-											$this->addFlashMessage(implode($tx). ' '.$secret, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-											break;
-										}
+										
+										# Eintrag in Flash-Log
+										$this->addFlashMessage($tx.' => '.$secret, '271', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+									}
+									else {
+										$this->addFlashMessage(''.$sendOption['address'].', '.implode($tx). ' ', 'Error 274', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+										break;
 									}
 								}
 							}
 						}
 					}
 				}
-				$i++;
-			} # end for transactions
+			}
+			$i++;
+		} # end for transactions
+		
 		$this->redirect('show', NULL, NULL, array('project' => $project, 'isAdmin' => $isAdmin));
 	}
 	
