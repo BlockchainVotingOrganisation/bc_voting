@@ -35,8 +35,10 @@ namespace Goettertz\BcVoting\Controller;
 use Goettertz\BcVoting\Service\Blockchain;
 use Goettertz\BcVoting\Service\MCrypt;
 
-/*
+/**
  * VotingController
+ * @author louis
+ *
  */
 class VotingController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
 	
@@ -49,15 +51,20 @@ class VotingController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 	 */
 	protected $userRepository = NULL;
 	
-	public function createAction(\Goettertz\BcVoting\Domain\Model\Voting $newVoting) {
+	/**
+	 * action create
+	 * @param \Goettertz\BcVoting\Domain\Model\Voting $newVoting
+	 * @param \Goettertz\BcVoting\Domain\Model\Ballot $ballot
+	 */
+	public function createAction(\Goettertz\BcVoting\Domain\Model\Voting $newVoting, \Goettertz\BcVoting\Domain\Model\Ballot $ballot) {
 		
-		$project = $newVoting->getProject();
+		$project = $ballot->getProject();
 
 		if ($project->getStart() < time() && time() < $project->getEnd()) {
 			if ($user = $this->userRepository->getCurrentFeUser()) {
 					
-				$votings = $this->votingRepository->findByProject($project);
-				$countVotings = count($votings);
+// 				$votings = $this->votingRepository->findByProject($project);
+// 				$countVotings = count($votings);
 		
 				$isAssigned = false;
 				$assignment = $user ? $project->getAssignmentForUser($user) : NULL;
@@ -66,15 +73,15 @@ class VotingController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 				If($assignment !== NULL) {
 						
 					if ($project->getRpcServer() === '') {
- 						$result = $this->votingDb($project, $option, $user);
+//  						$result = $this->votingDb($project, $option, $user);
 					}
 					else {
-						$this->votingDb($project, $newVoting, $user);
+// 						$this->votingDb($project, $newVoting, $user);
 						$result = $this->votingBc($newVoting);
 					}
 						
 					if(!isset($result['error'])) {
-						$this->addFlashMessage($result['msg'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+// 						$this->addFlashMessage($result['msg'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
 					}
 					else {
 						$this->addFlashMessage($result['error'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
