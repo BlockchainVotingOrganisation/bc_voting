@@ -58,33 +58,40 @@ class VotingController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 	 */
 	public function createAction(\Goettertz\BcVoting\Domain\Model\Voting $newVoting, \Goettertz\BcVoting\Domain\Model\Ballot $ballot) {
 		
+		#Test
+		if ($this->request->hasArgument['optionCode']) {
+			$this->addFlashMessage($this->request->getArgument['optionCode'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+		}
+		
 		$project = $ballot->getProject();
 
 		if ($project->getStart() < time() && time() < $project->getEnd()) {
 			if ($user = $this->userRepository->getCurrentFeUser()) {
-					
-// 				$votings = $this->votingRepository->findByProject($project);
-// 				$countVotings = count($votings);
-		
+
 				$isAssigned = false;
 				$assignment = $user ? $project->getAssignmentForUser($user) : NULL;
-					
+
 				# Wenn angemeldet
 				If($assignment !== NULL) {
 						
 					if ($project->getRpcServer() === '') {
-//  						$result = $this->votingDb($project, $option, $user);
+						$this->addFlashMessage('Kein RPC-Server', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 					}
 					else {
-// 						$this->votingDb($project, $newVoting, $user);
-						$result = $this->votingBc($newVoting);
-					}
-						
-					if(!isset($result['error'])) {
-// 						$this->addFlashMessage($result['msg'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
-					}
-					else {
-						$this->addFlashMessage($result['error'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+						if ($result = $this->votingBc($newVoting, $assignment)) {
+							if(is_array($result)) {
+								if (is_string($result['error'])) {
+									$this->addFlashMessage($result['error'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+								}
+							}
+							
+							else {
+								$this->addFlashMessage('No Result! 82 '.$result, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+							}
+						}
+						else {
+								$this->addFlashMessage('No Result! 86', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+						}
 					}
 				}
 				else {
@@ -111,30 +118,25 @@ class VotingController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 	 * Blockchain voting sending assets
 	 *
 	 * @param \Goettertz\BcVoting\Domain\Model\Voting $voting
-	 *
+	 * @param \Goettertz\BcVoting\Domain\Model\Assignment $assignment
 	 *
 	 * @return NULL|mixed
 	 */
-	private function votingBc(\Goettertz\BcVoting\Domain\Model\Voting $voting) {
-		$result = NULL;
+	private function votingBc(\Goettertz\BcVoting\Domain\Model\Voting $voting, \Goettertz\BcVoting\Domain\Model\Assignment $assignment) {
+		
+		$result = array();
 		$balance = 0;
+		$result['error'] = 'Test!';
 	
 		if (empty($option = $voting->getOption())) {
-			return $result['error'] = 'No options! 555';
+			$result['error'] = 'No options! 555';
+			return $result;
 		}
 	
 		$ballot = $option->getBallot();
 		$project = $ballot->getProject();
 	
-		if ($user = $this->userRepository->getCurrentFeUser()) {
-	
-			// 				$votings = $this->votingRepository->findByProject($project);
-			// 				$countVotings = count($votings);
-	
-			$isAssigned = false;
-			$assignment = $user ? $project->getAssignmentForUser($user) : NULL;
-		}
-	
+
 		# Wahl mit Multichain
 		if (!empty($project->getRpcServer())) {
 				
@@ -142,7 +144,8 @@ class VotingController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 				
 			$fromaddress = trim($assignment->getWalletAddress());
 			if (empty($fromaddress)) {
-				return $result['error'] = 'Error (525): no address to send from!';
+				$result['error'] = 'Error (525): no address to send from!';
+				return $result;
 			}
 				
 			$toaddress = $ballot->getWalletAddress(); // ballot-address, wenn geheime Wahl
@@ -155,7 +158,8 @@ class VotingController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 	
 				$codes = $voting->getOptionCode();
 				if (count($codes) == 0) {
-					return $result['error'] = 'No codes 590';
+					$result['error'] = 'No codes 590';
+					return $result;
 				}
 	
 				$vote = new \stdClass();

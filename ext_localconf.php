@@ -72,7 +72,7 @@ if (!defined('TYPO3_MODE')) {
 				'User' => 'list, show, edit',
 				'Option' => 'edit, update',
 				'Wallet' => 'show',
-				
+				'Pgp' => '',
 		),
 		array(
 				
@@ -82,6 +82,7 @@ if (!defined('TYPO3_MODE')) {
 				'User' => 'list, show, edit',
 				'Option' => 'edit, update',
 				'Wallet' => 'show',
+				'Pgp' => '',
 		)
 );
 

@@ -1,4 +1,4 @@
-# Revision 136
+# Revision 138
 
 #
 # Table structure for table 'tx_bcvoting_domain_model_asset'
@@ -134,6 +134,7 @@ CREATE TABLE tx_bcvoting_domain_model_voting (
 	txid varchar(255) DEFAULT '' NOT NULL,
 	secret varchar(255) DEFAULT '' NOT NULL,
 	project int(11) unsigned DEFAULT '0' NOT NULL,
+	ballot int(11) unsigned DEFAULT '0' NOT NULL,
 	
 	tstamp int(11) unsigned DEFAULT '0' NOT NULL,
 	crdate int(11) unsigned DEFAULT '0' NOT NULL,

@@ -20,7 +20,7 @@
 						<td width="20%">a) Option Code:</td><td><f:form.textfield style="margin: 0 0px;" name="oaddress" value="{option.walletAddress}" size="40" disabled="1" /></td>
 					</tr>
 					<tr>
-						<td>b) Random Code:</td><td><f:form.textfield style="margin: 0 0px;" property="optionCode[{option}]" value="{option.optionCode}" size="10" disabled="1" /></td>
+						<td>b) Random Code:</td><td><f:form.textfield style="margin: 0 0px;" name="test" value="{option.optionCode}" size="10" disabled="1" /></td>
 					</tr>
 					<tr>
 						<td>c) Hash_SHA256(a+b):</td><td><f:form.textfield style="margin: 0 0px;" name="hash[]" value="{option.optionHash}" size="60" disabled="1" /></td>
@@ -31,7 +31,7 @@
 			<td class="right">
 				<f:if condition="{isAssigned} == 'true'">
 				<f:then>
-					<f:form.radio name="option" value="{option}" style="background: transparent; vertical-align: center;" />
+					<f:form.radio name="optionCode" value="{option.optionCode}---{option.walletAddress}---{option.optionHash}" class="tx-bc-voting" style="background: transparent; vertical-align: center;" />
 				</f:then>
 				<f:else>
 					<a href="https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=bitcoin:{option.walletAddress}?amount=1"><img style="max-width:100%; height: auto;" src="https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=bitcoin:{option.walletAddress}?amount=1" width="150" height="150" title="{option.walletAddress}" /></a>

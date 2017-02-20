@@ -29,17 +29,14 @@ namespace Goettertz\BcVoting\Controller;
  ***************************************************************/
 
 /**
- * Revision 135:
+ * Revision 138:
  * 
  */
 
 
 use Goettertz\BcVoting\Property\TypeConverter\UploadedFileReferenceConverter;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Goettertz\BcVoting\Service\Blockchain;
 use Goettertz\BcVoting\Service\MCrypt;
-use Goettertz\BcVoting\Service\OP_RETURN;
-use Goettertz;
 
 /**
  * BallotController
@@ -490,169 +487,169 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 		$this->view->assign('project', $project);
 	}
 
-	/**
-	 * action vote
-	 *
-	 * @param \Goettertz\BcVoting\Domain\Model\Voting $voting
-	 * @return void
-	 */
-	public function voteAction(\Goettertz\BcVoting\Domain\Model\Voting $voting) {
+// 	/**
+// 	 * action vote
+// 	 *
+// 	 * @param \Goettertz\BcVoting\Domain\Model\Voting $voting
+// 	 * @return void
+// 	 */
+// 	public function voteAction(\Goettertz\BcVoting\Domain\Model\Voting $voting) {
 	
-		$project = $voting->getProject();
+// 		$project = $voting->getProject();
 		
-		if ($project->getStart() < time() && time() < $project->getEnd()) {
-			if ($user = $this->userRepository->getCurrentFeUser()) {
+// 		if ($project->getStart() < time() && time() < $project->getEnd()) {
+// 			if ($user = $this->userRepository->getCurrentFeUser()) {
 					
-// 				$votings = $this->votingRepository->findByProject($project);
-// 				$countVotings = count($votings);
+// // 				$votings = $this->votingRepository->findByProject($project);
+// // 				$countVotings = count($votings);
 
-				$isAssigned = false;
-				$assignment = $user ? $project->getAssignmentForUser($user) : NULL;
+// 				$isAssigned = false;
+// 				$assignment = $user ? $project->getAssignmentForUser($user) : NULL;
 			
-				# Wenn angemeldet
-				If($assignment !== NULL) {
+// 				# Wenn angemeldet
+// 				If($assignment !== NULL) {
 			
-					if ($project->getRpcServer() === '') {
+// 					if ($project->getRpcServer() === '') {
 // 						$result = $this->votingDb($project, $option, $user);
-					}
-					else {
+// 					}
+// 					else {
 						
-						$result = $this->votingBc($voting);
-					}
+// 						$result = $this->votingBc($voting);
+// 					}
 			
-					if(!isset($result['error'])) {
-						$this->addFlashMessage($result['msg'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
-					}
-					else {
-						$this->addFlashMessage($result['error'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-					}
-				}
-				else {
-					$this->addFlashMessage('Not assigned!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-				}
-			}
-			else {
-				$this->addFlashMessage('Vote failed: your login is expired!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-			}
-		}
+// 					if(!isset($result['error'])) {
+// 						$this->addFlashMessage($result['msg'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+// 					}
+// 					else {
+// 						$this->addFlashMessage($result['error'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+// 					}
+// 				}
+// 				else {
+// 					$this->addFlashMessage('Not assigned!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+// 				}
+// 			}
+// 			else {
+// 				$this->addFlashMessage('Vote failed: your login is expired!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+// 			}
+// 		}
 		
-		else {
-			$this->addFlashMessage('Voting period has not begun/has end.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-		}
+// 		else {
+// 			$this->addFlashMessage('Voting period has not begun/has end.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+// 		}
 		
-		#Finally
-		$this->redirect('show', 'Election', NULL, array('project' => $project, 'count' => $countVotings));
-	}
+// 		#Finally
+// 		$this->redirect('show', 'Election', NULL, array('project' => $project, 'count' => $countVotings));
+// 	}
 	
-	/**
-	 * votingBc
-	 * 
-	 * Blockchain voting sending assets
-	 * 
-	 * @param \Goettertz\BcVoting\Domain\Model\Voting $voting
-	 * 
-	 * 
-	 * @return NULL|mixed
-	 */
-	protected function votingBc(\Goettertz\BcVoting\Domain\Model\Voting $voting) {
-		$result = NULL;
-		$balance = 0;
+// 	/**
+// 	 * votingBc
+// 	 * 
+// 	 * Blockchain voting sending assets
+// 	 * 
+// 	 * @param \Goettertz\BcVoting\Domain\Model\Voting $voting
+// 	 * 
+// 	 * 
+// 	 * @return NULL|mixed
+// 	 */
+// 	protected function votingBc(\Goettertz\BcVoting\Domain\Model\Voting $voting) {
+// 		$result = NULL;
+// 		$balance = 0;
 		
-		if (empty($option = $voting->getOption())) {
-			return $result['error'] = 'No options! 555';
-		}
+// 		if (empty($option = $voting->getOption())) {
+// 			return $result['error'] = 'No options! 555';
+// 		}
 		
-		$ballot = $option->getBallot();
-		$project = $ballot->getProject();
+// 		$ballot = $option->getBallot();
+// 		$project = $ballot->getProject();
 		
-		if ($user = $this->userRepository->getCurrentFeUser()) {
+// 		if ($user = $this->userRepository->getCurrentFeUser()) {
 				
-			// 				$votings = $this->votingRepository->findByProject($project);
-			// 				$countVotings = count($votings);
+// 			// 				$votings = $this->votingRepository->findByProject($project);
+// 			// 				$countVotings = count($votings);
 		
-			$isAssigned = false;
-			$assignment = $user ? $project->getAssignmentForUser($user) : NULL;
-		}
+// 			$isAssigned = false;
+// 			$assignment = $user ? $project->getAssignmentForUser($user) : NULL;
+// 		}
 		
-		# Wahl mit Multichain
-		if (!empty($project->getRpcServer())) {
+// 		# Wahl mit Multichain
+// 		if (!empty($project->getRpcServer())) {
 			
-			$asset = trim($ballot->getAsset());
+// 			$asset = trim($ballot->getAsset());
 			
-			$fromaddress = trim($assignment->getWalletAddress());
-			if (empty($fromaddress)) {
-				return $result['error'] = 'Error (525): no address to send from!';
-			}
+// 			$fromaddress = trim($assignment->getWalletAddress());
+// 			if (empty($fromaddress)) {
+// 				return $result['error'] = 'Error (525): no address to send from!';
+// 			}
 			
-			$toaddress = $ballot->getWalletAddress(); // ballot-address, wenn geheime Wahl			
-			$balance = Blockchain::getAssetBalanceFromAddress($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), $fromaddress, $asset);
+// 			$toaddress = $ballot->getWalletAddress(); // ballot-address, wenn geheime Wahl			
+// 			$balance = Blockchain::getAssetBalanceFromAddress($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), $fromaddress, $asset);
 
-			# Stimmrechte Anzahl
+// 			# Stimmrechte Anzahl
 			
-			if ($balance > 0) {
-				$mcrypt = new \Goettertz\BcVoting\Service\MCrypt();
+// 			if ($balance > 0) {
+// 				$mcrypt = new \Goettertz\BcVoting\Service\MCrypt();
 				
-				$codes = $voting->getOptionCode();
-				if (count($codes) == 0) {
-					return $result['error'] = 'No codes 590'; 
-				}
+// 				$codes = $voting->getOptionCode();
+// 				if (count($codes) == 0) {
+// 					return $result['error'] = 'No codes 590'; 
+// 				}
 				
-				$vote = new \stdClass(); 
-				$vote->label = trim($option->getName());
-				$vote->address = trim($option->getWalletAddress());
+// 				$vote = new \stdClass(); 
+// 				$vote->label = trim($option->getName());
+// 				$vote->address = trim($option->getWalletAddress());
 				
-				$vote->code = $codes[$option->getUid()];
+// 				$vote->code = $codes[$option->getUid()];
 				
-				$plaintext = json_encode($vote); //$option->getName().'-'.$option->getWalletAddress(); //"This string was AES-256 / CBC / ZeroBytePadding encrypted.";
-				$secret = $mcrypt->encrypt($plaintext);
+// 				$plaintext = json_encode($vote); //$option->getName().'-'.$option->getWalletAddress(); //"This string was AES-256 / CBC / ZeroBytePadding encrypted.";
+// 				$secret = $mcrypt->encrypt($plaintext);
 			
-				$amount = array($asset => 1);
+// 				$amount = array($asset => 1);
 					
-				# Assets versenden
-				if ($ref = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->sendwithmetadatafrom($fromaddress,$toaddress,$amount,bin2hex(trim($secret))) ) {
-					# wenn erfolgreich
-					if (is_string($ref)) {
+// 				# Assets versenden
+// 				if ($ref = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->sendwithmetadatafrom($fromaddress,$toaddress,$amount,bin2hex(trim($secret))) ) {
+// 					# wenn erfolgreich
+// 					if (is_string($ref)) {
 			
-						#
-						$voting = new \Goettertz\BcVoting\Domain\Model\Voting();// 									$this->votingRepository->add($voting);
-						$voting->setTxid($ref);
-						$voting->setSecret($secret);
-						$voting->setProject($project);
-						$voting->setReference($ballot->getReference());
+// 						#
+// 						$voting = new \Goettertz\BcVoting\Domain\Model\Voting();// 									$this->votingRepository->add($voting);
+// 						$voting->setTxid($ref);
+// 						$voting->setSecret($secret);
+// 						$voting->setProject($project);
+// 						$voting->setReference($ballot->getReference());
 			
-						$this->votingRepository->add($voting);
-						$strVotes = print_r($balance[$fromaddress][0]['qty'],true);
-						$result['msg'] = 'Voting success!<br />TxId: '.$ref;
-						$result['msg'] .='<br />Encrypted option text:<pre>'.$secret.'</pre>';
-					}
-					else {
-						$result['error'] = 'Voting failed (623). RPC-Error: '.$ref['error'].' '.$hash.' '.$ref['ref'];
-					}
-				}
-				else {
-					$result['error'] = 'Voting failed (627): No result.';
-				}
-			}
-			else {
-				$result['error'] = 'Voting failed (537): Not enough assets! '.$fromaddress.' '.$asset.' '.$balance;
-			}
+// 						$this->votingRepository->add($voting);
+// 						$strVotes = print_r($balance[$fromaddress][0]['qty'],true);
+// 						$result['msg'] = 'Voting success!<br />TxId: '.$ref;
+// 						$result['msg'] .='<br />Encrypted option text:<pre>'.$secret.'</pre>';
+// 					}
+// 					else {
+// 						$result['error'] = 'Voting failed (623). RPC-Error: '.$ref['error'].' '.$hash.' '.$ref['ref'];
+// 					}
+// 				}
+// 				else {
+// 					$result['error'] = 'Voting failed (627): No result.';
+// 				}
+// 			}
+// 			else {
+// 				$result['error'] = 'Voting failed (537): Not enough assets! '.$fromaddress.' '.$asset.' '.$balance;
+// 			}
 				
-		}
-		else {
-			$balance = $assignment->getVotes();
-			$voting = new \Goettertz\BcVoting\Domain\Model\Voting();// 									$this->votingRepository->add($voting);
-			$voting->setTxid($ref);
-			$voting->setSecret($secret);
-			$voting->setProject($project);
-			$voting->setReference($ballot->getReference());
+// 		}
+// 		else {
+// 			$balance = $assignment->getVotes();
+// 			$voting = new \Goettertz\BcVoting\Domain\Model\Voting();// 									$this->votingRepository->add($voting);
+// 			$voting->setTxid($ref);
+// 			$voting->setSecret($secret);
+// 			$voting->setProject($project);
+// 			$voting->setReference($ballot->getReference());
 				
-			$this->votingRepository->add($voting);
-			$assignment->setVotes($assignment->getVotes() - 1);
-			$strVotes = print_r($balance[$fromaddress][0]['qty'],true);
-			$result['msg'] = 'Voting '.$project->getName().': success!<br />TxId: '.$ref.' Address: '.$toaddress.' Asset amount: '.implode(':',$amount);
-		}		
-		return $result;
-	}
+// 			$this->votingRepository->add($voting);
+// 			$assignment->setVotes($assignment->getVotes() - 1);
+// 			$strVotes = print_r($balance[$fromaddress][0]['qty'],true);
+// 			$result['msg'] = 'Voting '.$project->getName().': success!<br />TxId: '.$ref.' Address: '.$toaddress.' Asset amount: '.implode(':',$amount);
+// 		}		
+// 		return $result;
+// 	}
 	
 	/**
 	 * @param string $string
