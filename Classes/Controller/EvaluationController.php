@@ -230,14 +230,19 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 		
 		$i = 0;
 		foreach ($result['txIds'] AS $transaction) { // muss sortiert werden absteigend nach Zeit
-			 # Wenn kein Eintrag in Voting (Streams)
+			 
+			# CHECK einzelnd vorher !!!!!!!!!!!!!!!!
+// 			empty($transaction['balance']['assets']
+// 			empty($transaction['data'])
+// 			$transaction['confirmations']
+			 
 			if (!empty($transaction['balance']['assets'] && !empty($transaction['data']) && $transaction['confirmations'] > 1)) {
 				if (!empty($meta = Blockchain::retrieveData($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), $transaction['txid']))) {
 					
 					if ($voting = explode("###", $meta)) {
 						if (is_array($voting)) {
-							if (count($voting !== 3)) {
-								$this->addFlashMessage($i.' Code error! (240)', 'Error!', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);							
+							if (count($voting) !== 3) {
+// 								$this->addFlashMessage($i.' Code error! (240)<br />'.$meta, 'Error!', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);							
 							}
 							else {
 								$random = $voting[0];
@@ -247,9 +252,11 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 								
 								if (is_string($secret = $voting[1])) {
 									if (strlen($secret) >= 16) {
-										$targetAddress = $mcrypt->decrypt($secret);
-										if (is_string($targetAddress)) {
-											$this->addFlashMessage($targetAddress.' '.$secret, 'Success!'.' (252)', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+										if ($targetAddress = $mcrypt->decrypt(trim($secret)))
+										if (is_string($targetAddress) && strlen($targetAddress) >= 10) {
+											
+											$this->addFlashMessage($i.') Address: '.htmlspecialchars($targetAddress).' Secret: '.htmlspecialchars($secret), 'Success!'.' (252)', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+											
 											if ($balance = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getmultibalances($address, $asset, 0, false) >= 1) {
 												if (!empty($targetAddress)&& $transaction['balance']['assets'][0]['qty'] > 0) {
 													if ($asset === $transaction['balance']['assets'][0]['assetref']) {
@@ -277,11 +284,11 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 											}																					
 										}
 										else {
-											$this->addFlashMessage($i.' No target address! (280)<br />'.$transaction['txid'], 'Error', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+											$this->addFlashMessage($i.' No target address! (282)<br />'.$transaction['txid'], 'Error', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 										}
 									}
 									else {
-										$this->addFlashMessage('Secret is too short! (258)', 'Error!', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+										$this->addFlashMessage('Secret is too short! (286)', 'Error!', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 									}
 								}
 								else {
@@ -292,7 +299,7 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 						}
 					}
 					else {
-						$this->addFlashMessage($i.' No string voting (260)', 'Error!', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+						$this->addFlashMessage($i.' No string voting (297)', 'Error!', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 					}
 						
 					
@@ -308,6 +315,12 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 							
 
 				}
+				else {
+					$this->addFlashMessage($i .' No data from BC. (235)','Error (314)', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+				}
+			}
+			else {
+				$this->addFlashMessage($i .'Data from BC not complete. (234)','Error (318)', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 			}
 			$i++;
 		} # end for transactions

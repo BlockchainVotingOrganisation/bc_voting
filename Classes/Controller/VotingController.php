@@ -181,7 +181,7 @@ class VotingController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 				$vote = $record[1];
 				$secret = $mcrypt->encrypt($vote);
 				$hash = $record[2];
-				$meta = $record[0].'###'.$secret.'###'.$record[2];
+				$meta = trim($record[0]).'###'.trim($secret).'###'.trim($record[2]);
 	
 				$amount = array($ballot->getAsset() => 1);
 					
