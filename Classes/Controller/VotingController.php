@@ -181,12 +181,12 @@ class VotingController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 				$vote = $record[1];
 				$secret = $mcrypt->encrypt($vote);
 				$hash = $record[2];
-				$meta = $record[0].'###'.$record[1].'###'.$record[2];
+				$meta = $record[0].'###'.$secret.'###'.$record[2];
 	
 				$amount = array($ballot->getAsset() => 1);
 					
 				# Assets versenden
-				if ($ref = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->sendwithmetadatafrom($fromaddress,$toaddress,$amount,bin2hex(trim($meta))) ) {
+				if ($ref = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->sendwithmetadatafrom($fromaddress,$toaddress,$amount,bin2hex($meta)) ) {
 					# wenn erfolgreich
 					if (is_string($ref)) {
 							
@@ -202,6 +202,7 @@ class VotingController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 						
 						$strVotes = print_r($balance[$fromaddress][0]['qty'],true);
 						$result['msg'] = 'Voting success!<br />TxId: '.$ref;
+						$result['msg'] .='<br />Meta:<pre>'.$meta.'</pre>';
 						$result['msg'] .='<br />Encrypted option text:<pre>'.$secret.'</pre>';
 					}
 					else {
