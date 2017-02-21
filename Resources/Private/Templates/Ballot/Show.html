@@ -22,7 +22,8 @@ Rev. 138
 	<f:if condition="{isAssigned} == 'true'">
 	<f:then>
 		<div style="text-align:center; font-size:2em;">
-			<f:form.submit value="Send ballot!" style="background-color:white" />
+			<f:form.submit name="check" value="Check ballot!" style="background-color:red; color:white;" />			
+			<f:form.submit name="send" value="Send ballot!" style="background-color:darkgreen; color:white;" />
 		</div>
 
 	</f:then>

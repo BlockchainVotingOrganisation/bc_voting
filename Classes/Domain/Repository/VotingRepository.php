@@ -24,6 +24,8 @@ namespace Goettertz\BcVoting\Domain\Repository;
  *  GNU General Public License for more details.
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
+ *  
+ *  Revision 138 by Louis Göttertz
  ***************************************************************/
 
 
@@ -32,13 +34,19 @@ namespace Goettertz\BcVoting\Domain\Repository;
  */
 class VotingRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 
-	public function addVoting(\Goettertz\BcVoting\Domain\Model\Project $project) {
+	
+	/**
+	 * finds voting in blockchain
+	 * 
+	 * @param string $address
+	 * @param boolean $decrypt
+	 * 
+	 * @return string|NULL
+	 */
+	public function findByAddress($address, $decrypt) {
 		
-		
-		
-		
-		
-		$this->add();
+		$result = NULL;
+		return $result;
 	}
 	
 }

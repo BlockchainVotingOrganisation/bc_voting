@@ -31,7 +31,7 @@
 			<td class="right">
 				<f:if condition="{isAssigned} == 'true'">
 				<f:then>
-					<f:form.radio name="optionCode" value="{option.optionCode}---{option.walletAddress}---{option.optionHash}" class="tx-bc-voting" style="background: transparent; vertical-align: center;" />
+					<f:form.radio property="optionCode" value="{option.optionCode}###{option.walletAddress}###{option.optionHash}" class="tx-bc-voting" style="background: transparent; vertical-align: center;" />
 				</f:then>
 				<f:else>
 					<a href="https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=bitcoin:{option.walletAddress}?amount=1"><img style="max-width:100%; height: auto;" src="https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=bitcoin:{option.walletAddress}?amount=1" width="150" height="150" title="{option.walletAddress}" /></a>

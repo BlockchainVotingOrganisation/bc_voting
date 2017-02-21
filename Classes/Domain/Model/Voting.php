@@ -64,7 +64,7 @@ class Voting extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject {
 	protected $secret;
 	
 	/**
-	 * @var array
+	 * @var string
 	 */
 	protected $optionCode = array();
 	
@@ -92,14 +92,14 @@ class Voting extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject {
 	
 	/**
 	 * gets the optionCode
-	 * @return array
+	 * @string 
 	 */
 	public function getOptionCode() {
 		return $this->optionCode;
 	}
 	
 	/**
-	 * @param array $optionCode
+	 * @param string $optionCode
 	 * @return void
 	 */
 	public function setOptionCode($optionCode) {
