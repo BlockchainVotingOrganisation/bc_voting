@@ -29,7 +29,7 @@ namespace Goettertz\BcVoting\Controller;
  ***************************************************************/
 
 /**
- * Revision 138
+ * Revision 139
  */
 
 use \Goettertz\BcVoting\Service\Blockchain;
@@ -194,20 +194,20 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 			}
 		}
 		
-// 		# check if project evaluation has started twice: look for stream item.
-// 		$items = array();
+		# check if project evaluation has started twice: look for stream item.
+		$items = array();
 		
-// 		if ($items = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->liststreamkeyitems($project->getStream(), 'decrypted')) {
-// 			$this->addFlashMessage('Evaluation started '.count($items).' times before!', 'Error', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-// 			$this->redirect('list',NULL,NULL, array('project' => $project));
-// 		}
-// 		else {
-// 			$msg = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->publish($project->getStream(),'decrypted',bin2hex('test'));
-// 			if (!is_array($msg)) {
-// 				$this->addFlashMessage('Evaluation started! '.$msg, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
-// 			}
-// 			else $this->addFlashMessage('Evaluation not started! '.implode($msg), '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-// 		}
+		if ($items = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->liststreamkeyitems($project->getStream(), substr($address, 0, 10))) {
+			$this->addFlashMessage('Evaluation started '.count($items).' times before!', 'Error', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+			$this->redirect('list',NULL,NULL, array('project' => $project));
+		}
+		else {
+			$msg = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->publish($project->getStream(),'decrypted',bin2hex('test'));
+			if (!is_array($msg)) {
+				$this->addFlashMessage('Evaluation started! '.$msg, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+			}
+			else $this->addFlashMessage('Evaluation not started! '.implode($msg), '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+		}
 		
 		
 		$mcrypt = new \Goettertz\BcVoting\Service\MCrypt();
@@ -232,8 +232,13 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 		foreach ($result['txIds'] AS $transaction) { // muss sortiert werden absteigend nach Zeit
 			 
 			# CHECK einzelnd vorher !!!!!!!!!!!!!!!!
-// 			empty($transaction['balance']['assets']
-// 			empty($transaction['data'])
+			if (empty($transaction['balance']['assets'])) {
+// 				$result['error'] = 'No asset.! (236)';
+				$this->addFlashMessage($i.') No asset in transaction.! (235)', 'Error (237)', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+			}
+			if (empty($transaction['data'])) {
+				$this->addFlashMessage($i.') No data.! (239)', 'Error (240)', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+			}
 // 			$transaction['confirmations']
 			 
 			if (!empty($transaction['balance']['assets'] && !empty($transaction['data']) && $transaction['confirmations'] > 1)) {
@@ -255,6 +260,11 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 										if ($targetAddress = $mcrypt->decrypt(trim($secret)))
 										if (is_string($targetAddress) && strlen($targetAddress) >= 10) {
 											
+											# Validate Addresses!!
+											
+											
+											
+											
 											$this->addFlashMessage($i.') Address: '.htmlspecialchars($targetAddress).' Secret: '.htmlspecialchars($secret), 'Success!'.' (252)', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
 											
 											if ($balance = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getmultibalances($address, $asset, 0, false) >= 1) {
@@ -275,7 +285,7 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 																$this->addFlashMessage($tx.' => '.$meta, '277', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
 															}
 															else {
-																$this->addFlashMessage(''.$targetAddress.', '.implode($tx). ' ', 'Error 298', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+																$this->addFlashMessage($i.') Target: '.$targetAddress.', '.implode($tx). ' ', 'Error 283', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 																break;
 															}
 														}
@@ -316,12 +326,12 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 
 				}
 				else {
-					$this->addFlashMessage($i .' No data from BC. (235)','Error (314)', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+					$this->addFlashMessage($i.') No data from BC. (235)','Error (324)', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 				}
 			}
-			else {
-				$this->addFlashMessage($i .'Data from BC not complete. (234)','Error (318)', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-			}
+// 			else {
+// 				$this->addFlashMessage($i.') Data from BC not complete. (234)','Error (328)', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+// 			}
 			$i++;
 		} # end for transactions
 		
