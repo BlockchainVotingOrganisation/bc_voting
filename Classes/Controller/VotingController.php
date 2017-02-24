@@ -73,10 +73,10 @@ class VotingController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 		
 		if ($items = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->liststreamkeyitems($project->getStream(), substr($ballot->getWalletAddress(), 0, 10))) {
 			if (count($items) > 1) {
-				$this->addFlashMessage('Evaluation started before! ('.count($items).')', 'Error (76)'.get_class($this), \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+				$this->addFlashMessage('Evaluation started before! ('.count($items).')', get_class($this).': Error (76)', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 			}
 			else {
-				$this->addFlashMessage('Project stream not yet confirmed! Please try again later.', 'Error (79)'.get_class($this), \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+				$this->addFlashMessage('Project stream not yet subscribed! Please try again later.', get_class($this).': Error (79)'.get_class($this), \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 			}
 			$this->redirect('show','Project',NULL, array('project' => $project));
 		}

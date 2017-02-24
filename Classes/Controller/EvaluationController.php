@@ -315,8 +315,8 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 														}
 														$myballot = $myballots[0];
 // 														
-														# Eintrag in Voting-Stream
-														$this->publishVoting($project, substr($address,0,10), $myballot->getReference().'###'.$targetAddress);
+														# Eintrag in Voting-Stream, was soll, was darf eingetragen werden?
+														$this->publishVoting($project, substr($address,0,10), $myballot->getReference().'###'.$hash);
 														$this->storeVotings($myballot->getReference(), $hash, $myballot, $targetAddress);
 														
 														if ($tx = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->sendwithmetadatafrom($address, $targetAddress, $amount, bin2hex($hash))) {
