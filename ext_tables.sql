@@ -133,7 +133,7 @@ CREATE TABLE tx_bcvoting_domain_model_voting (
 	reference varchar(255) DEFAULT '' NOT NULL,
 	txid varchar(255) DEFAULT '' NOT NULL,
 	hash varchar(255) DEFAULT '' NOT NULL,
-	option int(11) unsigned DEFAULT '0' NOT NULL,
+	`candidate` varchar(255) DEFAULT '' NOT NULL,
 	project int(11) unsigned DEFAULT '0' NOT NULL,
 	ballot int(11) unsigned DEFAULT '0' NOT NULL,
 	

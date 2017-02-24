@@ -69,29 +69,29 @@ class Voting extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject {
 	protected $optionCode = array();
 	
 	/**
-	 * option
-	 * @var \Goettertz\BcVoting\Domain\Model\Option
+	 * candidate
+	 * @var string
 	 */
-	protected $option;
+	protected $candidate;
 
 	/**
-	 * gets the option
-	 * @return \Goettertz\BcVoting\Domain\Model\Option
+	 * gets the candidate
+	 * @return string
 	 */
-	public function getOption() {
-		return $this->option;
+	public function getCandidate() {
+		return $this->candidate;
 	}
 	
 	/**
-	 * @param \Goettertz\BcVoting\Domain\Model\Option  $option
+	 * @param string  $candidate
 	 * @return void
 	 */
-	public function setOption($option) {
-		$this->option = $option;
+	public function setCandidate($candidate) {
+		$this->candidate = $candidate;
 	}
 	
 	/**
-	 * gets the optionCode
+	 * gets the CandidateCode
 	 * @string 
 	 */
 	public function getOptionCode() {

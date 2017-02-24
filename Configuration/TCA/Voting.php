@@ -11,10 +11,10 @@ if (!defined ('TYPO3_MODE')) {
 $GLOBALS['TCA']['tx_bcvoting_domain_model_voting'] = array(
 	'ctrl' => $GLOBALS['TCA']['tx_bcvoting_domain_model_voting']['ctrl'],
 	'interface' => array(
-		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, reference, txid, secret',
+		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, reference, txid, hash, candidate',
 	),
 	'types' => array(
-		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, reference, txid, secret, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime'),
+		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, reference, txid, hash, candidate, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime'),
 	),
 	'palettes' => array(
 		'1' => array('showitem' => ''),
@@ -130,23 +130,14 @@ $GLOBALS['TCA']['tx_bcvoting_domain_model_voting'] = array(
 			),
 		),
 			
-		'option' => array(
-				'exclude' => 1,
-				'label' => 'LLL:EXT:bc_voting/Resources/Private/Language/locallang_db.xlf:tx_bcvoting_domain_model_voting.option',
-				'config' => array(
-						'type' => 'select',
-						'renderType' => 'selectSingle',
-						'foreign_table' => 'tx_bcvoting_domain_model_option',
-						'minitems' => 0,
-						'maxitems' => 1,
-						'appearance' => array(
-								'collapseAll' => 0,
-								'levelLinksPosition' => 'top',
-								'showSynchronizationLink' => 1,
-								'showPossibleLocalizationRecords' => 1,
-								'showAllLocalizationLink' => 1
-						),
-				),
+		'candidate' => array(
+			'exclude' => 1,
+			'label' => 'LLL:EXT:bc_voting/Resources/Private/Language/locallang_db.xlf:tx_bcvoting_domain_model_voting.candidate',
+			'config' => array(
+				'type' => 'input',
+				'size' => 30,
+				'eval' => 'trim'
+			),
 		),
 		'project' => array(
 				'exclude' => 1,

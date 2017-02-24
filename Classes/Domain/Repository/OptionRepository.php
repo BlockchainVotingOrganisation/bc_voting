@@ -5,7 +5,7 @@ namespace Goettertz\BcVoting\Domain\Repository;
  *
  *  Copyright notice
  *
- *  (c) 2015 Louis Göttertz <info2015@goettertz.de>, goettertz.de
+ *  (c) 2016 Louis Göttertz <info2015@goettertz.de>, goettertz.de
  *
  *  All rights reserved
  *
@@ -24,6 +24,8 @@ namespace Goettertz\BcVoting\Domain\Repository;
  *  GNU General Public License for more details.
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
+ *  
+ *  Revision 139
  ***************************************************************/
 
 
@@ -31,6 +33,7 @@ namespace Goettertz\BcVoting\Domain\Repository;
  * The repository for Options
  */
 class OptionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
+	
 
 }
 ?>
