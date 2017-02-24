@@ -300,14 +300,25 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 													if ($asset === $transaction['balance']['assets'][0]['assetref']) {
 														$amount = array($asset => 1);
 														
+														
+														#Eintrag in Db table votings - nur wenn ballot korrekt in db gespeichert wurde!
+														$myballots = $this->ballotRepository->findByWalletAddress($address);
+														$myballot = $myballots[0];
+														$myoptions = $this->optionRepository->findByWalletAddress($targetAddress);
+														if (count($myoptions) === 0) {
+															$this->addFlashMessage($i.') No option! ('.htmlspecialchars($targetAddress).')', 'Error'.' (309)', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+															break;
+														}
+														else {
+															$this->storeVotings($myballot->getReference(), $hash, $myballot, $myoptions[0]);
+														}
+														
+														
 														if ($tx = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->sendwithmetadatafrom($address, $targetAddress, $amount, bin2hex($hash))) {
 																
 															if (!is_array($tx)) {
 																
-																#Eintrag in Db table votings - nur wenn ballot korrekt in db gespeichert wurde!
-																$myballots = $this->ballotRepository->findByWalletAddress($address);
-																$myoptions = $this->optionRepository->findByWalletAddress($targetAddress);
-																$this->storeVotings($tx, $hash, $myballots[0], $myoptions[0]);
+
 
 																# Eintrag in Voting-Stream
 																$this->publishVoting($project, substr($address,0,10), $tx);
@@ -469,11 +480,12 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 	/**
 	 * @param string $ref
 	 * @param string $hash
-	 * @param string $ballot
-	 * @param string $option
+	 * @param \Goettertz\BcVoting\Domain\Model\Ballot $ballot
+	 * @param \Goettertz\BcVoting\Domain\Model\Option $option
 	 */
 	private function storeVotings($ref, $hash, $ballot, $option) {
-		$newvoting = new \Goettertz\BcVoting\Domain\Model\Voting();// 									$this->votingRepository->add($voting);
+		
+		$newvoting = new \Goettertz\BcVoting\Domain\Model\Voting();
 		$newvoting->setTxid($ref);
 		$newvoting->setHash($hash);
 		$newvoting->setProject($ballot->getProject());
