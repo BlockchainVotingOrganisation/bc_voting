@@ -72,16 +72,15 @@ class VotingController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 		$items = array();
 		
 		if ($items = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->liststreamkeyitems($project->getStream(), substr($ballot->getWalletAddress(), 0, 10))) {
-			$this->addFlashMessage('Evaluation started '.count($items).' times before!', 'Error', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-			$this->redirect('show',NULL,NULL, array('project' => $project));
-		}
-		else {
-			$msg = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->publish($project->getStream(),'decrypted',bin2hex('test'));
-			if (!is_array($msg)) {
-				$this->addFlashMessage('Evaluation started! '.$msg, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+			if (count($items) > 1) {
+				$this->addFlashMessage('Evaluation started before! ('.count($items).')', 'Error (76)'.get_class($this), \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 			}
-			else $this->addFlashMessage('Evaluation not started! '.implode($msg), '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+			else {
+				$this->addFlashMessage('Project stream not yet confirmed! Please try again later.', 'Error (79)'.get_class($this), \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+			}
+			$this->redirect('show','Project',NULL, array('project' => $project));
 		}
+
 
 		if ($project->getStart() < time() && time() < $project->getEnd()) {
 			if ($user = $this->userRepository->getCurrentFeUser()) {

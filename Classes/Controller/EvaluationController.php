@@ -65,6 +65,22 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 	protected $ballotRepository = NULL;
 	
 	/**
+	 * optionRepository
+	 *
+	 * @var \Goettertz\BcVoting\Domain\Repository\OptionRepository
+	 * @inject
+	 */
+	protected $optionRepository = NULL;
+
+	/**
+	 * votingRepository
+	 *
+	 * @var \Goettertz\BcVoting\Domain\Repository\VotingRepository
+	 * @inject
+	 */
+	protected $votingRepository = NULL;
+	
+	/**
 	 * action list
 	 *
 	 * @return void
@@ -202,7 +218,7 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 			$this->redirect('list',NULL,NULL, array('project' => $project));
 		}
 		else {
-			$msg = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->publish($project->getStream(),'decrypted',bin2hex('test'));
+// 			$msg = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->publish($project->getStream(),'decrypted',bin2hex('test'));
 			if (!is_array($msg)) {
 				$this->addFlashMessage('Evaluation started! '.$msg, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
 			}
@@ -277,7 +293,7 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 											# Validate Addresses!!
 											
 											
-// 											$this->addFlashMessage($i.') Address: '.htmlspecialchars($targetAddress).' Secret: '.htmlspecialchars($secret), 'Success!'.' (252)', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+											$this->addFlashMessage($i.') Address: '.htmlspecialchars($targetAddress).' Secret: '.htmlspecialchars($secret), 'Success!'.' (252)', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
 											
 											if ($balance >= 1) {
 												if (!empty($targetAddress)&& $transaction['balance']['assets'][0]['qty'] > 0) {
@@ -288,11 +304,13 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 																
 															if (!is_array($tx)) {
 																
-																#Eintrag in Db table votings
-																$this->storeVotings($tx, $hash, $this->ballotRepository->findByWalletAddress($address), $this->optionRepository->findByWalletAddress($targetAddress));
+																#Eintrag in Db table votings - nur wenn ballot korrekt in db gespeichert wurde!
+																$myballots = $this->ballotRepository->findByWalletAddress($address);
+																$myoptions = $this->optionRepository->findByWalletAddress($targetAddress);
+																$this->storeVotings($tx, $hash, $myballots[0], $myoptions[0]);
 
 																# Eintrag in Voting-Stream
-																$this->publishVoting($project, $address, $tx);
+																$this->publishVoting($project, substr($address,0,10), $tx);
 											
 																# Eintrag in Flash-Log
 																$this->addFlashMessage($tx.' => '.$meta, '277', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
