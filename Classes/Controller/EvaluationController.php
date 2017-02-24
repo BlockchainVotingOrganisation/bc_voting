@@ -310,29 +310,28 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 															break;
 														}
 														else {
+															# Eintrag in Voting-Stream
+															$this->publishVoting($project, substr($address,0,10), $myballot->getReference().'###'.$targetAddress);
 															$this->storeVotings($myballot->getReference(), $hash, $myballot, $myoptions[0]);
+															
+															if ($tx = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->sendwithmetadatafrom($address, $targetAddress, $amount, bin2hex($hash))) {
+															
+																if (!is_array($tx)) {												
+																		
+																	# Eintrag in Flash-Log
+																	$this->addFlashMessage($tx.' => '.$meta, '277', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+																}
+																else {
+																	$msg = $i.') Target: '.$targetAddress.', '.implode($tx);
+																	$publish = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->publish($project->getStream(),'Error', bin2hex($address.'###'.$msg.'###'.$transaction['txid']));
+																	$this->addFlashMessage($msg, 'Error 299', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+																	break;
+																}
+															}
 														}
 														
 														
-														if ($tx = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->sendwithmetadatafrom($address, $targetAddress, $amount, bin2hex($hash))) {
-																
-															if (!is_array($tx)) {
-																
 
-
-																# Eintrag in Voting-Stream
-																$this->publishVoting($project, substr($address,0,10), $tx);
-											
-																# Eintrag in Flash-Log
-																$this->addFlashMessage($tx.' => '.$meta, '277', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
-															}
-															else {
-																$msg = $i.') Target: '.$targetAddress.', '.implode($tx);
-																$publish = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->publish($project->getStream(),'Error', bin2hex($address.'###'.$msg.'###'.$transaction['txid']));
-																$this->addFlashMessage($msg, 'Error 299', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-																break;
-															}
-														}
 													}
 												}
 											}																					
