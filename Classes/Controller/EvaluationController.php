@@ -238,20 +238,23 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 		$ballots = $this->ballotRepository->findByWalletAddress($address);
 		foreach ($ballots AS $ballot) {
 			if ($ballot->getEnd() > time()) {
-				$this->addFlashMessage('Voting period is not over!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+				$this->addFlashMessage('Voting period is not over!', 'Error (241)', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 				unset($result);
 				$this->redirect('show', NULL, NULL, array('project' => $project, 'isAdmin' => $isAdmin));
 			}
 		}
 
-		### Mix Prozedur -> Send Assets an eigene Adresse? ###
 		$balance = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getmultibalances($address, $asset, 0, false);
+		
+		if ($balance === 0) {
+			$this->addFlashMessage('No asset balance!', 'Error (256)', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+			unset($result);
+			$this->redirect('show', NULL, NULL, array('project' => $project, 'isAdmin' => $isAdmin));
+		}
+		
+		### Mix Prozedur -> Send Assets an eigene Adresse? ###
 		$amount = array($asset => $balance);
 		Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->sendwithmetadatafrom($address, $address, $amount, bin2hex('Mix'));
-		#
-		# Oder an Zweitadresse, Hauptsache alle Inputs für nächste Transaktion sind in dieser Transaktion statt in den Stimmabgabe-Transaktionen
-		#
-		
 		
 		$i = 0;
 		foreach ($result['txIds'] AS $transaction) { // muss sortiert werden absteigend nach Zeit
@@ -300,11 +303,13 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 													if ($asset === $transaction['balance']['assets'][0]['assetref']) {
 														$amount = array($asset => 1);
 														
+														# Check DB: Nur wenn ballot korrekt in db gespeichert wurde!
 														
-														#Eintrag in Db table votings - nur wenn ballot korrekt in db gespeichert wurde!
+														# Eintrag in Db table votings - 
 														$myballots = $this->ballotRepository->findByWalletAddress($address);
 														$myballot = $myballots[0];
 														$myoptions = $this->optionRepository->findByWalletAddress($targetAddress);
+														
 														if (count($myoptions) === 0) {
 															$this->addFlashMessage($i.') No option! ('.htmlspecialchars($targetAddress).')', 'Error'.' (309)', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 															break;
