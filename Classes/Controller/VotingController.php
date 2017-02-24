@@ -29,7 +29,7 @@ namespace Goettertz\BcVoting\Controller;
  ***************************************************************/
 
 /**
- * Revision 138:
+ * Revision 139:
  *
  */
 use Goettertz\BcVoting\Service\Blockchain;
@@ -66,12 +66,22 @@ class VotingController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 	 */
 	public function createAction(\Goettertz\BcVoting\Domain\Model\Voting $newVoting, \Goettertz\BcVoting\Domain\Model\Ballot $ballot) {
 		
-		#Test
-		if ($this->request->hasArgument['test']) {
-			$this->addFlashMessage($this->request->getArgument['optionCode'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
-		}
-		
 		$project = $ballot->getProject();
+		
+		# check if project evaluation has started twice: look for stream item.
+		$items = array();
+		
+		if ($items = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->liststreamkeyitems($project->getStream(), substr($ballot->getWalletAddress(), 0, 10))) {
+			$this->addFlashMessage('Evaluation started '.count($items).' times before!', 'Error', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+			$this->redirect('show',NULL,NULL, array('project' => $project));
+		}
+		else {
+			$msg = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->publish($project->getStream(),'decrypted',bin2hex('test'));
+			if (!is_array($msg)) {
+				$this->addFlashMessage('Evaluation started! '.$msg, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+			}
+			else $this->addFlashMessage('Evaluation not started! '.implode($msg), '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+		}
 
 		if ($project->getStart() < time() && time() < $project->getEnd()) {
 			if ($user = $this->userRepository->getCurrentFeUser()) {
@@ -191,15 +201,6 @@ class VotingController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 					if (is_string($ref)) {
 							
 						#
-						$newvoting = new \Goettertz\BcVoting\Domain\Model\Voting();// 									$this->votingRepository->add($voting);
-						$newvoting->setTxid($ref);
-						$newvoting->setSecret($secret);
-						$newvoting->setProject($project);
-						$newvoting->setReference($ballot->getReference());
-							
-						$this->votingRepository->add($newvoting);
-						
-						
 						$strVotes = print_r($balance[$fromaddress][0]['qty'],true);
 						$result['msg'] = 'Voting success!<br />TxId: '.$ref;
 						$result['msg'] .='<br />Meta:<pre>'.$meta.'</pre>';

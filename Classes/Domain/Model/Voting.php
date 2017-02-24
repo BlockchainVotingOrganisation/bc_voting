@@ -25,7 +25,7 @@ namespace Goettertz\BcVoting\Domain\Model;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  *  
- *  Rev. 138
+ *  Rev. 139
  ***************************************************************/
 
 /**
@@ -61,7 +61,7 @@ class Voting extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject {
 	 * 
 	 * @var string
 	 */
-	protected $secret;
+	protected $hash;
 	
 	/**
 	 * @var string
@@ -70,13 +70,13 @@ class Voting extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject {
 	
 	/**
 	 * option
-	 * @var \Goettertz\BcVoting\Domain\Model\Option 
+	 * @var \Goettertz\BcVoting\Domain\Model\Option
 	 */
 	protected $option;
 
 	/**
 	 * gets the option
-	 * @return \Goettertz\BcVoting\Domain\Model\Option 
+	 * @return \Goettertz\BcVoting\Domain\Model\Option
 	 */
 	public function getOption() {
 		return $this->option;
@@ -140,20 +140,20 @@ class Voting extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject {
 	}
 	
 	/**
-	 * gets secret
+	 * gets hash
 	 * @return string
 	 */
-	public function getSecret() {
-		return $this->secret;
+	public function getHash() {
+		return $this->hash;
 	}
 	
 	/**
-	 * sets secret
-	 * @param string $secret
+	 * sets hash
+	 * @param string $hash
 	 * @return void
 	 */
-	public function setSecret($secret) {
-		$this->secret = $secret;
+	public function setHash($hash) {
+		$this->hash = $hash;
 	}
 
 	/**
