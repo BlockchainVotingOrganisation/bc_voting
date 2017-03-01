@@ -1,6 +1,6 @@
-<!-- Revision 137 -->
+<!-- Revision 140 -->
 <div class="tx-bc-voting">
-	<!-- f:debug>{result}</f:debug -->
+	<f:debug>{result}</f:debug>
 	<f:for each="{result.blockchain.ballots}" as="ballot">
 	Nicht ausgewertet: {ballot.balance} Stimmen <br />
 	Address: {ballot.address} <br />
@@ -11,11 +11,25 @@
 		</f:if>
 	</f:if>
 	<hr />
-	<h4>Results</h4>
-		<f:for each="{ballot.options}" as="option" >
+	<h4>Summary:</h4>
+	<f:for each="{ballot.options}" as="option" >
 		<div style="width: 50%; float:left; border-bottom: 1px solid black;">{option.name}</div>
 		<div style="width: 50%; float:left; border-bottom: 1px solid black; text-align:right">{option.balance}</div>		
+	</f:for>
+	<div style="width: 100%; clear:both; min-height:10px;">&nbsp;</div>
+	<hr />
+	<h4>Bulletin Board</h4>
+		Search: <input /><input type="submit" /><hr />
+		<f:for each="{result.txIds}" as="transaction">
+			<f:for each="{transaction.addresses}" as="address">
+				<f:if condition="{address} == {project.walletAddress}">			
+					<div style="lightgrey; margin-bottom:2px;">
+						<f:link.action action="show" controller="Transaction" arguments="{project:project, txid:transaction.txid}">{transaction.txid}</f:link.action>
+					</div>
+				</f:if>
+			</f:for>
 		</f:for>
+		
 	</f:for>
 	<div style="width: 100%; clear:both; min-height:10px;">&nbsp;</div>
 </div>

@@ -1,4 +1,4 @@
-<!-- Rev 138 -->
+<!-- Rev 140 -->
 <f:layout name="Default" />
 <f:section name="main">
 <f:flashMessages renderMode="div" />
@@ -6,9 +6,11 @@
 <f:render partial="Evaluation/Menu" arguments="{project : project, isAssigned: isAssigned, isAdmin: isAdmin, feuser: feuser}" />
 <f:render partial="Project/Properties" arguments="{project:project}" />
 <hr />
-<div>
+
+<div class="tx-bc-voting">
 	<f:render partial="Evaluation/Results" arguments="{project:project, result:result, isAdmin: isAdmin}" />	
 </div>
+
 <div class="tx-bc-voting">
 <f:if condition="{bcResult}">
 	<hr />

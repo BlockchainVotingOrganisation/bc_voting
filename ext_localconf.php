@@ -1,5 +1,5 @@
 <?php
-// Rev. 138
+// Rev. 140
 if (!defined('TYPO3_MODE')) {
 	die('Access denied.');
 }
@@ -91,10 +91,12 @@ if (!defined('TYPO3_MODE')) {
 	'BVS_Evaluation',
 	array(
 			'Evaluation' => 'list, show, proceed, txlog, streamlog',
+			'Transaction' => 'show'
 			
 	),
 	array(
 			'Evaluation' => 'list, show, proceed, txlog, streamlog',
+			'Transaction' => 'show'
 	)
 );
 ?>
