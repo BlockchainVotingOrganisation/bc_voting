@@ -37,10 +37,27 @@ namespace Goettertz\BcVoting\Controller;
  */
 class TransactionController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
 	
-	public function showAction() {
+	/**
+	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
+	 * @param string $txid
+	 */
+	public function showAction(\Goettertz\BcVoting\Domain\Model\Project $project, $txid) {
+		
 		$isAssigned = 'false';
 		$isAdmin 	= 'false';
-// 		$this->view->assign();
+
+		$data = \Goettertz\BcVoting\Service\Blockchain::retrieveData($project->getRpcServer(),$project->getRpcPort(),$project->getRpcUser(), $project->getRpcPassword(), $txid);
+		
+		$transaction = array('txid' => $txid);
+		$data = explode("###", $data);
+		$transaction['vote'] = $data[1];
+		$transaction['random'] = $data[0];
+		$transaction['hash'] = $data[2];
+// 		$result = array('transaction' => $transaction, 'error' => NULL);
+		
+		
+		$this->view->assign('transaction',$transaction);
+ 		$this->view->assign('project',$project);
 	}
 }
 

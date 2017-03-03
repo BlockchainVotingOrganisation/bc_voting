@@ -18,7 +18,7 @@
 	</f:for>
 	<div style="width: 100%; clear:both; min-height:10px;">&nbsp;</div>
 	<hr />
-	<h4>Bulletin Board</h4>
+	<h4>Voting Records</h4>
 		Search: <input /><input type="submit" /><hr />
 		<f:for each="{result.txIds}" as="transaction">
 			<f:for each="{transaction.addresses}" as="address">
@@ -28,8 +28,8 @@
 					</div>
 				</f:if>
 			</f:for>
-		</f:for>
-		
+		</f:for>	
 	</f:for>
 	<div style="width: 100%; clear:both; min-height:10px;">&nbsp;</div>
+	<h4>Event Log</h4>
 </div>

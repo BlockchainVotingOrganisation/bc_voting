@@ -2,7 +2,14 @@
 <f:layout name="Default" />
 <f:section name="main">
 	<f:flashMessages renderMode="div" />
-	<div class="tx-bc-voting">
-		{transaction.txid}
-	</div>
+	<!--  f:debug>{project}</f:debug -->
+	<h3>{project.name}</h3>
+	<h4>Transaction data</h4>
+	<table border="1" style="border-collapse:collapse;">
+		<tr><th width="30%">TxId:</th><td colspan="2">{transaction.txid}</td></tr>
+		<tr><th>Encrypted Vote:</th><td colspan="2"><a>{transaction.vote}</a></td></tr>
+		<tr><th>Random:</th><td colspan="2">{transaction.random}</td></tr>
+		<tr><th>Hash:</th><td colspan="2">{transaction.hash}</td></tr>		
+	</table>
+	<f:link.action action="show" controller="Evaluation" arguments="{project:project}">back</f:link.action>
 </f:section>
