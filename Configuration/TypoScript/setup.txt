@@ -1,4 +1,6 @@
-
+/*
+ * Revision 138
+ */
 plugin.tx_bcvoting {
 	view {
 		templateRootPath = {$plugin.tx_bcvoting.view.templateRootPath}
@@ -84,13 +86,14 @@ plugin.tx_bcvoting._CSS_DEFAULT_STYLE (
 
 	.tx-bc-voting table {
 		width: 100%;
-		border: 0px solid black;
-		border-collapse:separate;
+		border: 1px solid black;
+		border-collapse:collapse;
 		border-spacing:0px;
 	}
 
 	.tx-bc-voting table th {
 		font-weight:bold;
+		padding: 2px;
 	}
 
 	.tx-bc-voting table td {

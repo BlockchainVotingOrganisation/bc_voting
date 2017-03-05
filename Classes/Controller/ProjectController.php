@@ -1,7 +1,7 @@
 <?php
 namespace Goettertz\BcVoting\Controller;
 //error_reporting(E_ALL);
-ini_set("display_errors", 1);
+// ini_set("display_errors", 1);
 
 /***************************************************************
  *
@@ -29,7 +29,7 @@ ini_set("display_errors", 1);
  ***************************************************************/
 
 /**
- * Revision 137
+ * Revision 140
  */
 
 use \Goettertz\BcVoting\Service\Blockchain;
@@ -624,92 +624,92 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 	 * Should be moved to voting controller
 	 * @return string[]|number[]
 	 */
-	public function checkVotingAction() {
+// 	public function checkVotingAction() {
 		
-		if ($this->request->hasArgument('voting')) {
-			$voting = $this->request->getArgument('voting');
-			$result['txid'] = $voting;
-			$this->view->assign('voting', $voting);
-		}
+// 		if ($this->request->hasArgument('voting')) {
+// 			$voting = $this->request->getArgument('voting');
+// 			$result['txid'] = $voting;
+// 			$this->view->assign('voting', $voting);
+// 		}
 		
-		$result = array();
-		$result['result'] = false;
-		$result['error'] = NULL;
+// 		$result = array();
+// 		$result['result'] = false;
+// 		$result['error'] = NULL;
 		
-		if (!$txid = trim($voting['reference'])) {
+// 		if (!$txid = trim($voting['reference'])) {
 			
-			$result['error'] = 'No txid!';
-			$this->addFlashMessage($result['error'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-// 			return $result;			
-		}
-		else {
-			$result['result'] = true;
-			$result['txid'] = $txid;
-		}
+// 			$result['error'] = 'No txid!';
+// 			$this->addFlashMessage($result['error'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+// // 			return $result;			
+// 		}
+// 		else {
+// 			$result['result'] = true;
+// 			$result['txid'] = $txid;
+// 		}
 		
-		# Daten aus DB
-		$project = NULL;
-		$votes = $this->votingRepository->findByTxid($txid);
-		if (count($votes) > 0) {
-			$vote = $votes[0];
-			$secretDB = $vote->getSecret();
-			# getProject
-			if ($project = $vote->getProject()) {
-				$this->view->assign('project',$project);
-				$result['secretDB'] = $secretDB;				
-			}
-		}
-		else {
-			$result['error'] = 'TxId not found in DB!';
-			$this->addFlashMessage($result['error'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-		}
+// 		# Daten aus DB
+// 		$project = NULL;
+// 		$votes = $this->votingRepository->findByTxid($txid);
+// 		if (count($votes) > 0) {
+// 			$vote = $votes[0];
+// 			$secretDB = $vote->getSecret();
+// 			# getProject
+// 			if ($project = $vote->getProject()) {
+// 				$this->view->assign('project',$project);
+// 				$result['secretDB'] = $secretDB;				
+// 			}
+// 		}
+// 		else {
+// 			$result['error'] = 'TxId not found in DB!';
+// 			$this->addFlashMessage($result['error'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+// 		}
 
-		# Daten aus BC
-		if ($project) {
-			$bc = new \Goettertz\BcVoting\Service\Blockchain();
-			if (!$result['secretBC']  = $bc::retrieveData($project->getRpcServer(),$project->getRpcPort(),$project->getRpcUser(), $project->getRpcPassword(), $txid)) {
-				$result['error'] = 'No blockchain data!';
-				$this->addFlashMessage($result['error'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-			}
-			else {
-				if ($result['secretDB'] === $result['secretBC']) {
-					$mcrypt = new \Goettertz\BcVoting\Service\MCrypt();
-					$result['decrypted'] = $mcrypt->decrypt($result['secretBC']);
-					$this->addFlashMessage('Option: ' . $result['decrypted'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
-				}
-			}
-		}
+// 		# Daten aus BC
+// 		if ($project) {
+// 			$bc = new \Goettertz\BcVoting\Service\Blockchain();
+// 			if (!$result['secretBC']  = $bc::retrieveData($project->getRpcServer(),$project->getRpcPort(),$project->getRpcUser(), $project->getRpcPassword(), $txid)) {
+// 				$result['error'] = 'No blockchain data!';
+// 				$this->addFlashMessage($result['error'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+// 			}
+// 			else {
+// 				if ($result['secretDB'] === $result['secretBC']) {
+// 					$mcrypt = new \Goettertz\BcVoting\Service\MCrypt();
+// 					$result['decrypted'] = $mcrypt->decrypt($result['secretBC']);
+// 					$this->addFlashMessage('Option: ' . $result['decrypted'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+// 				}
+// 			}
+// 		}
 		
 		
-		// Benutzerdaten projektbezogen laden
-		$isAssigned = 'false';
-		$isAdmin = 'false';
-		$amount = 0;
+// 		// Benutzerdaten projektbezogen laden
+// 		$isAssigned = 'false';
+// 		$isAdmin = 'false';
+// 		$amount = 0;
 		
-		if ($project) {
-			if ($user = $this->userRepository->getCurrentFeUser()) {
-				$username = $user->getUsername();
-				if ($blockchain) {
-					$amount = $blockchain->getUserBalance($username, $project);
-				}
+// 		if ($project) {
+// 			if ($user = $this->userRepository->getCurrentFeUser()) {
+// 				$username = $user->getUsername();
+// 				if ($blockchain) {
+// 					$amount = $blockchain->getUserBalance($username, $project);
+// 				}
 			
-				$assignment = $user ? $project->getAssignmentForUser($user) : NULL;
-				If($assignment != NULL) {
-					$isAssigned = 'true';
-					$role = $assignment->getRole($assignment);
-					$roleName = $role->getName($role);
-				}
+// 				$assignment = $user ? $project->getAssignmentForUser($user) : NULL;
+// 				If($assignment != NULL) {
+// 					$isAssigned = 'true';
+// 					$role = $assignment->getRole($assignment);
+// 					$roleName = $role->getName($role);
+// 				}
 			
-				$assignment = $user ? $project->getAssignmentForUser($user, 'admin') : NULL;
-				If($assignment != NULL) {
-					$isAdmin = 'true';
-				}
-			}
-		}
-		$this->view->assign('result',$result);
-		$this->view->assign('isAssigned', $isAssigned);
-		$this->view->assign('isAdmin', $isAdmin);
-	}
+// 				$assignment = $user ? $project->getAssignmentForUser($user, 'admin') : NULL;
+// 				If($assignment != NULL) {
+// 					$isAdmin = 'true';
+// 				}
+// 			}
+// 		}
+// 		$this->view->assign('result',$result);
+// 		$this->view->assign('isAssigned', $isAssigned);
+// 		$this->view->assign('isAdmin', $isAdmin);
+// 	}
 	
 	/**
 	 * @param array $data
@@ -863,6 +863,13 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		else {
 			$this->addFlashMessage('Stream '.$streamName.' not created! '.implode($stream), '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 		}
+		
+		# subscribe stream
+		if ($success = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->subscribe($streamName, false)) {
+			$this->addFlashMessage('Stream '.$streamName.' not subscribed! '.$success, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+		}
+		
+		
 		
 		$this->view->assign('isAdmin', $isAdmin);
 		$this->view->assign('isAssigned', $isAssigned);
