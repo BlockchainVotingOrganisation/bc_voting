@@ -29,7 +29,7 @@ ini_set("display_errors", 1);
  ***************************************************************/
 
 /**
- * Revision 132
+ * Revision 141
  */
 
 use \Goettertz\BcVoting\Service\Blockchain;
@@ -70,7 +70,7 @@ class ElectionController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 * @return void
 	 */
 	public function listAction() {
-		$projects = $this->projectRepository->findAll();
+		$projects = $this->projectRepository->findCurrent();
 		$this->view->assign('projects', $projects);
 		if ($feuser = $this->userRepository->getCurrentFeUser()) {
 			$this->view->assign('feuser', $feuser);

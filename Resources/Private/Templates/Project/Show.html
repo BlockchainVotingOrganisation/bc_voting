@@ -1,34 +1,9 @@
 <!-- Rev 131 -->
 <f:layout name="Default" />
 <f:section name="main">
-
-<f:render partial="Menu" arguments="{project : project, isAssigned:isAssigned, isAdmin:isAdmin, feuser: feuser}" />
-<f:flashMessages renderMode="div" />
-<h2>{project.name}</h2>
-Txid: <a href="http://www.blockchain-voting.org:9333/BVS/tx/{project.reference}">{project.reference}</a>
-<f:render partial="Project/Properties" arguments="{project:project}" />
-
-
-<div class="tx-bc-voting link">
-	<f:for each="{project.ballots}" as="ballot">
-		<f:if condition="{ballot.reference} != ''">
-			<div>
-				<f:link.action action="show" controller="Ballot" arguments="{ballot : ballot}">{ballot.name}</f:link.action> <br />
-				<f:if condition="{isAssigned} == 'true'">
-					<f:if condition="{ballot.balance} != 0">
-						<f:then>
-							<small>(You have {ballot.balance} votes.)</small>
-						</f:then>
-						<f:else>
-							<small>(0 Votes. Probably, you have already voted.)</small>
-						</f:else>
-					</f:if>
-				</f:if>
-			</div>			
-		</f:if>
-	</f:for>
-</div>
-
-<f:render partial="Blockchain/ShortInfo" arguments="{bcResult:bcResult}" />
-
+	<f:render partial="Menu" arguments="{project : project, isAssigned:isAssigned, isAdmin:isAdmin, feuser: feuser}" />
+	<f:flashMessages renderMode="div" />
+	<h2>{project.name}</h2>
+	<f:render partial="Project/Properties" arguments="{project:project}" />
+	<f:render partial="Blockchain/ShortInfo" arguments="{bcResult:bcResult}" />
 </f:section>

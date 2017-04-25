@@ -29,7 +29,7 @@ namespace Goettertz\BcVoting\Controller;
  ***************************************************************/
 
 /**
- * Revision 140
+ * Revision 141
  */
 
 use \Goettertz\BcVoting\Service\Blockchain;
@@ -617,133 +617,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 			}
 		}
 	}
-	
-	/**
-	 * checkVoting
-	 * 
-	 * Should be moved to voting controller
-	 * @return string[]|number[]
-	 */
-// 	public function checkVotingAction() {
-		
-// 		if ($this->request->hasArgument('voting')) {
-// 			$voting = $this->request->getArgument('voting');
-// 			$result['txid'] = $voting;
-// 			$this->view->assign('voting', $voting);
-// 		}
-		
-// 		$result = array();
-// 		$result['result'] = false;
-// 		$result['error'] = NULL;
-		
-// 		if (!$txid = trim($voting['reference'])) {
-			
-// 			$result['error'] = 'No txid!';
-// 			$this->addFlashMessage($result['error'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-// // 			return $result;			
-// 		}
-// 		else {
-// 			$result['result'] = true;
-// 			$result['txid'] = $txid;
-// 		}
-		
-// 		# Daten aus DB
-// 		$project = NULL;
-// 		$votes = $this->votingRepository->findByTxid($txid);
-// 		if (count($votes) > 0) {
-// 			$vote = $votes[0];
-// 			$secretDB = $vote->getSecret();
-// 			# getProject
-// 			if ($project = $vote->getProject()) {
-// 				$this->view->assign('project',$project);
-// 				$result['secretDB'] = $secretDB;				
-// 			}
-// 		}
-// 		else {
-// 			$result['error'] = 'TxId not found in DB!';
-// 			$this->addFlashMessage($result['error'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-// 		}
 
-// 		# Daten aus BC
-// 		if ($project) {
-// 			$bc = new \Goettertz\BcVoting\Service\Blockchain();
-// 			if (!$result['secretBC']  = $bc::retrieveData($project->getRpcServer(),$project->getRpcPort(),$project->getRpcUser(), $project->getRpcPassword(), $txid)) {
-// 				$result['error'] = 'No blockchain data!';
-// 				$this->addFlashMessage($result['error'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-// 			}
-// 			else {
-// 				if ($result['secretDB'] === $result['secretBC']) {
-// 					$mcrypt = new \Goettertz\BcVoting\Service\MCrypt();
-// 					$result['decrypted'] = $mcrypt->decrypt($result['secretBC']);
-// 					$this->addFlashMessage('Option: ' . $result['decrypted'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
-// 				}
-// 			}
-// 		}
-		
-		
-// 		// Benutzerdaten projektbezogen laden
-// 		$isAssigned = 'false';
-// 		$isAdmin = 'false';
-// 		$amount = 0;
-		
-// 		if ($project) {
-// 			if ($user = $this->userRepository->getCurrentFeUser()) {
-// 				$username = $user->getUsername();
-// 				if ($blockchain) {
-// 					$amount = $blockchain->getUserBalance($username, $project);
-// 				}
-			
-// 				$assignment = $user ? $project->getAssignmentForUser($user) : NULL;
-// 				If($assignment != NULL) {
-// 					$isAssigned = 'true';
-// 					$role = $assignment->getRole($assignment);
-// 					$roleName = $role->getName($role);
-// 				}
-			
-// 				$assignment = $user ? $project->getAssignmentForUser($user, 'admin') : NULL;
-// 				If($assignment != NULL) {
-// 					$isAdmin = 'true';
-// 				}
-// 			}
-// 		}
-// 		$this->view->assign('result',$result);
-// 		$this->view->assign('isAssigned', $isAssigned);
-// 		$this->view->assign('isAdmin', $isAdmin);
-// 	}
-	
-	/**
-	 * @param array $data
-	 * @return array $data
-	 */
-	protected function getOptionListResults($data) {		
- 		$x = 0;
- 		
- 		foreach ($data AS $option) {	
- 			if ($option['parent'] == 0) {
-  				$balance = $option['balance'];
- 				$i = 0;
- 				foreach ($data AS $suboption) {
-  					if ($suboption['parent'] == $option['uid']) {
- 						# Balance der Child-Options summieren
-  						$balance = $suboption['balance'] + $balance;
-  						$base = $suboption['base'];
-  						
-  						#Child-Option entfernen
-   						array_splice($data, $i, 1);
-  					}
-   					$i++;
-				}
- 				$data[$x]['balance'] = $balance;
- 				if (($base + $option['base']) !== 0) {
- 					$data[$x]['percent'] = 100*$balance/($base + $option['base']);
- 				}
-				$data[$x]['base'] = $base + $data[$x]['base'];
- 			}
- 			$x++;
-  		}
-		return $data;
-	}
-	
 	/**
 	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
 	 */

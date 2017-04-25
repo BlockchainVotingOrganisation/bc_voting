@@ -1,5 +1,10 @@
-<!-- Rev. 131 -->
-
+<!-- Rev. 141 -->
+<div style="width:100%; margin: 30px 0px; display: block;">
+	<label for="logo">
+		Label
+		<span class="required">(required)</span>
+	</label><br /> 
+</div>
 <div style="width:100%; margin: 30px 0px; display: block;">
 	<label for="name">
 		<f:translate key="tx_bcvoting_domain_model_project.name" /> 
@@ -30,16 +35,17 @@
 		Description <span class="required">(required)</span>
 	</label>
 	<br />
-	<f:form.textarea style="width:100%" rows="5" property="description" /><br />
+	<f:form.textarea style="width:100%" rows="3" property="description" /><br />
 </div>
+
 <div style="width:100%; margin: 10px 0px; display: inline-block;">
 	<hr />
 	<div>
 		<label for="Open">Open Election</label> (If no, only invited users can assign)<br />
-		<f:form.radio property="open" value="1" /> Yes <f:form.radio name="open" value="0" /> No<br />
+		<f:form.radio property="open" value="1" /> Yes <f:form.radio property="open" value="0" /> No<br />
 		<hr />
 		<label for="Anonym">Anonymous assignments</label> (If yes, assigning requires existing voter wallets with assets belonging to the project)<br />
-		<f:form.radio property="anonym" value="1" /> Yes <f:form.radio name="anonym" value="0" /> No<br /><br />
+		<f:form.radio property="anonym" value="1" /> Yes <f:form.radio property="anonym" value="0" /> No<br /><br />
 	</div>
 	<hr />
 	<!-- div>
@@ -47,4 +53,12 @@
 		<f:form.textfield name="depositBtc" size="7" placeholder="0 BTC" readonly="1" style="text-align:right;" />
 		{Fund Current Deposit]
 	</div -->
+</div>
+
+<div style="width:100%; margin: 10px 0px; display: inline-block;">
+	<label for="description">
+		Draft law <span class="required">(required)</span>
+	</label>
+	<br />
+	<f:form.textarea style="width:100%" rows="10" property="draft" /><br />
 </div>

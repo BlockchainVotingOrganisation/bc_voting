@@ -1,4 +1,4 @@
-<!-- Rev 132 -->
+<!-- Rev 141 -->
 <f:layout name="Default" />
 <f:section name="main">
 
@@ -7,25 +7,12 @@
 <f:render partial="Project/Properties" arguments="{project:project}" />
 
 <div class="tx-bc-voting link">
-	<f:for each="{project.ballots}" as="ballot">
-	
-		<f:if condition="{ballot.reference} != ''">
-			<div>
-				<f:link.action action="show" controller="Ballot" arguments="{ballot : ballot}">{ballot.name}</f:link.action> <br />
-					<f:if condition="{isAssigned} == 'true'">
-						
-						<f:if condition="{ballot.balance} != 0">
-							<f:then>
-								<small>(You have {ballot.balance} votes.)</small>
-							</f:then>
-							<f:else>
-								<small>(0 Votes. Probably, you have already voted.)</small>
-							</f:else>
-						</f:if>
-					</f:if>
-			</div>			
-		</f:if>
-	</f:for>
+	<f:if condition="{project.end} > {date_now}">
+		<f:then>
+			<f:render partial="Project/Ballots" arguments="{project:project}" />
+		</f:then>
+	</f:if>
+</div>
 <div class="tx-bc-voting">
 	<hr /><h4>Wahlmodus</h4>
 	<f:if condition="{project.anonym}">
@@ -56,6 +43,7 @@
 	Kontaktinformationen zum Wahlleiter und zum Wahlamt bietet. 
 	<blockquote><a href="{project.infosite}" target="_blank">Info-Site</a></blockquote>
 </div>
+<div class="tx-bc-voting">
 	<f:security.ifAuthenticated>
 		<f:then>
 			<f:if condition="{isAssigned} == 'true'">
@@ -76,10 +64,9 @@
 	<f:if condition="{bcResult}">
 		<hr />
 		<f:if condition="{project.reference}">
-			Referenz-Nummer (Txid): <br />
+			<h4>Wahlsiegel (Transaktionsnummer)</h4>
 			<a target="_blank" href="{bcResult.nodeaddress}/{bcResult.chainname}/tx/{project.reference}">{project.reference}</a>
 		</f:if>
-		<f:render partial="Blockchain/ShortInfo" arguments="{result:bcResult}" />
 	</f:if>	
 </div>
 

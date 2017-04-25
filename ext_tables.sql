@@ -223,6 +223,7 @@ CREATE TABLE tx_bcvoting_domain_model_project (
 
 	name varchar(255) DEFAULT '' NOT NULL,
 	description text NOT NULL,
+	draft text NOT NULL,
 	password varchar(80) DEFAULT '' NOT NULL,
 	stream varchar(30) DEFAULT '' NOT NULL,
 	private_key varchar(255) DEFAULT '' NOT NULL,

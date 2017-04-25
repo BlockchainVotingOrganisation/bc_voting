@@ -29,7 +29,7 @@ use Goettertz\BcVoting\Service\Blockchain;
  ***************************************************************/
 
 /**
- * Revision 136
+ * Revision 141
  */
 
 /**
@@ -116,7 +116,13 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 */
 	protected $description = '';
 	
-
+	/**
+	 * description
+	 *
+	 * @var string
+	 * @validate NotEmpty
+	 */
+	protected $draft = '';
 
 	/**
 	 * tstamp start
@@ -242,22 +248,22 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	
 	/**
 	 * open
-	 * @var boolean;
+	 * @var integer;
 	 */
 	protected $open = false;
 	
 	/**
 	 * anonym
-	 * @var boolean;
+	 * @var integer;
 	 */
 	protected $anonym=FALSE;
 	
-	public function getClosed() {
-		return $this->getClosed();
+	public function getOpen() {
+		return $this->open;
 	}
 	
-	public function setClosed($closed) {
-		$this->closed = $closed;
+	public function setOpen($open) {
+		$this->open = $open;
 	}
 	
 	public function getAnonym() {
@@ -364,6 +370,25 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 */
 	public function setDescription($description) {
 		$this->description = $description;
+	}
+	
+	/**
+	 * Returns the draft
+	 *
+	 * @return string $draft
+	 */
+	public function getDraft() {
+		return $this->draft;
+	}
+	
+	/**
+	 * Sets the draft
+	 *
+	 * @param string $draft
+	 * @return void
+	 */
+	public function setDraft($draft) {
+		$this->draft = $draft;
 	}
 	
 	/**

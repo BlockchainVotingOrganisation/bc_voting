@@ -25,7 +25,7 @@ namespace Goettertz\BcVoting\Domain\Repository;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  *  
- *  Rev. 64
+ *  Rev. 141
  ******************************************************************/
 
 /**
@@ -33,5 +33,19 @@ namespace Goettertz\BcVoting\Domain\Repository;
  */
 class ProjectRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 	
+	protected $defaultOrderings = array(
+			'end' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_DESCENDING
+	);
+	
+	/**
+	 * find current projects
+	 */ 
+	
+	public function findCurrent() {
+		$sql = 'SELECT * FROM tx_bcvoting_domain_model_project WHERE start <= '.time().' AND end >= '.time().' AND hidden=0 AND deleted=0';
+		$query = $this->createQuery();
+		$query->statement($sql);
+		return $query->execute();
+	}
 
 }

@@ -1,10 +1,17 @@
 <f:layout name="Default" />
-Rev. 132
+Rev. 141
 <f:section name="main">
 
 <f:flashMessages renderMode="div" />
 
 <!-- List -->
+
+<f:if condition="{projects.0}">
+	<f:else>
+		No public election or voting project available!
+	</f:else>
+</f:if>
+
 <f:for each="{projects}" as="project">
 	<f:cycle values="{0: 'whitesmoke', 1: '#fff'}" as="color">
 		<div style="background-color: {color}; padding: 10px;">
