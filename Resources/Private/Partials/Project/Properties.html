@@ -1,9 +1,17 @@
-<!-- Rev. 132 -->
+<!-- Rev. 144 -->
+<f:if condition="{project.reference} != ''">
+<br />
 Txid: <a href="http://www.blockchain-voting.org:9333/BVS/tx/{project.reference}">{project.reference}</a>
-
-<div class="tx-bc-voting description">{project.description}</div>
+</f:if>
+<div class="tx-bc-voting description"><f:format.html>{project.description}</f:format.html></div>
+<hr />
 <div class="tx-bc-voting period">
 	Voting period: 
 	<f:format.date format="d.m.Y">@{project.start}</f:format.date> 
 	- <f:format.date format="d.m.Y">@{project.end}</f:format.date>
+</div>
+<hr />
+<div class="tx-bc-voting">
+	<h3>Law draft</h3>
+	<f:format.html>{project.draft}</f:format.html>
 </div>

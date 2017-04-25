@@ -1,12 +1,12 @@
 <f:layout name="Default" />
-Rev. 131
+Rev. 144
 <f:section name="main">
 
 <f:render partial="Project/Menu" arguments="{project : project, isAssigned: isAssigned, isAdmin: isAdmin, feuser: feuser}" />
 
 <f:flashMessages renderMode="div" />
 <f:render partial="FormErrors" arguments="{object:Project}" />
-
+<p>&nbsp;</p>
 <h4>{project.name}</h4>
 <f:translate key="tx_bcvoting_edit_project" />
 
@@ -15,14 +15,16 @@ Rev. 131
 		<f:render partial="Project/FormFields" arguments="{action : 'update', project : project, categories: categories}" />
 		<f:form.submit value="{f:translate(key:'save')}" /> 
 	</f:form>
-	<hr />
+</f:if>
+	
+	<!-- 
 	When you seal a project, its structure will be checked and if data and structure are correct
 	the structure and data will be transfered to the blockchain. You'll get a Blockchain Reference Number (BRN) back, 
 	so everyone is able identify and check the project properties in future.
 	<f:form action="seal" name="project" object="{project}" class="tx-bcvoting" arguments="{project:project}">
 		<f:form.submit value="{f:translate(key:'save_seal')}" style="background-color: red; color: white;" />
 	</f:form>
-</f:if>
+	 -->
 
 <hr />
 <f:link.action action="list" controller="Project" arguments="{project:project}"><f:translate key="tx_bcvoting_domain_model_project.back_to_list" /></f:link.action> |
