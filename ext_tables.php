@@ -1,6 +1,6 @@
 <?php
 /**
- * Rev.133
+ * Rev.132
  */
 if (!defined('TYPO3_MODE')) {
 	die('Access denied.');
@@ -21,7 +21,7 @@ if (!defined('TYPO3_MODE')) {
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
 		$_EXTKEY,
 		'BVS_Main',
-		'BVS Main'
+		'BVS Main PlugIn'
 		);
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
@@ -344,7 +344,7 @@ $GLOBALS['TCA']['fe_users']['columns'][$TCA['fe_users']['ctrl']['type']]['config
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('fe_users', $GLOBALS['TCA']['fe_users']['ctrl']['type'],'','after:' . $TCA['fe_users']['ctrl']['label']);
 
 $extensionName = strtolower(\TYPO3\CMS\Core\Utility\GeneralUtility::underscoredToUpperCamelCase($_EXTKEY));
-$pluginName = strtolower('Project');
+$pluginName = strtolower('BVS_Main');
 $pluginSignature = $extensionName.'_'.$pluginName;
 $TCA['tt_content']['types']['list']['subtypes_excludelist'][$pluginSignature] = 'layout,select_key,pages,list';
 $TCA['tt_content']['types']['list']['subtypes_addlist'][$pluginSignature] = 'pi_flexform';

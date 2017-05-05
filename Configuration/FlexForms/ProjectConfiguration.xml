@@ -8,6 +8,17 @@
 		<Settings>
 			<ROOT>
 				<el>
+					<settings.project>
+						<TCEforms>
+				            <label>Default Project ID</label>
+							<config>
+							<type>input</type>
+							<size>3</size> 
+							<max>11</max> 
+							<eval>trim</eval>
+							</config>
+						</TCEforms>
+					</settings.project>
 					<settings.controller>
 						<TCEforms>
 				            <label>Default Controller</label>

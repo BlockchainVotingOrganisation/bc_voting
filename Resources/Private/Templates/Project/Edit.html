@@ -11,7 +11,7 @@ Rev. 144
 <f:translate key="tx_bcvoting_edit_project" />
 
 <f:if condition="{isAdmin} == 'true'">
-	<f:form action="update" name="project" object="{project}" class="tx-bcvoting">
+	<f:form action="update" name="project" object="{project}" class="tx-bcvoting" enctype="multipart/form-data">
 		<f:render partial="Project/FormFields" arguments="{action : 'update', project : project, categories: categories}" />
 		<f:form.submit value="{f:translate(key:'save')}" /> 
 	</f:form>

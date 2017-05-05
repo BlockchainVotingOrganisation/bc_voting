@@ -29,9 +29,10 @@ namespace Goettertz\BcVoting\Controller;
  ***************************************************************/
 
 /**
- * Revision 141
+ * Revision 144
  */
 
+use \Goettertz\BcVoting\Property\TypeConverter\UploadedFileReferenceConverter;
 use \Goettertz\BcVoting\Service\Blockchain;
 use \Goettertz\BcVoting\Service\MCrypt;
 
@@ -233,7 +234,14 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 			$this->redirect('list');
 		}
 	}
-
+	
+	/**
+	 * Set TypeConverter option for image upload
+	 */
+	public function initializeCreateAction() {
+		$this->setTypeConverterConfigurationForImageUpload('newProject');
+	}
+	
 	/**
 	 * action create
 	 * creates new project from formdata
@@ -407,6 +415,13 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 			die('Not allowed!');
 		}
 	}
+	
+	/**
+	 * Set TypeConverter option for image upload
+	 */
+	public function initializeUpdateAction() {
+		$this->setTypeConverterConfigurationForImageUpload('project');
+	}
 
 	/**
 	 * action update
@@ -478,9 +493,9 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
 	 */
 	public function removeLogoAction(\Goettertz\BcVoting\Domain\Model\Project $project) {
-		$sql = 'UPDATE sys_file_reference SET deleted=1 WHERE tablenames=\'tx_bcvoting_domain_model_ptoject\' AND fieldname=\'logo\' AND uid_foreign = '.$ptoject->getUid().' AND deleted = 0';
+		$sql = 'UPDATE sys_file_reference SET deleted=1 WHERE tablenames=\'tx_bcvoting_domain_model_project\' AND fieldname=\'logo\' AND uid_foreign = '.$project->getUid().' AND deleted = 0';
 		$db = $GLOBALS['TYPO3_DB']->sql_query($sql);
-		$this->redirect('edit','Ptoject','BcVoting',array('ptoject'=>$ptoject));
+		$this->redirect('edit','Project','BcVoting',array('project'=>$project));
 	}
 	
 	/**
@@ -910,5 +925,23 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 			// 			$this->redirect('edit',NULL,NULL, array('project' => $project));
 				
 	}
+	
+	protected function setTypeConverterConfigurationForImageUpload($argumentName) {
+		$uploadConfiguration = array(
+				UploadedFileReferenceConverter::CONFIGURATION_ALLOWED_FILE_EXTENSIONS => $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'],
+				UploadedFileReferenceConverter::CONFIGURATION_UPLOAD_FOLDER => '1:/user_upload/tx_bc_voting/',
+				UploadedFileReferenceConverter::CONFIGURATION_UPLOAD_CONFLICT_MODE => '1'
+		);
+		/** @var PropertyMappingConfiguration $newExampleConfiguration */
+		$newExampleConfiguration = $this->arguments[$argumentName]->getPropertyMappingConfiguration();
+		$newExampleConfiguration->forProperty('logo')
+		->setTypeConverterOptions(
+				'Goettertz\\BcVoting\\Property\\TypeConverter\\UploadedFileReferenceConverter',
+				$uploadConfiguration
+				);
+	}
+	
+
+
 }
 ?>
