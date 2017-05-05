@@ -1,4 +1,4 @@
-<!-- Rev 141 -->
+<!-- Rev 145 -->
 <f:layout name="Default" />
 <f:section name="main">
 
@@ -7,12 +7,23 @@
 <f:render partial="Project/Properties" arguments="{project:project}" />
 
 <div class="tx-bc-voting link">
-	<f:if condition="{project.end} > {date_now}">
+	<f:if condition="{project.start} > {date_now}">
 		<f:then>
-			<f:render partial="Project/Ballots" arguments="{project:project}" />
+		    <b>Voting period has not yet started!</b>
 		</f:then>
+		<f:else>
+			<f:if condition="{project.end} > {date_now}">
+				<f:then>
+					<f:render partial="Project/Ballots" arguments="{project:project}" />
+				</f:then>
+				<f:else>
+					<b>Voting period has end!</b>
+				</f:else>
+			</f:if>
+		</f:else>
 	</f:if>
 </div>
+
 <div class="tx-bc-voting">
 	<hr /><h4>Wahlmodus</h4>
 	<f:if condition="{project.anonym}">
@@ -64,7 +75,7 @@
 	<f:if condition="{bcResult}">
 		<hr />
 		<f:if condition="{project.reference}">
-			<h4>Wahlsiegel (Transaktionsnummer)</h4>
+			<h4>Wahlsiegel Transaktionsnummer</h4>
 			<a target="_blank" href="{bcResult.nodeaddress}/{bcResult.chainname}/tx/{project.reference}">{project.reference}</a>
 		</f:if>
 	</f:if>	

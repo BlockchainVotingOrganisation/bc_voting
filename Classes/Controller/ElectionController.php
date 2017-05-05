@@ -29,7 +29,7 @@ ini_set("display_errors", 1);
  ***************************************************************/
 
 /**
- * Revision 141
+ * Revision 145
  */
 
 use \Goettertz\BcVoting\Service\Blockchain;
@@ -70,6 +70,14 @@ class ElectionController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 * @return void
 	 */
 	public function listAction() {
+		
+		# Default project configured? -> redirect show
+		if ($this->settings['project'] !== '') {
+			if ($project = $this->projectRepository->findByUid($this->settings['project'])) {
+				$this->redirect('show', 'Election', 'BcVoting', array('project' => $project));
+			}			
+		}
+		# else ...
 		$projects = $this->projectRepository->findCurrent();
 		$this->view->assign('projects', $projects);
 		if ($feuser = $this->userRepository->getCurrentFeUser()) {
@@ -110,13 +118,6 @@ class ElectionController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 				$walletAddress = $assignment->getWalletAddress();
 			}
 		
-		
-// 			$assignment = $feuser ? $project->getAssignmentForUser($feuser, 'admin') : NULL;
-// 			If($assignment != NULL) {
-// 				$isAdmin = 'true';
-// 				$this->view->assign('isAdmin', $isAdmin);
-// 			}
-				
  			$rpcServer = $project->getRpcServer();
 		
 			if (is_string($rpcServer) && $rpcServer !== '') {
@@ -162,12 +163,11 @@ class ElectionController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 				$this->addFlashMessage('Blockchain not configured.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
  			}
  		}
-
  		
 		$this->view->assign('project', $project);
 		$this->view->assign('isAdmin', $isAdmin);
 		$this->view->assign('isAssigned', $isAssigned);
-		$this->view->assign('date_now', new \DateTime());
+		$this->view->assign('date_now', date("U",time()));
 	}
 	
 }
