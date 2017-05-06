@@ -76,6 +76,8 @@ class WalletController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 	 * 
 	 */
 	public function fundingAction(\Goettertz\BcVoting\Domain\Model\Project $project) {
+		$amount = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getaddressbalances($project->getWalletAddress());
+		$this->view->assign('amount', $amount);
 		$this->view->assign('project', $project);
 	}
 	

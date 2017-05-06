@@ -4,5 +4,19 @@ Rev. 145
 <f:if condition="{project}">
 	<f:render partial="Project/Menu" arguments="{project : project}" />
 </f:if>
-<h4>Funding</h4>
+<h3>Funding</h3>
+<h4>VTC Address: {project.walletAddress}</h4>
+<h4>VTC Balance: {amount.0.qty}</h4>
+<hr />
+<f:form action="fund" name="wallet" class="tx-bcvoting">
+	Amount VTC: <f:form.textfield name="amount" size="3" /> <br /> 
+	Choose the amount of VTC you wish to deposit<br /> 1 VTC = 0,1 € = 0,xxx BTC <br />
+	BTC: <f:form.textfield name="btc" size="8" /> <br />
+	<f:form.submit value="QR code" />
+</f:form>
+<hr />
+<h5>BTC-Link</h5>
+Bitcoin Deposit Address: 1xXXXXXXXXXXXX<br />
+[Grafik]<br />
+[copy]
 </f:section>
