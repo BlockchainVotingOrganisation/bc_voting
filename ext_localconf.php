@@ -1,5 +1,5 @@
 <?php
-// Rev. 144
+// Rev. 145
 if (!defined('TYPO3_MODE')) {
 	die('Access denied.');
 }
@@ -70,7 +70,7 @@ if (!defined('TYPO3_MODE')) {
 				'Assignment' => 'list, show, settings, edit, new, create',
 				'Ballot' => 'list, show, new, create, edit, update, delete, sealBallot, removeLogo',
 				'User' => 'list, show, edit',
-				'Option' => 'edit, update',
+				'Option' => 'new, create, list, show, edit, update',
 				'Wallet' => 'show',
 				'Pgp' => '',
 		),
@@ -80,7 +80,7 @@ if (!defined('TYPO3_MODE')) {
 				'Assignment' => 'list, show, edit, new, create',
 				'Ballot' => 'list, show, new, create, edit, update, delete, sealBallot, removeLogo',
 				'User' => 'list, show, edit',
-				'Option' => 'edit, update',
+				'Option' => 'new, create, list, show, edit, update',
 				'Wallet' => 'show',
 				'Pgp' => '',
 		)
