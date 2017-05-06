@@ -70,6 +70,25 @@ class WalletController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 	protected $ballotRepository = NULL;
 	
 	/**
+	 * action funding
+	 * 
+	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
+	 * 
+	 */
+	public function fundingAction(\Goettertz\BcVoting\Domain\Model\Project $project) {
+		$this->view->assign('project', $project);
+	}
+	
+	/**
+	 * action withdraw
+	 *
+	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
+	 *
+	 */
+	public function withdrawAction(\Goettertz\BcVoting\Domain\Model\Project $project) {
+		$this->view->assign('project', $project);
+	}	
+	/**
 	 * action show
 	 *
 	 * @param \Goettertz\BcVoting\Domain\Model\Project $project

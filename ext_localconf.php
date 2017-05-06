@@ -71,7 +71,7 @@ if (!defined('TYPO3_MODE')) {
 				'Ballot' => 'list, show, new, create, edit, update, delete, sealBallot, removeLogo',
 				'User' => 'list, show, edit',
 				'Option' => 'new, create, list, show, edit, update',
-				'Wallet' => 'show',
+				'Wallet' => 'show, funding, withdraw',
 				'Pgp' => '',
 		),
 		array(
@@ -81,7 +81,7 @@ if (!defined('TYPO3_MODE')) {
 				'Ballot' => 'list, show, new, create, edit, update, delete, sealBallot, removeLogo',
 				'User' => 'list, show, edit',
 				'Option' => 'new, create, list, show, edit, update',
-				'Wallet' => 'show',
+				'Wallet' => 'show, funding, withdraw',
 				'Pgp' => '',
 		)
 );
