@@ -29,7 +29,7 @@ namespace Goettertz\BcVoting\Controller;
  ***************************************************************/
 
 /**
- * Revision 144
+ * Revision 145
  */
 
 use \Goettertz\BcVoting\Property\TypeConverter\UploadedFileReferenceConverter;
@@ -324,6 +324,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		if ($user = $this->userRepository->getCurrentFeUser()) {			
 			$assignment = $user ? $project->getAssignmentForUser($user,'admin') : NULL;
 			If($assignment != NULL) {
+				$this->view->assign('priceVtc', $this->settings['payment_voting']);
 				$this->view->assign('project', $project);
 				$this->view->assign('isAdmin', 'true');
 			}
@@ -393,8 +394,12 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 
 						$bcArray = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getinfo();
 						if(is_array($bcArray)) {
-							$this->view->assign('blockchain', $bcArray);
+// 							$this->view->assign('blockchain', $bcArray);
 							if (empty($project->getWalletAddress())) $this->setWalletAddress($project);
+							
+							# Get balance for wallet address
+							$balance = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getaddressbalances($project->getWalletAddress());
+							$this->view->assign('balance', $balance[0]['qty']);
 						}
 					}
 					catch (\Exception $e) {
@@ -711,7 +716,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		
 		if (doubleval($balance) < doubleval($vtc_amount)) {
 			$this->addFlashMessage('Not enough inputs! '.$project->getWalletAddress().' '.doubleval($balance), '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-			$this->redirect('edit',NULL,NULL,array('project' => $project));
+			$this->redirect('editbcparams',NULL,NULL,array('project' => $project));
 		}
 			
 // 		$this->addFlashMessage('From: '.$project->getWalletAddress().' Amount: '.doubleval($vtc_amount).' to '.$paymentAddress, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);

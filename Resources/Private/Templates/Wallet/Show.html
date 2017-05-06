@@ -1,14 +1,15 @@
 <f:layout name="Default" />
-Rev. 125
+Rev. 145
 <f:section name="main">
-<f:render partial="Wallet/Menu" arguments="{project : project}" />
-
-<f:flashMessages renderMode="div" />
+<f:if condition="{project}">
+	<f:render partial="Project/Menu" arguments="{project : project}" />
+</f:if>
 <h3><f:translate key="tx_bcvoting_wallet" /></h3>
-
+	<h4>Wallet address: {project.walletAddress}</h4>
+	<h4>VTC Balance: {amount.0.qty}</h4>
+<f:render partial="Wallet/Menu" arguments="{project : project}" />
 <div>
 	
-	<h4>VTC {balance}</h4>
 <!-- 
 	<h4>Blockchain Info</h4>
 	<ul>
@@ -51,27 +52,17 @@ Rev. 125
 	
 	</f:for>
  -->	
-	<hr />
-	
 	<h4>Last transactions</h4>
 	<table style="border-spacing: 0; border-collapse: collapse;">
 		<f:for each="{transactions}" as="transaction" iteration="iterator" reverse="0">
 		<f:if condition="{iterator.index} < 10">
 		<f:then>
 		<tr>
-			<td style="padding: 5px;"><a href="http://www.blockchain-voting.org:9333/BVS/tx/{transaction.txid}">{transaction.txid}</a></td>
+			<td style="padding: 5px;"><a href="http://www.blockchain-voting.org:9333/BVS_R2/tx/{transaction.txid}" target="_blank">{transaction.txid}</a></td>
 		</tr>
 		</f:then>
 		</f:if>
 		</f:for>
 	</table>
-	<hr />
-	Send to my personal Client:
-	<f:form action="send" name="wallet"  object="{wallet}"  arguments="{user:user, project:project}">	
-		<f:form.textfield name="toaddress" size="50" placeholder="1eU6tGDFSzvsmsa9aj87ZzajJ"/>
-		<f:form.textfield name="asset" size="20" placeholder="asset1"/>
-		<f:form.textfield name="amount" size="5" placeholder="{amount}" value="{amount}"/><br />
-		<f:form.submit value="send" />
-	</f:form>
 </div>
 </f:section>

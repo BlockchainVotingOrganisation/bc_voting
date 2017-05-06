@@ -1,9 +1,13 @@
-<!-- Rev.144 -->
+<!-- Rev.145 -->
+<h3>{project.name}</h3>
 <div class="tx-bc-voting_Menu">
 	<f:link.action action="edit" controller="Project" arguments="{project:project}">General</f:link.action> |
 	<f:link.action action="settings" controller="Project" arguments="{project:project}">Settings</f:link.action> |
 	<f:link.action action="list" controller="Ballot" arguments="{project:project}">Ballots</f:link.action> |
 	<f:link.action action="editbcparams" controller="Project" arguments="{project:project}">Blockchain</f:link.action> |
+	<f:link.action action="show" controller="Wallet" arguments="{project:project}">Wallet</f:link.action> |
 	<f:link.action action="list" controller="User" arguments="{project:project}">Members</f:link.action> |
 	<f:link.action action="seal" controller="Project" arguments="{project:project}">Seal</f:link.action> 	
 </div>
+<f:flashMessages renderMode="div" />
+<hr />

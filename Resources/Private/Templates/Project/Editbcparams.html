@@ -1,27 +1,26 @@
 <f:layout name="Default" />
-Rev. 132
+Rev. 145
 <f:section name="main">
-
 <f:render partial="Project/Menu" arguments="{project:project}" />
-<f:flashMessages renderMode="div" />
-
 <f:render partial="FormErrors" arguments="{object:Project}" />
-
-<h3>{project.name}</h3>
-
 <div width="100%" class="tx-bc-voting">
 	<f:form action="update" name="project" object="{project}">
 		<div style="border: 0px solid black; margin:0;" class="tx-bc-voting_inner">
 			<f:render partial="Project/BlockchainParams" arguments="{action : 'update', project : project}" />
-			<f:form.submit value="Save" />
+			<f:form.submit value="Save" /> [Test Settings]
 		</div>
-
-		<div class="tx-bc-voting_inner">
+<hr />
+		<div class="tx-bc-voting_inner" style="width:50%; float:left;">
 			<h4>Wallet Address:</h4>
 			<f:form.textfield property="walletAddress" size="50" readonly="1" disabled="1" placeholder="automatic" />
 		</div>
+		<div class="tx-bc-voting_inner" style="width:50%; float:right;">
+			<h4>Balance:</h4>
+			<f:form.textfield name="balance" size="12" readonly="1" disabled="1" value="{balance}" class="currency" style="text-align: right;" /> VTC
+		</div>
+		<div style="clear: both;">&nbsp;</div>
 	</f:form>
-	[Test Settings]
+	
 </div>
 
 

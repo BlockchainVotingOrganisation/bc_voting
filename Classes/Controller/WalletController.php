@@ -27,7 +27,7 @@ ini_set("display_errors", 1);
  ***************************************************************/
 
 /**
- * Revision 118
+ * Revision 145
  */
 
 use Goettertz\BcVoting\Service\Blockchain;
@@ -90,16 +90,15 @@ class WalletController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 					$result['error'] = 'Not assigned!';
 					$this->addFlashMessage('Not assigned!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 				}
+				$amount = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getaddressbalances($project->getWalletAddress());
 			}
 			
-// 			$bcArray = array();
 			if (!$project) {
 				$projects = $this->projectRepository->findAll();
 				foreach ($projects as $project) {
 					if (!empty($project->getWalletAddress())) {
 						if (empty($project->getRpcServer())) {
-							$result['projects'][$project]['error'] = 'No RPC-Server!';
-							
+							$result['projects'][$project]['error'] = 'No RPC-Server!';				
 						}						
 					}
 				}
@@ -116,45 +115,53 @@ class WalletController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 			$assets = array();
 			$rpcAssets = array();
 			
-			# Abfrage für alle assignments (transaktionen, asset balances)
-			$assignments = $this->assignmentRepository->findByUser($user);
-			
-			foreach ($assignments as $assignment) {
-				if (!empty($assignment->getWalletAddress())) {
-					if (!in_array($assignment->getWalletAddress(), $addresses))
-						$addresses[] = $assignment->getWalletAddress();
+			if ($project !== null) {
+				$transactions = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->listaddresstransactions($project->getWalletAddress(), 100);
+			} 
+			else {
+				# Abfrage für alle assignments (transaktionen, asset balances)
+				$assignments = $this->assignmentRepository->findByUser($user);
 					
-				}
-				if ($project) {
-					foreach ($addresses AS $address) {
-						// 					if (!in_array($address, $uniqueaddresses)) $uniqueaddresses[] = $address;
-						#get transaction-data from bc ...
-					
-						if(is_string($address)) $newtransactions = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->listaddresstransactions($address, 10);
-						$transactions = array_merge($transactions, $newtransactions);
-						$assets[$address] = Blockchain::getAssetBalanceFromAddress($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), $address);
-						// 					sort($assets[$address]['total'], 0);
-						$assets[$address] = $assets[$address]['total'];
-							
-						$i = 0;
-						foreach ($assets[$address] AS $key) {
-							$assets[$address][$i]['address'] = $address;
-							$ballots = $this->ballotRepository->findByAsset($assets[$address][$i]['assetref']);
-							if ($ballot = $ballots[0]) {
-								$project = $ballot->getProject();
-								$assets[$address][$i]['project'] = $project;
-								if (!empty($assets[$address][$i]['name'])) $assets[$address][$i]['name'] = str_repeat('0',(2 - strlen($project->getUid()))).$project->getUid() . ' ' . $assets[$address][$i]['name'];
+				foreach ($assignments as $assignment) {
+					if (!empty($assignment->getWalletAddress())) {
+						if (!in_array($assignment->getWalletAddress(), $addresses))
+							$addresses[] = $assignment->getWalletAddress();
+								
+					}
+					if ($assigment->getProject()) {
+						$project = $assigment->getProject();
+						foreach ($addresses AS $address) {
+							// 					if (!in_array($address, $uniqueaddresses)) $uniqueaddresses[] = $address;
+							#get transaction-data from bc ...
+								
+							if(is_string($address)) $newtransactions = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->listaddresstransactions($address, 10);
+							$transactions = array_merge($transactions, $newtransactions);
+							$assets[$address] = Blockchain::getAssetBalanceFromAddress($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), $address);
+							// 					sort($assets[$address]['total'], 0);
+							if ($assets[$address] = $assets[$address]['total']) {
+								$i = 0;
+								foreach ($assets[$address] AS $key) {
+									$assets[$address][$i]['address'] = $address;
+									$ballots = $this->ballotRepository->findByAsset($assets[$address][$i]['assetref']);
+									if ($ballot = $ballots[0]) {
+										// 									$project = $ballot->getProject();
+										$assets[$address][$i]['project'] = $project;
+										if (!empty($assets[$address][$i]['name'])) $assets[$address][$i]['name'] = str_repeat('0',(2 - strlen($project->getUid()))).$project->getUid() . ' ' . $assets[$address][$i]['name'];
+									}
+									$i++;
+								}
+								sort($assets[$address], 0);
 							}
-							$i++;
 						}
-						sort($assets[$address], 0);
-					}				
-				}
-			}
+					}
+				} # end foreach assignments
+			} # end if no project
 		}
 		else {
-			
+			# Warning:  not logged in!
+			die('Not logged in!');
 		}
+		
 		$this->view->assign('result', $result);
 		$this->view->assign('user', $user);
 		$this->view->assign('project', $project);
