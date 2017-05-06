@@ -9,14 +9,15 @@ Rev. 145
 <h4>VTC Balance: {amount.0.qty}</h4>
 <hr />
 <f:form action="fund" name="wallet" class="tx-bcvoting">
-	Amount VTC: <f:form.textfield name="amount" size="3" /> <br /> 
-	Choose the amount of VTC you wish to deposit<br /> 1 VTC = 0,1 € = 0,xxx BTC <br />
-	BTC: <f:form.textfield name="btc" size="8" /> <br />
-	<f:form.submit value="QR code" />
+	Amount VTC: <f:form.textfield name="amount" size="3" placeholder="100" /> = BTC: <f:form.textfield name="btc" size="8" disabled="1" value="{btc->f:format.number(decimals: 8, decimalSeparator: ',', thousandsSeparator: '.')}" /> <br /> 
+	Choose the amount of VTC you wish to deposit<br /> 1 VTC = {priceEuro} € = <f:format.number decimals="8" decimalSeparator="," thousandsSeparator=".">{priceBtc}</f:format.number> BTC (1 BTC = <f:format.number decimals="2" decimalSeparator="," thousandsSeparator=".">{euroBtc}</f:format.number> €)<br />
+	
+	<f:form.submit value="Fund with BTC" />
 </f:form>
 <hr />
 <h5>BTC-Link</h5>
-Bitcoin Deposit Address: 1xXXXXXXXXXXXX<br />
+Amount BTC: <f:format.number decimals="8" decimalSeparator="," thousandsSeparator=".">{btc}</f:format.number><br />
+XTC Deposit Address: XxXXXXXXXXXXXX<br />
 [Grafik]<br />
 [copy]
 </f:section>

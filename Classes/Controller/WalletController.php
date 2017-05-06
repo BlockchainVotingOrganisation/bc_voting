@@ -77,8 +77,20 @@ class WalletController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 	 */
 	public function fundingAction(\Goettertz\BcVoting\Domain\Model\Project $project) {
 		$amount = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getaddressbalances($project->getWalletAddress());
+		
+		$vtc = 100;
+ 		$priceEuro = 0.12; //$this->setting['payment_voting'];
+		$euroBtc = 1350;
+		$priceBtc = $priceEuro / $euroBtc;
+		$btc = $vtc * $priceBtc;
+		
 		$this->view->assign('amount', $amount);
 		$this->view->assign('project', $project);
+		$this->view->assign('btc', $btc);
+		$this->view->assign('priceEuro', $priceEuro);
+		$this->view->assign('priceBtc', $priceBtc);
+		$this->view->assign('euroBtc', $euroBtc);
+		$this->view->assign('vtc', $vtc);
 	}
 	
 	/**
