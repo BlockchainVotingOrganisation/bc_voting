@@ -1,35 +1,44 @@
 <!-- Revision 140 -->
-<div class="tx-bc-voting">
-	<f:debug>{result}</f:debug>
+<div class="tx-bc-voting">	
 	<f:for each="{result.blockchain.ballots}" as="ballot">
-	Nicht ausgewertet: {ballot.balance} Stimmen <br />
-	Address: {ballot.address} <br />
-	Asset: {ballot.asset} <br />
-	<f:if condition="{ballot.balance} > 0">
-		<f:if condition="{isAdmin} == 'true'">
-			[<f:link.action action="proceed" controller="Evaluation" arguments="{project:project, address: ballot.address, asset: ballot.asset}">Proceed</f:link.action>]
-		</f:if>
-	</f:if>
-	<hr />
-	<h4>Summary:</h4>
-	<f:for each="{ballot.options}" as="option" >
-		<div style="width: 50%; float:left; border-bottom: 1px solid black;">{option.name}</div>
-		<div style="width: 50%; float:left; border-bottom: 1px solid black; text-align:right">{option.balance}</div>		
-	</f:for>
-	<div style="width: 100%; clear:both; min-height:10px;">&nbsp;</div>
-	<hr />
-	<h4>Voting Records</h4>
-		Search: <input /><input type="submit" /><hr />
-		<f:for each="{result.txIds}" as="transaction">
-			<f:for each="{transaction.addresses}" as="address">
-				<f:if condition="{address} == {project.walletAddress}">			
-					<div style="lightgrey; margin-bottom:2px;">
-						<f:link.action action="show" controller="Transaction" arguments="{project:project, txid:transaction.txid}">{transaction.txid}</f:link.action>
-					</div>
+	
+	<!-- Check error -->
+	<f:if condition="{ballot.json.error}">
+		<f:then>
+			{ballot.json.error}
+		</f:then>
+		<f:else>
+			Nicht ausgewertet: {ballot.balance} Stimmen <br />
+			Address: {ballot.address} <br />
+			Asset: {ballot.asset} <br />
+			<f:if condition="{ballot.balance} > 0">
+				<f:if condition="{isAdmin} == 'true'">
+					[<f:link.action action="proceed" controller="Evaluation" arguments="{project:project, address: ballot.address, asset: ballot.asset}">Proceed</f:link.action>]
 				</f:if>
+			</f:if>
+			<hr />
+			<h4>Summary:</h4>
+			<f:for each="{ballot.options}" as="option" >
+				<div style="width: 50%; float:left; border-bottom: 1px solid black;">{option.name}</div>
+				<div style="width: 50%; float:left; border-bottom: 1px solid black; text-align:right">{option.balance}</div>		
 			</f:for>
-		</f:for>	
+			<div style="width: 100%; clear:both; min-height:10px;">&nbsp;</div>
+			<hr />
+			<h4>Voting Records</h4>
+				Search: <input /><input type="submit" /><hr />
+				<f:for each="{result.txIds}" as="transaction">
+					<f:for each="{transaction.addresses}" as="address">
+						<f:if condition="{address} == {project.walletAddress}">			
+							<div style="lightgrey; margin-bottom:2px;">
+								<f:link.action action="show" controller="Transaction" arguments="{project:project, txid:transaction.txid}">{transaction.txid}</f:link.action>
+							</div>
+						</f:if>
+					</f:for>
+				</f:for>
+				<div style="width: 100%; clear:both; min-height:10px;">&nbsp;</div>
+				<h5>Event Log</h5>
+			</f:else>
+		</f:if>
 	</f:for>
-	<div style="width: 100%; clear:both; min-height:10px;">&nbsp;</div>
-	<h4>Event Log</h4>
+
 </div>

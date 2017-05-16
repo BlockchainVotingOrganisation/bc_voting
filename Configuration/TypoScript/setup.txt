@@ -1,5 +1,5 @@
 /*
- * Revision 138
+ * Revision 146
  */
 plugin.tx_bcvoting {
 	view {
@@ -17,11 +17,11 @@ plugin.tx_bcvoting {
 }
 
 plugin.tx_bcvoting._CSS_DEFAULT_STYLE (
-
-	h5.tx-bc-voting.section {
-		font-size: 1.2em;
+	
+	div {
+		background-color: inherit;
 	}
-
+	
 	table { 
     	border-spacing: 0px;
     	border-collapse: separate;
@@ -30,7 +30,32 @@ plugin.tx_bcvoting._CSS_DEFAULT_STYLE (
 	td {
 		padding: 10px;
 	}
+	.options {
+		vertical-align: middle; 
+	}
 	
+	tr.options td {
+		border-bottom: 1px dotted black; 
+		border-top: 1px dotted black; 
+		padding:10px;
+		vertical-align: middle; 
+		border-collapse: collapse;	
+	}
+	
+	tr.options td td {
+		border: none;
+		font-size: 0.8em;
+		padding: 0 10px;
+	]
+	
+	tr.options td.left {
+		width:85%;	
+	}
+	
+	tr.options td.right {
+		width:15%;	
+	}
+		
 	input[type="radio"] {
   		margin-top: -1px;
   		vertical-align: middle;
@@ -74,9 +99,33 @@ plugin.tx_bcvoting._CSS_DEFAULT_STYLE (
 		border: 1px #FF0000 solid;
 	}
 	
+	h5.tx-bc-voting.section {
+		font-size: 1.2em;
+	}
+	
+	div.tx-bc-voting {
+		padding: 5px;
+		background-color: inherit;
+	}
+	
+	div.tx-bc-voting_inner {
+		padding: 10px;
+		background-color: inherit;
+	}
+	
 	.tx-bc-voting.period {
 		background-color: white;
 		color: black;
+	}
+	
+	div.tx-bc-voting div.tx-bc-voting.menu {
+		background-color: #999 !important;
+		color: #f1f1f1;
+		padding: 0px 10px;
+	}
+
+	.tx-bc-voting_Menu input[type="submit"] {
+		min-width: 100px; height: 40px;
 	}
 	
 	.tx-bc-voting.description {
@@ -103,53 +152,5 @@ plugin.tx_bcvoting._CSS_DEFAULT_STYLE (
 
 	.tx-bc-voting input {
 		font-weight:bold;
-	}
-	
-	.options {
-		vertical-align: middle; 
-	}
-	
-	tr.options td {
-		border-bottom: 1px dotted black; 
-		border-top: 1px dotted black; 
-		padding:10px;
-		vertical-align: middle; 
-		border-collapse: collapse;	
-	}
-	
-	tr.options td td {
-		border: none;
-		font-size: 0.8em;
-		padding: 0 10px;
-	]
-	
-	tr.options td.left {
-		width:85%;	
-	}
-	
-	tr.options td.right {
-		width:15%;	
-	}
-	
-	.tx-bc-voting_Menu {
-		margin: 10px 0px;
-		background-color: whitesmoke;
-	}
-	.tx-bc-voting_Menu input[type="submit"] {
-		width: 100px; height: 40px;
-	}
-	
-	div {
-		background-color: inherit;
-	}
-	
-	div.tx-bc-voting {
-		padding: 5px;
-		background-color: inherit;
-	}
-	
-	div.tx-bc-voting_inner {
-		padding: 10px;
-		background-color: inherit;
 	}
 )
