@@ -1,8 +1,8 @@
-<div class="tx-bc-voting ballots">
+<div class="tx-bc-voting ballots" style="padding-top: 20px;">
 	<f:for each="{project.ballots}" as="ballot">
 		<f:if condition="{ballot.reference} != ''">
 			<div>
-				<f:link.action action="show" controller="Ballot" arguments="{ballot : ballot}">{ballot.name}</f:link.action> <br />
+				Ballot:<br /><f:link.action action="show" controller="Ballot" arguments="{ballot : ballot}" style="font-size:2em;">{ballot.name}</f:link.action> <br />
 				<f:if condition="{isAssigned} == 'true'">
 					<f:if condition="{ballot.balance} != 0">
 						<f:then>

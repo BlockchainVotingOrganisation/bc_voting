@@ -3,10 +3,10 @@
 <f:section name="main">
 
 <f:flashMessages renderMode="div" />
-<h2>{project.name}</h2>
+
 <f:render partial="Project/Properties" arguments="{project:project}" />
 
-<div class="tx-bc-voting link">
+<div class="tx-bc-voting ballots" style="border-top: 1px solid black">
 	<f:if condition="{project.start} > {date_now}">
 		<f:then>
 		    <b>Voting period has not yet started!</b>

@@ -29,7 +29,7 @@ namespace Goettertz\BcVoting\Controller;
  ***************************************************************/
 
 /**
- * Revision 139
+ * Revision 146
  */
 
 use \Goettertz\BcVoting\Service\Blockchain;
@@ -413,6 +413,8 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 	}
 	
 	/**
+	 * gets the ballot from blockchain
+	 * 
 	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
 	 * @param unknown $ballot
 	 * @param int $i
@@ -425,27 +427,31 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 		}
 		$result['blockchain']['ballots'][$i]['json'] =
 		Blockchain::retrieveData($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), trim($ballot));
-		
-		$ballotO = json_decode($result['blockchain']['ballots'][$i]['json']);
-		if (is_array($result['txIds']))
-			$result['txIds'] = array_merge($result['txIds'], $this->getTxidsAddress($project, $ballotO->walletaddress));
-		else $result['txIds'] = $this->getTxidsAddress($project, $ballotO->walletaddress);
-
-		$result['blockchain']['ballots'][$i]['asset'] = $ballotO->asset;
-		$result['blockchain']['ballots'][$i]['address'] = $ballotO->walletaddress;
-		$result['blockchain']['ballots'][$i]['balance'] = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getaddressbalances($ballotO->walletaddress);
-		$result['blockchain']['ballots'][$i]['balance'] = $result['blockchain']['ballots'][$i]['balance'][0]['qty'];
-		$result['blockchain']['ballots'][$i]['end'] = $ballotO->end;
-		
-		$options = (array) $ballotO->options;
-		
-		$j = 0;
-		foreach ($options AS $option) {
-			$result['blockchain']['ballots'][$i]['options'][$j] = json_decode($option);
-			$balance = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getaddressbalances($result['blockchain']['ballots'][$i]['options'][$j]->walletaddress);
-			$result['blockchain']['ballots'][$i]['options'][$j]->balance = $balance[0]['qty'];
-			$j++;
-		}		
+		if (is_array($result)) {
+			if (is_string($result['blockchain']['ballots'][$i]['json'])) {
+				
+				$ballotO = json_decode($result['blockchain']['ballots'][$i]['json']);
+				if (is_array($result['txIds']))
+					$result['txIds'] = array_merge($result['txIds'], $this->getTxidsAddress($project, $ballotO->walletaddress));
+					else $result['txIds'] = $this->getTxidsAddress($project, $ballotO->walletaddress);
+						
+					$result['blockchain']['ballots'][$i]['asset'] = $ballotO->asset;
+					$result['blockchain']['ballots'][$i]['address'] = $ballotO->walletaddress;
+					$result['blockchain']['ballots'][$i]['balance'] = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getaddressbalances($ballotO->walletaddress);
+					$result['blockchain']['ballots'][$i]['balance'] = $result['blockchain']['ballots'][$i]['balance'][0]['qty'];
+					$result['blockchain']['ballots'][$i]['end'] = $ballotO->end;
+						
+					$options = (array) $ballotO->options;
+						
+					$j = 0;
+					foreach ($options AS $option) {
+						$result['blockchain']['ballots'][$i]['options'][$j] = json_decode($option);
+						$balance = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getaddressbalances($result['blockchain']['ballots'][$i]['options'][$j]->walletaddress);
+						$result['blockchain']['ballots'][$i]['options'][$j]->balance = $balance[0]['qty'];
+						$j++;
+					}
+			}
+		}
 		return $result;
 	}
 	
@@ -459,7 +465,7 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 		$result = array();
 		if ($obj = Blockchain::checkWalletAddress($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), $address, true))
 		{
-			$result = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->listaddresstransactions($address, 999999999);
+			$result = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->listaddresstransactions($address, $max);
 		}
 		return $result;
 	}
