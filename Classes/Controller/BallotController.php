@@ -416,7 +416,7 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 					// Check if sealed
 					if ($ballot->getReference () === '') {
 						
-						if (empty ( $ballot->getAsset () )) {
+						if (empty($ballot->getAsset()) OR $ballot->getAsset() === 'NULL') {
 							$asset = $this->createAsset ( $ballot );
 						}
 						
@@ -702,56 +702,71 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 	}
 	
 	/**
-	 *
-	 * @param \Goettertz\BcVoting\Domain\Model\Asset $asset        	
-	 * @return boolean
+	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
+	 * @param string $assetref        	
+	 * @return string|null
 	 */
-	private function verifyAsset(\Goettertz\BcVoting\Domain\Model\Asset $asset) {
+	private function verifyAssetRef(\Goettertz\BcVoting\Domain\Model\Project $project, $assetref) {
 		
 		
-		if ($asset = Blockchain::getRpcResult ( $project->getRpcServer (), $project->getRpcPort (), $project->getRpcUser (), $project->getRpcPassword () )->listassets ( $result )) {
-			if (is_array($asset)) return $asset;
+		if ($myasset = Blockchain::getRpcResult ( $project->getRpcServer (), $project->getRpcPort (), $project->getRpcUser (), $project->getRpcPassword () )->listassets ( $assetref )) {
+			if (is_array($myasset)) {
+				if ($myasset[0] ['assetref'] !== "NULL") return $myasset;
+			}
 		}
 		return NULL;
 	}
+	
+	/**
+	 * 
+	 * @param \Goettertz\BcVoting\Domain\Model\Ballot $ballot
+	 */
 	private function createAsset(\Goettertz\BcVoting\Domain\Model\Ballot $ballot) {
+		
+		
+		
 		
 		$project = $ballot->getProject ();
 		
 		// issue asset for ballot
 		$bcArray = Blockchain::getRpcResult ( $project->getRpcServer (), $project->getRpcPort (), $project->getRpcUser (), $project->getRpcPassword () )->listpermissions ( 'issue' );
 		$issueAddress = $bcArray [0] ['address'];
+		$this->addFlashMessage ( '$issueAddress:  '.$issueAddress, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK );
 		$asset = NULL;
 		
 		// no asset in bc
-		if (count ( $asset ) === 0) {
-			$newAsset = new \Goettertz\BcVoting\Domain\Model\Asset ();
-			$newAsset->setName ( $ballot->getName () );
-			$newAsset->setQuantity ( 20000000 );
-			$newAsset->setDivisibility ( 1 );
-			$params = array (
-					'name' => $newAsset->getName (),
-					'open' => true 
-			);
-			if ($result = Blockchain::getRpcResult ( $project->getRpcServer (), $project->getRpcPort (), $project->getRpcUser (), $project->getRpcPassword () )->issue ( $issueAddress, $params, $newAsset->getQuantity (), $newAsset->getDivisibility () )) {
+		
+		$newAsset = new \Goettertz\BcVoting\Domain\Model\Asset ();
+		$newAsset->setName ( $ballot->getName () );
+		$newAsset->setQuantity ( 20000000 );
+		$newAsset->setDivisibility ( 1 );
+		
+		$params = array (
+				'name' => $newAsset->getName(),
+				'open' => true 
+		);
+		
+		if ($result = Blockchain::getRpcResult ( $project->getRpcServer (), $project->getRpcPort (), $project->getRpcUser (), $project->getRpcPassword () )->issue($issueAddress, $params, $newAsset->getQuantity (), $newAsset->getDivisibility ())) {
+			if (isset($result['error'])) $this->addFlashMessage ($result['error'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 				
-				if ($asset = $this->verifyAsset($asset)) {
-					$newAsset->setAssetId ( $asset [0] ['assetref'] );
-					
-					$this->assetRepository->add ( $newAsset );
-					
-					$ballot->setAsset ( $asset [0] ['assetref'] );
-					
-					$this->ballotRepository->update ( $ballot );
-						
-				}
-				else
-					die ( 'No asset "' . $newAsset->getName () . '" was issued!' );
+			if (is_string($result)) $asset = $this->verifyAssetRef($project, $result);
+			if ($asset !== NULL) {
+				$newAsset->setAssetId ( $asset [0] ['assetref'] );
 				
-			} 
+// 				$this->assetRepository->add ( $newAsset );
+				
+				$ballot->setAsset ( $asset [0] ['assetref'] );
+				
+				$this->ballotRepository->update ( $ballot );
+					
+			}
 			else
-				die ( 'No asset "' . $newAsset->getName () . '" could be issued!' );
-		}
+ 				die ( 'No asset "' . $newAsset->getName () . '" was issued! '.$result['error']);
+			
+		} 
+		else
+			die ( 'No asset "' . $newAsset->getName () . '" could be issued!' );
+	
 	}
 	
 	/**
