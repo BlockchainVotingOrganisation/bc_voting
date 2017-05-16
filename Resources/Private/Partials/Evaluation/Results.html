@@ -1,11 +1,10 @@
-<!-- Revision 140 -->
 <div class="tx-bc-voting">	
 	<f:for each="{result.blockchain.ballots}" as="ballot">
 	
 	<!-- Check error -->
 	<f:if condition="{ballot.json.error}">
 		<f:then>
-			{ballot.json.error}
+			<div class="alert alert-danger">Error: {ballot.json.error}</div>
 		</f:then>
 		<f:else>
 			Nicht ausgewertet: {ballot.balance} Stimmen <br />

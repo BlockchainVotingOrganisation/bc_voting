@@ -704,20 +704,18 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		$vtc_amount = $this->settings['payment_sealing'];
 		if ($vtc_amount < 0.00000001) $vtc_amount = 0.00000001;
 			
-		# check if balance is enough
-		$balance = Blockchain::getRpcResult($project->getRpcServer(),$project->getRpcPort(),$project->getRpcUser(),$project->getRpcPassword())->getaddressbalances($project->getWalletAddress());
-		if (is_double($balance[0]['qty'])) {
-			$balance = $balance[0]['qty'];
+		# check if balance is enough -> soll in model->project
+		if ($balance = $project->getBalance($project)) {
+			if (doubleval($balance) < doubleval($vtc_amount)) {
+				$this->addFlashMessage('Not enough inputs: '.$project->getWalletAddress().' '.doubleval($balance), '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+				$this->redirect('show','Wallet',NULL,array('project' => $project));
+			}
 		}
 		else {
-			$this->addFlashMessage('Insufficient funds in '.$project->getWalletAddress().' '.doubleval($balance[0]['qty']), '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-			$this->redirect('edit',NULL,NULL,array('project' => $project));
+			$this->addFlashMessage('Error: no balance: '.$project->getWalletAddress().' '.doubleval($balance[0]['qty']), '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+			$this->redirect('show','Wallet',NULL,array('project' => $project));
 		}
 		
-		if (doubleval($balance) < doubleval($vtc_amount)) {
-			$this->addFlashMessage('Not enough inputs! '.$project->getWalletAddress().' '.doubleval($balance), '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-			$this->redirect('editbcparams',NULL,NULL,array('project' => $project));
-		}
 			
 // 		$this->addFlashMessage('From: '.$project->getWalletAddress().' Amount: '.doubleval($vtc_amount).' to '.$paymentAddress, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
 		

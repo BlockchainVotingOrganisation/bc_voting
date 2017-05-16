@@ -2,12 +2,12 @@
 <!-- Rev 146 -->
 <f:section name="main">
 <f:flashMessages renderMode="div" />
-<h4>Bulletin Board</h4>
+
 <f:render partial="Evaluation/Menu" arguments="{project : project, isAssigned: isAssigned, isAdmin: isAdmin, feuser: feuser}" />
 <f:render partial="Evaluation/Properties" arguments="{project:project}" />
 
 <hr />
-<f:debug>{result}</f:debug>
+
 <f:render partial="Evaluation/Results" arguments="{project:project, result:result, isAdmin: isAdmin}" />	
 
 <f:if condition="{bcResult}">
@@ -18,5 +18,4 @@
 		<a target="_blank" href="http://blockchain-voting.org:9333/{project.blockchainName}/tx/{project.reference}">{project.reference}</a>
 	</f:if>
 </f:if>
-
 </f:section>

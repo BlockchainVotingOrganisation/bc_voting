@@ -1,6 +1,6 @@
-<!-- Rev.145 -->
-<h2>{project.name}</h2>
-<div class="tx-bc-voting_Menu">
+<div class="tx-bc-voting menu" style="border-top-left-radius:  15px; border-top-right-radius: 15px; background-color: #333; color: #f1f1f1; padding: 10px 10px;">
+	Project Administration
+	<h2>{project.name}</h2>
 	<f:link.action action="edit" controller="Project" arguments="{project:project}">Edit</f:link.action> |
 	<f:link.action action="settings" controller="Project" arguments="{project:project}">Settings</f:link.action> |
 	<f:link.action action="list" controller="Ballot" arguments="{project:project}">Ballots</f:link.action> |
@@ -11,4 +11,3 @@
 	<f:link.action action="show" controller="Project" arguments="{project:project}">Preview</f:link.action> 	
 </div>
 <f:flashMessages renderMode="div" />
-<hr />

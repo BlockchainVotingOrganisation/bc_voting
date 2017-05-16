@@ -29,7 +29,7 @@ use Goettertz\BcVoting\Service\Blockchain;
  ***************************************************************/
 
 /**
- * Revision 141
+ * Revision 146
  */
 
 /**
@@ -107,6 +107,14 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @var string
 	 */
 	protected $walletAddress = NULL;
+	
+	
+	/**
+	 * maxVoters - max amount of voters
+	 * 
+	 * @var integer
+	 */
+	protected $maxVoters = 0;
 	
 	/**
 	 * description
@@ -897,12 +905,16 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 					$this->setRpcServer($default['rpc_server']);
 				}
 				else {
-					$msg = 'No RPC-Server! (722)';
+					return 'No RPC-Server! (904)';
 				}
 			}
 			else {
-				$msg = 'No RPC-Server! (721)';
+				return 'No RPC-Server! (902)';
 			}
+		}
+		// Check, ob String
+		if (!(is_string($project->getRpcServer()) && $project->getRpcServer() !== '')) {
+			return 'No RPC-Server! (916)';
 		}
 
 		if (empty($project->getRpcPort())) {
@@ -911,26 +923,35 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 					$this->setRpcPort($default['rpc_port']);
 				}
 				else {
-					$msg = 'No RPC-Port! (736)';
+					return 'No RPC-Port! (736)';
 				}
 			}
 			else {
-				$msg = 'No RPC-Port! (735)';
+				return 'No RPC-Port! (735)';
 			}
 		}
-
+		// Check, ob String
+		if (!(is_int($project->getRpcPort()) && $project->getRpcPort() !== '')) {
+			return 'No RPC-Port! (934)';
+		}
+		
 		if (empty($project->getRpcUser())) {
 			if ($default) {
 				if (!empty($default['rpc_user'])) {
 					$this->setRpcUser($default['rpc_user']);
 				}
 				else {
-					$msg = 'No RPC-User! (751)';
+					return 'No RPC-User! (751)';
 				}
 			}
 			else {
-				$msg = 'No RPC-User! (750)';
+				return 'No RPC-User! (750)';
 			}
+		}
+
+		// Check, ob String
+		if (!(is_string($project->getRpcUser()) && $project->getRpcUser() !== '')) {
+			return 'No RPC-User! (952)';
 		}
 		
 		if (empty($project->getRpcPassword())) {
@@ -939,15 +960,37 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 					$this->setRpcPassword($default['rpc_passwd']);
 				}
 				else {
-					$msg = 'No RPC-Password! (765)';
+					return 'No RPC-Password! (765)';
 				}
 			}
 			else {
-				$msg = 'No RPC-Password! (764)';
+				return 'No RPC-Password! (764)';
 			}
 		}
-		if ($msg) return $msg;
+			// Check, ob String
+		if (!(is_string($project->getRpcPassword()) && $project->getRpcPassword() !== '')) {
+			return 'No RPC-Password! (971)';
+		}
+		
+// 		if ($msg) return $msg;
 		return $this;
+	}
+	
+	/**
+	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
+	 * @return double|NULL
+	 */
+	public function getBalance(\Goettertz\BcVoting\Domain\Model\Project $project) {
+		$balance = Blockchain::getRpcResult($project->getRpcServer(),$project->getRpcPort(),$project->getRpcUser(),$project->getRpcPassword())->getaddressbalances($project->getWalletAddress());
+		if (is_double($balance[0]['qty'])) {
+			return $balance = $balance[0]['qty'];
+		}
+
+		else {
+			return NULL;
+		}
+		
+		
 	}
 	
 	public function importArray($data) {

@@ -449,7 +449,21 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 						$hash = $this->getHash($json);
 
 						# Saving data in the blockchain ...
-						if ($ref = Blockchain::storeData($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), $project->getWalletAddress(), $project->getWalletAddress(), 0.0000001, $json)  ) {
+						$vtc_amount = $this->settings['payment_sealing'];
+						if ($vtc_amount < 0.00000001) $vtc_amount = 0.00000001;
+							
+						# check if balance is enough -> soll in model->project
+						if ($balance = $project->getBalance($project)) {
+							if (doubleval($balance) < doubleval($vtc_amount)) {
+								$this->addFlashMessage('Not enough inputs: '.$project->getWalletAddress().' '.doubleval($balance), '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+								$this->redirect('show','Wallet',NULL,array('project' => $project));
+							}
+						}
+						else {
+							$this->addFlashMessage('Error: no balance: '.$project->getWalletAddress().' '.doubleval($balance[0]['qty']), '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+							$this->redirect('show','Wallet',NULL,array('project' => $project));
+						}
+						if ($ref = Blockchain::storeData($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), $project->getWalletAddress(), $project->getWalletAddress(), $vtc_amount, $json)  ) {
 							
 							$ballot->setReference($ref);
 							$this->ballotRepository->update($ballot);

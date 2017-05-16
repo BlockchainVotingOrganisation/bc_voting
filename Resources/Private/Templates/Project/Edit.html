@@ -1,5 +1,5 @@
 <f:layout name="Default" />
-Rev. 144
+Rev. 146
 <f:section name="main">
 
 <f:render partial="Project/Menu" arguments="{project : project, isAssigned: isAssigned, isAdmin: isAdmin, feuser: feuser}" />
@@ -7,7 +7,7 @@ Rev. 144
 <f:flashMessages renderMode="div" />
 <f:render partial="FormErrors" arguments="{object:Project}" />
 <p>&nbsp;</p>
-<h4>{project.name}</h4>
+
 <f:translate key="tx_bcvoting_edit_project" />
 
 <f:if condition="{isAdmin} == 'true'">
