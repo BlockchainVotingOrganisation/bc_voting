@@ -417,7 +417,14 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 					if ($ballot->getReference () === '') {
 						
 						if (empty($ballot->getAsset()) OR $ballot->getAsset() === 'NULL') {
-							$asset = $this->createAsset ( $ballot );
+							
+							# Check if asset name still exists in bc...( verify asset)
+							if ($this->verifyAssetRef($project, $ballot->getName()) === NULL) {
+								$asset = $this->createAsset ( $ballot );
+							}
+							else {
+								$this->addFlashMessage ( 'Asset name still exists! You have to check if asset reference is missing or to rename ballot.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR );
+							}
 						}
 						
 						// verify asset
@@ -746,7 +753,7 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 				'open' => true 
 		);
 		
-		if ($result = Blockchain::getRpcResult ( $project->getRpcServer (), $project->getRpcPort (), $project->getRpcUser (), $project->getRpcPassword () )->issue($issueAddress, $params, $newAsset->getQuantity (), $newAsset->getDivisibility ())) {
+		if ($result = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->issue($issueAddress, $params, $newAsset->getQuantity(), $newAsset->getDivisibility())) {
 			if (isset($result['error'])) $this->addFlashMessage ($result['error'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 				
 			if (is_string($result)) $asset = $this->verifyAssetRef($project, $result);
