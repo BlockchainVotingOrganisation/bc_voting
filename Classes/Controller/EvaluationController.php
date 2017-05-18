@@ -32,7 +32,7 @@ namespace Goettertz\BcVoting\Controller;
  */
 
 /**
- * Revision 146
+ * Revision 147
  */
 use \Goettertz\BcVoting\Service\Blockchain;
 // use \Goettertz\BcVoting\Service\MCrypt;
@@ -45,35 +45,40 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 	/**
 	 * projectRepository
 	 *
-	 * @var \Goettertz\BcVoting\Domain\Repository\ProjectRepository @inject
+	 * @var \Goettertz\BcVoting\Domain\Repository\ProjectRepository 
+	 * @inject
 	 */
 	protected $projectRepository = NULL;
 	
 	/**
 	 * userRepository
 	 *
-	 * @var \Goettertz\BcVoting\Domain\Repository\UserRepository @inject
+	 * @var \Goettertz\BcVoting\Domain\Repository\UserRepository 
+	 * @inject
 	 */
 	protected $userRepository = NULL;
 	
 	/**
 	 * ballotRepository
 	 *
-	 * @var \Goettertz\BcVoting\Domain\Repository\BallotRepository @inject
+	 * @var \Goettertz\BcVoting\Domain\Repository\BallotRepository 
+	 * @inject
 	 */
 	protected $ballotRepository = NULL;
 	
 	/**
 	 * optionRepository
 	 *
-	 * @var \Goettertz\BcVoting\Domain\Repository\OptionRepository @inject
+	 * @var \Goettertz\BcVoting\Domain\Repository\OptionRepository 
+	 * @inject
 	 */
 	protected $optionRepository = NULL;
 	
 	/**
 	 * votingRepository
 	 *
-	 * @var \Goettertz\BcVoting\Domain\Repository\VotingRepository @inject
+	 * @var \Goettertz\BcVoting\Domain\Repository\VotingRepository 
+	 * @inject
 	 */
 	protected $votingRepository = NULL;
 	
@@ -83,7 +88,7 @@ class EvaluationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 	 * @return void
 	 */
 	public function listAction() {
-		$projects = $this->projectRepository->findAll ();
+		$projects = $this->projectRepository->findAll();
 		$this->view->assign ( 'projects', $projects );
 		if ($feuser = $this->userRepository->getCurrentFeUser ()) {
 			$this->view->assign ( 'feuser', $feuser );
