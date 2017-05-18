@@ -1,5 +1,5 @@
 <?php
-// Rev. 145
+// Rev. 147
 if (!defined('TYPO3_MODE')) {
 	die('Access denied.');
 }
@@ -63,7 +63,7 @@ if (!defined('TYPO3_MODE')) {
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
 		'Goettertz.' . $_EXTKEY,
-		'BVS_Office',
+		'BVS_Admin',
 		array(
 				
 				'Project' => 'list, show, edit, settings, new, create, update, editbcparams, seal, import, removeLogo',
@@ -98,5 +98,17 @@ if (!defined('TYPO3_MODE')) {
 			'Evaluation' => 'list, show, proceed, txlog, streamlog',
 			'Transaction' => 'show'
 	)
+);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+		'Goettertz.' . $_EXTKEY,
+		'BVS_Wallet',
+		array(
+				'Wallet' => 'show, funding, withdraw'
+		
+		),
+		array(
+				'Wallet' => 'show, funding, withdraw'
+		)
 );
 ?>
