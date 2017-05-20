@@ -52,12 +52,14 @@ if (!defined('TYPO3_MODE')) {
 		array(
 				'Election' => 'list, show',
 				'Ballot' => 'list, show',
-				'Voting' => 'create'
+				'Voting' => 'create',
+				'Wallet' => 'show, funding, withdraw',
 		),
 		array(
 				'Election' => 'list, show',
 				'Ballot' => 'list, show',
-				'Voting' => 'create'
+				'Voting' => 'create',
+				'Wallet' => 'show, funding, withdraw',
 		)
 );
 

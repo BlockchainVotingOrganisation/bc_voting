@@ -29,7 +29,7 @@ namespace Goettertz\BcVoting\Controller;
  ***************************************************************/
 
 /**
- * Revision 139:
+ * Revision 147:
  *
  */
 use Goettertz\BcVoting\Service\Blockchain;
@@ -58,6 +58,14 @@ class VotingController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 	 * @inject
 	 */
 	protected $userRepository = NULL;
+	
+	/**
+	 * assignmentRepository
+	 *
+	 * @var \Goettertz\BcVoting\Domain\Repository\AssignmentRepository
+	 * @inject
+	 */
+	protected $assignmentRepository = NULL;
 	
 	/**
 	 * action create
@@ -91,11 +99,7 @@ class VotingController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 				# Wenn angemeldet
 				If($assignment !== NULL) {
 						
-					if ($project->getRpcServer() === '') {
-						$this->addFlashMessage('Kein RPC-Server', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-					}
-					else {
-						if ($result = $this->votingBc($newVoting, $assignment, $ballot)) {
+					if ($result = $this->votingBc($newVoting, $assignment, $ballot)) {
 							if(is_array($result)) {
 								if (is_string($result['error'])) {
 									$this->addFlashMessage($result['error'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
@@ -106,13 +110,13 @@ class VotingController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 							}
 							
 							else {
-								$this->addFlashMessage('No Result! 82 '.$result, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+								$this->addFlashMessage('No Array $result 82 '.$result, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 							}
 						}
 						else {
 								$this->addFlashMessage('No Result! 86', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 						}
-					}
+					
 				}
 				else {
 					$this->addFlashMessage('Not assigned!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
@@ -144,6 +148,8 @@ class VotingController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 	 * @return NULL|mixed
 	 */
 	private function votingBc(\Goettertz\BcVoting\Domain\Model\Voting $voting, \Goettertz\BcVoting\Domain\Model\Assignment $assignment, \Goettertz\BcVoting\Domain\Model\Ballot $ballot) {
+
+		$project = $ballot->getProject();
 		
 		$result = array();
 		$result['error'] = NULL;
@@ -155,81 +161,89 @@ class VotingController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 			return $result;
 		}
 	
-// 		$ballot = $option->getBallot();
- 		$project = $ballot->getProject();
-	
+ 		# Check if rpc-settings are configured
+ 		$rpc = $project->checkRpc($project,$this->settings);
+ 		if (is_string($rpc)) {
+ 			$this->addFlashMessage($rpc, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+//  			$this->redirect('edit',NULL,NULL, array('project' => $project));
+ 		}
+ 		else if (is_object($rpc)){
+ 			$project = $rpc;
+ 		}
+ 		else {
+ 			$this->addFlashMessage('Unkown error.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+ 		}	
 
 		# Wahl mit Multichain
-		if (!empty($project->getRpcServer())) {
+	
+		$fromaddress = trim($assignment->getWalletAddress());
+		if (empty($fromaddress) || $fromaddress !== '') {
 				
-// 			$asset = trim($ballot->getAsset());
+			# Get new address!
+//  			$fromaddress = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getnewaddress();
+ 			
+// 			$assignment->setWalletAddress($fromaddress);
+			
+// 			$result['error'] = '(187) '.$assignment->getProject().' '.$assignment->getWalletAddress();
+// 			$this->assignmentRepository->update($assignment);
+			
+// 			$persistenceManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
+// 			$persistenceManager->persistAll();
+			
+ 			$result['error'] = 'Error (525): no address to send from! Go to your account settings and import the paper wallet.';
+ 			return $result;
+		}
+		$result['error'] = '(208) '.$fromaddress;
+		return $result;
 				
-			$fromaddress = trim($assignment->getWalletAddress());
-			if (empty($fromaddress)) {
-				$result['error'] = 'Error (525): no address to send from!';
+		$toaddress = $ballot->getWalletAddress(); // ballot-address, wenn geheime Wahl
+		$balance = Blockchain::getAssetBalanceFromAddress($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), $fromaddress, $asset);
+	
+		# Stimmrechte Anzahl
+				
+		if ($balance > 0) {
+			$mcrypt = new \Goettertz\BcVoting\Service\MCrypt();
+
+			$record = $voting->getOptionCode();
+			$record = explode("###", $record);
+			
+			if (count($record) == 0) {
+				$result['error'] = 'No codes 168';
 				return $result;
 			}
+			
+			$random = $record[0];
+			$vote = $record[1];
+			$secret = $mcrypt->encrypt($vote);
+			$hash = $record[2];
+			
+			$meta = trim($random).'###'.trim($secret).'###'.trim($hash);
+
+			$amount = array($ballot->getAsset() => 1);
 				
-			$toaddress = $ballot->getWalletAddress(); // ballot-address, wenn geheime Wahl
-			$balance = Blockchain::getAssetBalanceFromAddress($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), $fromaddress, $asset);
-	
-			# Stimmrechte Anzahl
-				
-			if ($balance > 0) {
-				$mcrypt = new \Goettertz\BcVoting\Service\MCrypt();
-	
-				$record = $voting->getOptionCode();
-				$record = explode("###", $record);
-				
-				if (count($record) == 0) {
-					$result['error'] = 'No codes 168';
-					return $result;
-				}
-				
-				$random = $record[0];
-				$vote = $record[1];
-				$secret = $mcrypt->encrypt($vote);
-				$hash = $record[2];
-				$meta = trim($record[0]).'###'.trim($secret).'###'.trim($record[2]);
-	
-				$amount = array($ballot->getAsset() => 1);
-					
-				# Assets versenden
-				if ($ref = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->sendwithmetadatafrom($fromaddress,$toaddress,$amount,bin2hex($meta)) ) {
-					# wenn erfolgreich
-					if (is_string($ref)) {
-							
-						#
-						$strVotes = print_r($balance[$fromaddress][0]['qty'],true);
-						$result['msg'] = 'Voting success!<br />TxId: '.$ref;
-						$result['msg'] .='<br />Meta:<pre>'.$meta.'</pre>';
-						$result['msg'] .='<br />Encrypted option text:<pre>'.$secret.'</pre>';
-					}
-					else {
-						$result['error'] = 'Voting failed (198). RPC-Error: '.$ref['error'].' '.$hash.' '.$ref['ref'];
-					}
+			# Assets versenden
+			if ($ref = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->sendwithmetadatafrom($fromaddress,$toaddress,$amount,bin2hex($meta)) ) {
+				# wenn erfolgreich
+				if (is_string($ref)) {
+						
+					#
+					$strVotes = print_r($balance[$fromaddress][0]['qty'],true);
+					$result['msg'] = 'Voting success!<br />TxId: '.$ref;
+					$result['msg'] .='<br />Meta:<pre>'.$meta.'</pre>';
+					$result['msg'] .='<br />Encrypted option text:<pre>'.$secret.'</pre>';
 				}
 				else {
-					$result['error'] = 'Voting failed (202): No result.';
+					$result['error'] = 'Voting failed (198). RPC-Error: '.$ref['error'].' '.$hash.' '.$ref['ref'];
 				}
 			}
 			else {
-				$result['error'] = 'Voting failed (206): Not enough assets! '.$fromaddress.' '.$asset.' '.$balance;
+				$result['error'] = 'Voting failed (202): No result.';
 			}
 		}
 		else {
-// 			$balance = $assignment->getVotes();
-// 			$voting = new \Goettertz\BcVoting\Domain\Model\Voting();// 									$this->votingRepository->add($voting);
-// 			$voting->setTxid($ref);
-// 			$voting->setSecret($secret);
-// 			$voting->setProject($project);
-// 			$voting->setReference($ballot->getReference());
-	
-// 			$this->votingRepository->add($voting);
-// 			$assignment->setVotes($assignment->getVotes() - 1);
-// 			$strVotes = print_r($balance[$fromaddress][0]['qty'],true);
-// 			$result['msg'] = 'Voting '.$project->getName().': success!<br />TxId: '.$ref.' Address: '.$toaddress.' Asset amount: '.implode(':',$amount);
+			$result['error'] = 'Voting failed (206): Not enough assets! '.$fromaddress.' '.$asset.' '.$balance;
 		}
+
 		return $result;
 	}
 }
