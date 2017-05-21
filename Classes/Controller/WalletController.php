@@ -27,7 +27,7 @@ ini_set("display_errors", 1);
  ***************************************************************/
 
 /**
- * Revision 147
+ * Revision 148
  */
 
 use Goettertz\BcVoting\Service\Blockchain;
@@ -222,8 +222,6 @@ class WalletController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 
 		# Nur der Feuser selbst darf eine PaperWallet importieren.
 		if ($user = $this->userRepository->getCurrentFeUser()) {
-// 			$projects = $this->projectRepository->findAll();
-// 			$this->view->assign('projects', $projects);
 			$assignments = $this->assignmentRepository->findByUser($user);
 			$this->view->assign('assignments', $assignments);
 			
@@ -235,18 +233,29 @@ class WalletController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 
 	/**
 	 * 
-	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
+	 * @param \Goettertz\BcVoting\Domain\Model\Assignment $assignment
 	 * @param string $key
+	 * @param string $address
 	 * @return void
 	 */
-	public function importPrivKeyAction(\Goettertz\BcVoting\Domain\Model\Project $project, $key) {
+	public function importPrivKeyAction(\Goettertz\BcVoting\Domain\Model\Assignment $assignment, $key, $address) {
 		
 		# Sicherheitsabfragen fehlen
+		if ($user = $this->userRepository->getCurrentFeUser()) {
+			if ($user !== $assignment->getUser()) {
+				die('Not allowed!');
+			}
+		}
 		
+		$project = $assignment->getProject();
 		$project = $project->checkRpc($project);
-		$result = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->importprivkey($key,'Imported',true);
 		
-		# Adresse registrieren
+		if ($result = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->importprivkey($key,'Imported',true) === NULL) {
+			
+			# Adresse registrieren
+			$assignment->setWalletAddress($address);
+			$this->assignmentRepository->update($assignment);
+		}
 		
 		
 		$this->redirect('show');
