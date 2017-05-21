@@ -51,15 +51,15 @@ if (!defined('TYPO3_MODE')) {
 		'BVS_Main',
 		array(
 				'Election' => 'list, show',
-				'Ballot' => 'list, show',
+ 				'Ballot' => 'show',
 				'Voting' => 'create',
-				'Wallet' => 'show, funding, withdraw',
+				'Wallet' => 'show',
 		),
 		array(
 				'Election' => 'list, show',
-				'Ballot' => 'list, show',
+				'Ballot' => 'show',
 				'Voting' => 'create',
-				'Wallet' => 'show, funding, withdraw',
+				'Wallet' => 'show',
 		)
 );
 
@@ -106,11 +106,11 @@ if (!defined('TYPO3_MODE')) {
 		'Goettertz.' . $_EXTKEY,
 		'BVS_Wallet',
 		array(
-				'Wallet' => 'show, funding, withdraw'
+				'Wallet' => 'show, import, importPrivKey'
 		
 		),
 		array(
-				'Wallet' => 'show, funding, withdraw'
+				'Wallet' => 'show, import, importPrivKey'
 		)
 );
 ?>

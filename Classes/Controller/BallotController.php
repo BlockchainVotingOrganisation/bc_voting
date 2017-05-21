@@ -32,7 +32,7 @@ namespace Goettertz\BcVoting\Controller;
  */
 
 /**
- * Revision 138:
+ * Revision 148:
  */
 use Goettertz\BcVoting\Property\TypeConverter\UploadedFileReferenceConverter;
 use Goettertz\BcVoting\Service\Blockchain;
@@ -187,16 +187,13 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 			} else {
 				// msg und redirect zu listaction
 				$this->addFlashMessage ( 'You are no admin!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR );
-				$this->redirect ( 'show', 'Project', 'BcVoting', array (
-						'project' => $project 
-				) );
+				$this->redirect ( 'show', 'Project', 'BcVoting', array ('project' => $project));
 			}
-		} else {
+		} 
+		else {
 			// msg und redirect zu listaction
 			$this->addFlashMessage ( 'You are not currently logged in!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR );
-			$this->redirect ( 'show', 'Project', 'BcVoting', array (
-					'project' => $project 
-			) );
+			$this->redirect ( 'show', 'Project', 'BcVoting', array ('project' => $project) );
 		}
 	}
 	
@@ -210,23 +207,29 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 		$isAdmin = 'false';
 		
 		// OptionCodes
-		foreach ( $project->getBallots () as $ballot ) {
+//		foreach ( $project->getBallots () as $ballot ) {
 			foreach ( $ballot->getOptions () as $option ) {
 				$option->setOptionCode ( $this->rand_string ( 10 ) );
 				$option->setOptionHash ( $this->getHash ( $option->getOptionCode () . $option->getWalletAddress () ) );
 			}
-		}
-		
+//		}
 		if ($user = $this->userRepository->getCurrentFeUser ()) {
-			
-			if ($project) {
-				$assignment = $user ? $project->getAssignmentForUser ( $user ) : NULL;
-				If ($assignment != NULL) {
+				
+			$assignment = $user ? $project->getAssignmentForUser ($user) : NULL;
+			If ($assignment !== NULL) {
 					$isAssigned = 'true';
 					$this->view->assign ( 'isAssigned', $isAssigned );
-				}
+					$this->addFlashMessage ( 'You are assigned to this election! '.$assignment->getProject(), '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK );
+						
+			}
+			else {
+				$this->addFlashMessage ( 'You are not assigned to this election!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR );
 			}
 		}
+		else {
+				$this->addFlashMessage ( 'You are not logged in!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR );
+			}		
+		
 		$voting = new \Goettertz\BcVoting\Domain\Model\Voting ();
 		
 		$this->view->assign ( 'voting', $voting );

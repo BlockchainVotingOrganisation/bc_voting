@@ -1,58 +1,15 @@
 <f:layout name="Default" />
-Rev. 145
+Rev. 147
 <f:section name="main">
+<h3>Wallet</h3>
+<div class="tx-bc-voting">
 <f:if condition="{project}">
+<f:then>
 	<f:render partial="Project/Menu" arguments="{project : project}" />
-</f:if>
-<h3>Wallet</h4>
-<h3><f:translate key="tx_bcvoting_wallet" /></h3>
+	<f:render partial="Wallet/Menu" arguments="{project : project}" />
 	<h4>Wallet address: {project.walletAddress}</h4>
 	<h4>VTC Balance: {amount.0.qty}</h4>
-<f:render partial="Wallet/Menu" arguments="{project : project}" />
 <div>
-	
-<!-- 
-	<h4>Blockchain Info</h4>
-	<ul>
-		<li>Mining</li>
-		<li>Permissions</li>
-		<li>Other Blockchain Info</li>
-	</ul>
-	
-	<h4>Node Addresses</h4>
-	<f:for each="{addresses}" as="address">
-		<div>
-	 			<a href="http://www.blockchain-voting.org:9333/BVS/address/{address}">{address}</a><br />
-		</div>
-		<div>
-			<table border="1" style="border-spacing: 0; border-collapse: collapse;">
-				<f:for each="{assets}" as="assetss" >
-					<f:for each="{assetss}" as="asset">
-					
-					<f:if condition="{asset.address} == {address}">
-					<f:if condition="{asset.name} != ''">
-					<f:then>
-					<tr>
-						<td style="padding: 5px; width:50%">
-	
-								{asset.name}
-						</td>
-						<td style="padding: 5px; width:20%; text-align:center;">{asset.project.name}</td>
-						<td style="padding: 5px; width:20%; text-align:center;">{asset.assetref}</td>
-						<td style="padding: 5px; width:10%; text-align:right;">{asset.qty}</td>
-					</tr>
-					</f:then>
-					</f:if>
-					</f:if>
-					</f:for>
-					
-				</f:for>
-			</table>
-			
-		</div>
-	
-	</f:for>
- -->	
 	<h4>Last transactions</h4>
 	<table style="border-spacing: 0; border-collapse: collapse;">
 		<f:for each="{transactions}" as="transaction" iteration="iterator" reverse="0">
@@ -66,4 +23,13 @@ Rev. 145
 		</f:for>
 	</table>
 </div>
+</f:then>
+<f:else>
+	<f:render partial="User/Menu" arguments="{user : user}" />
+	<h4>Assignments</h4>	
+</f:else>
+</f:if>
+</div>
+
+
 </f:section>

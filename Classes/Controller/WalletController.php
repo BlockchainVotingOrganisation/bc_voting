@@ -27,7 +27,7 @@ ini_set("display_errors", 1);
  ***************************************************************/
 
 /**
- * Revision 145
+ * Revision 147
  */
 
 use Goettertz\BcVoting\Service\Blockchain;
@@ -137,6 +137,7 @@ class WalletController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 				}
 			}
 			else {
+				$this->view->assign('project', $project);
 				if (empty($project->getRpcServer())) {
 					$result['error'] = 'No RPC-Server!';
 					$this->addFlashMessage('No RPC-Server!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
@@ -197,7 +198,7 @@ class WalletController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 		
 		$this->view->assign('result', $result);
 		$this->view->assign('user', $user);
-		$this->view->assign('project', $project);
+		
 		$this->view->assign('assigned', $isAssigned);
 		$this->view->assign('addresses', $addresses);
 		$this->view->assign('transactions', $transactions);
@@ -217,33 +218,38 @@ class WalletController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 	 * @param string $key
 	 * @param string $address
 	 */
-	public function importAction(\Goettertz\BcVoting\Domain\Model\Assignment $assignment, $key, $address = '') {
-		
-		$project = $assignment->getProject();
-		$user = $assignment->getUser();
-		
+	public function importAction() {
+
 		# Nur der Feuser selbst darf eine PaperWallet importieren.
-		if ($user === $this->userRepository->getCurrentFeUser()) {
-			$result = Blockchain::getRpcResult($rpcServer, $rpcPort, $rpcUser, $rpcPassword)->importprivkey($key,'Imported',true);
-			$this->view->assign('address', $address);
-			$this->view->assign('user', $user);
+		if ($user = $this->userRepository->getCurrentFeUser()) {
+// 			$projects = $this->projectRepository->findAll();
+// 			$this->view->assign('projects', $projects);
+			$assignments = $this->assignmentRepository->findByUser($user);
+			$this->view->assign('assignments', $assignments);
 			
 			# Balances for assignment address
 			
 			# Transactions  for assignment address
 		}
 	}
-	
+
 	/**
-	 * controlls form importWallet
 	 * 
-	 * @param \Goettertz\BcVoting\Domain\Model\Assignment $assignment
+	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
+	 * @param string $key
+	 * @return void
 	 */
-	public function importWalletAction(\Goettertz\BcVoting\Domain\Model\Assignment $assignment) {
-		if ($feuser = $this->userRepository->getCurrentFeUser()) {
-			$this->view->assign('feuser', $feuser);
-		}
-		$this->view->assign('assignment', $assignment);
+	public function importPrivKeyAction(\Goettertz\BcVoting\Domain\Model\Project $project, $key) {
+		
+		# Sicherheitsabfragen fehlen
+		
+		$project = $project->checkRpc($project);
+		$result = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->importprivkey($key,'Imported',true);
+		
+		# Adresse registrieren
+		
+		
+		$this->redirect('show');
 	}
 	
 // 	/**
