@@ -250,15 +250,24 @@ class WalletController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 		$project = $assignment->getProject();
 		$project = $project->checkRpc($project);
 		
-		if ($result = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->importprivkey($key,'Imported',true) === NULL) {
-			
-			# Adresse registrieren
-			$assignment->setWalletAddress($address);
-			$this->assignmentRepository->update($assignment);
+		if ($result = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->importprivkey($key,'Imported',true)) {
+			if ($result === NULL) {
+				# Adresse registrieren
+				$assignment->setWalletAddress($address);
+				$this->assignmentRepository->update($assignment);
+			}
+			else {
+				die ('No Address imported!');
+//	 			$assignment->setWalletAddress($address);
+//	 			$this->assignmentRepository->update($assignment);
+// 				$this->addFlashMessage($result['error'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+			}			
 		}
 		
+		$persistenceManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
+		$persistenceManager->persistAll();
 		
-		$this->redirect('show');
+		$this->redirect('show',NULL,NULL, array('result' => $result));
 	}
 	
 // 	/**
