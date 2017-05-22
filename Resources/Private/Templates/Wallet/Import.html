@@ -1,17 +1,18 @@
 <f:layout name="Default" />
 Rev. 148
 <f:section name="main">
-<f:debug>{assignments}</f:debug>
-<f:render partial="Wallet/Menu" arguments="{feuser:feuser, assignment: assignment}" />
+
+
 <f:flashMessages renderMode="div" />
 
 <h3>Import Paper Wallet</h3>
-Please choose:
+
 <f:form action="importPrivKey" name="assignment" arguments="{user:user}" >
-<f:form.select name="assignment" options="{assignments}" optionLabelField="project.name"/><br />
-Address:<br />
+<f:form.select name="assignment" options="{assignments}" optionLabelField="project.name" prependOptionLabel="Please choose assignment:"/><br />
+<hr />
+<label for="walletAddress">Address:</label><br />
 <f:form.textfield name="address" size="32" /><br />
-Key:<br />
+<label for="privkey">Private Key:</label><br />
 <f:form.textarea name="key" rows="5" cols="40" /><br />
 <f:form.submit value="Import" />
 </f:form>

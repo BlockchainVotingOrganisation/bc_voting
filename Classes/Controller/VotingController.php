@@ -177,27 +177,13 @@ class VotingController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 		# Wahl mit Multichain
 	
 		$fromaddress = trim($assignment->getWalletAddress());
-		if (empty($fromaddress) || $fromaddress !== '') {
-				
-			# Get new address!
-//  			$fromaddress = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getnewaddress();
- 			
-// 			$assignment->setWalletAddress($fromaddress);
-			
-// 			$result['error'] = '(187) '.$assignment->getProject().' '.$assignment->getWalletAddress();
-// 			$this->assignmentRepository->update($assignment);
-			
-// 			$persistenceManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
-// 			$persistenceManager->persistAll();
-			
- 			$result['error'] = 'Error (525): no address to send from! Go to your account settings and import the paper wallet.';
+		if (empty($fromaddress) || $fromaddress === '') {
+ 			$result['error'] = $assignment.': Error (525): no address to send from! ('.$fromaddress.') Go to your account settings and import the paper wallet.';
  			return $result;
 		}
-		$result['error'] = '(208) '.$fromaddress;
-		return $result;
 				
 		$toaddress = $ballot->getWalletAddress(); // ballot-address, wenn geheime Wahl
-		$balance = Blockchain::getAssetBalanceFromAddress($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), $fromaddress, $asset);
+		$balance = Blockchain::getAssetBalanceFromAddress($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword(), $fromaddress, $ballot->getAsset());
 	
 		# Stimmrechte Anzahl
 				
