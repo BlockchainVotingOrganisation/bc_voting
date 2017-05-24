@@ -726,8 +726,8 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		
 		# Check json length
 		
-		if (strlen($json) > 80 ) {
-			$this->addFlashMessage('Sorry, the string istoo long!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+		if (strlen($json) > 4096 ) {
+			$this->addFlashMessage('Sorry, the string is too long!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 			$this->redirect('edit','Project',NULL,array('project' => $project)); # brutal.
 		}
 		

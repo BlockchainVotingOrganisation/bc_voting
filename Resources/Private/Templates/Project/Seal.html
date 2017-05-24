@@ -1,13 +1,13 @@
 <f:layout name="Default" />
-Rev. 128
+Rev. 148
 <f:section name="main">
 
-<f:render partial="MenuSelect" arguments="{project : project, isAssigned: isAssigned, isAdmin: isAdmin, feuser: feuser}" />
+<f:render partial="Project/Menu" arguments="{project : project, isAssigned: isAssigned, isAdmin: isAdmin, feuser: feuser}" />
 
 <f:flashMessages renderMode="div" />
 <f:render partial="FormErrors" arguments="{object:Project}" />
 
-<h4>{project.name}</h4>
+
 
 Sealing txid: <a href="http://www.blockchain-voting.org:9333/BVS/tx/{ref}">{ref}</a>
 <hr />
