@@ -50,7 +50,7 @@
 				<el>
 				    <settings.login>
 				        <TCEforms>
-				            <label>Login URL</label>
+				            <label>Login Page</label>
 							<config>
 								<type>group</type>
 								<internal_type>db</internal_type>
@@ -64,7 +64,7 @@
 				    </settings.login>
 				    <settings.logout>
 				        <TCEforms>
-				            <label>Logout URL</label>
+				            <label>Logout Page</label>
 							<config>
 								<type>group</type>
 								<internal_type>db</internal_type>
@@ -78,7 +78,7 @@
 				    </settings.logout>
 				    <settings.registration>
 				        <TCEforms>
-				            <label>Registration URL</label>
+				            <label>Registration Page</label>
 							<config>
 								<type>group</type>
 								<internal_type>db</internal_type>
@@ -90,6 +90,20 @@
 							</config>
 				        </TCEforms>				        
 				    </settings.registration>
+				    <settings.storagePid>
+				        <TCEforms>
+				            <label>Record Storage Page</label>
+							<config>
+								<type>group</type>
+								<internal_type>db</internal_type>
+								<allowed>pages</allowed>
+								<size>1</size>
+								<maxitems>1</maxitems>
+								<minitems>0</minitems>
+								<show_thumbs>1</show_thumbs>
+							</config>
+				        </TCEforms>				        
+				    </settings.storagePid>
 				</el>
 			</ROOT>
 			</PIDs>

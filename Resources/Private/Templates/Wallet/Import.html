@@ -8,7 +8,7 @@ Rev. 148
 <h3>Import Paper Wallet</h3>
 
 <f:form action="importPrivKey" name="assignment" arguments="{user:user}" >
-<f:form.select name="assignment" options="{assignments}" optionLabelField="project.name" prependOptionLabel="Please choose assignment:"/><br />
+<f:form.select name="assignment" options="{assignments}" optionLabelField="project.name" prependOptionLabel="Please choose assignment:" value="{assignment}" /><br />
 <hr />
 <label for="walletAddress">Address:</label><br />
 <f:form.textfield name="address" size="32" /><br />

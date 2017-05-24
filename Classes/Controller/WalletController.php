@@ -109,9 +109,17 @@ class WalletController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 	 * @return void
 	 */
 	public function showAction(\Goettertz\BcVoting\Domain\Model\Project $project = NULL) {
-		
+
+		$transactions = array();
+		$addresses = array();
+		$assets = array();
+		$rpcAssets = array();		
 		$isAssigned = 'false';
+		
 		if ($user = $this->userRepository->getCurrentFeUser()) {
+			$assignments = $this->assignmentRepository->findByUser($user);
+			$this->view->assign('assignments', $assignments);
+			
 			if ($project) {
 				$assignment = $user ? $project->getAssignmentForUser($user) : NULL;
 				If($assignment != NULL) {
@@ -143,19 +151,13 @@ class WalletController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 					$this->addFlashMessage('No RPC-Server!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 				}				
 			}
-			
-			$transactions = array();
-			$addresses = array();
-			$assets = array();
-			$rpcAssets = array();
+
 			
 			if ($project !== null) {
 				$transactions = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->listaddresstransactions($project->getWalletAddress(), 100);
 			} 
 			else {
 				# Abfrage für alle assignments (transaktionen, asset balances)
-				$assignments = $this->assignmentRepository->findByUser($user);
-					
 				foreach ($assignments as $assignment) {
 					if (!empty($assignment->getWalletAddress())) {
 						if (!in_array($assignment->getWalletAddress(), $addresses))
@@ -218,13 +220,13 @@ class WalletController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 	 * @param string $key
 	 * @param string $address
 	 */
-	public function importAction() {
+	public function importAction(\Goettertz\BcVoting\Domain\Model\Assignment $assignment = NULL) {
 
 		# Nur der Feuser selbst darf eine PaperWallet importieren.
 		if ($user = $this->userRepository->getCurrentFeUser()) {
 			$assignments = $this->assignmentRepository->findByUser($user);
 			$this->view->assign('assignments', $assignments);
-			
+			if ($assignment !== NULL) $this->view->assign('assignment', $assignment);
 			# Balances for assignment address
 			
 			# Transactions  for assignment address
@@ -258,9 +260,6 @@ class WalletController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 			}
 			else {
 				die ('No Address imported!');
-//	 			$assignment->setWalletAddress($address);
-//	 			$this->assignmentRepository->update($assignment);
-// 				$this->addFlashMessage($result['error'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 			}			
 		}
 		

@@ -29,7 +29,7 @@ namespace Goettertz\BcVoting\Controller;
  ***************************************************************/
 
 /**
- * Revision 145
+ * Revision 148
  */
 
 use \Goettertz\BcVoting\Property\TypeConverter\UploadedFileReferenceConverter;
@@ -112,6 +112,31 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 	 * @inject
 	 */
 	protected $ballotRepository = NULL;
+
+	/**
+	 * initialize the controller
+	 *
+	 * @return void
+	 */
+	protected function initializeAction() {
+		parent::initializeAction();
+		//fallback to current pid if no storagePid is defined
+		if (version_compare(TYPO3_version, '6.0.0', '>=')) {
+			$configuration = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
+		} else {
+			$configuration = $this->configurationManager->getConfiguration(Tx_Extbase_Configuration_ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
+		}
+		if (empty($configuration['persistence']['storagePid'])) {
+			if (empty($this->settings['storagePid'])) {
+				$currentPid['persistence']['storagePid'] = $GLOBALS["TSFE"]->id;
+			}
+			else {
+				$currentPid['persistence']['storagePid'] = $this->settings['storagePid'];
+			}
+			
+			$this->configurationManager->setConfiguration(array_merge($configuration, $currentPid));
+		}
+	}
 	
 	/**
 	 * action list
@@ -253,6 +278,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 	public function createAction(\Goettertz\BcVoting\Domain\Model\Project $newProject) {
 		
 		if ($user = $this->userRepository->getCurrentFeUser()) {
+			$this->initializeAction();
 			
 			# gets correct UNIX timestamp only if contained in formdata
 			$start = strtotime($newProject->getStart()); $end = strtotime($newProject->getEnd());
@@ -594,7 +620,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		
 		$project = $assignment->getProject();
 // 		$bc = new \Goettertz\BcVoting\Service\Blockchain();
-		$newAddress = $bc::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getnewaddress();
+		$newAddress = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->getnewaddress();
 		$assignment->setWalletAddress($newAddress);
 		$this->assignmentRepository->update($assignment);
 		
@@ -696,6 +722,13 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		} elseif (isset($json['error'])) {
 			$this->addFlashMessage($json['error'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 			$this->redirect('list');			
+		}
+		
+		# Check json length
+		
+		if (strlen($json) > 80 ) {
+			$this->addFlashMessage('Sorry, the string istoo long!', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+			$this->redirect('edit','Project',NULL,array('project' => $project)); # brutal.
 		}
 		
 		$hash = hash('sha256', $json);

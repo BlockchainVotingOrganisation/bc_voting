@@ -1,6 +1,7 @@
 <f:layout name="Default" />
-Rev. 147
+Rev. 148
 <f:section name="main">
+
 <h3>Wallet</h3>
 <div class="tx-bc-voting">
 <f:if condition="{project}">
@@ -9,24 +10,24 @@ Rev. 147
 	<f:render partial="Wallet/Menu" arguments="{project : project}" />
 	<h4>Wallet address: {project.walletAddress}</h4>
 	<h4>VTC Balance: {amount.0.qty}</h4>
-<div>
-	<h4>Last transactions</h4>
-	<table style="border-spacing: 0; border-collapse: collapse;">
-		<f:for each="{transactions}" as="transaction" iteration="iterator" reverse="0">
-		<f:if condition="{iterator.index} < 10">
-		<f:then>
-		<tr>
-			<td style="padding: 5px;"><a href="http://www.blockchain-voting.org:9333/BVS_R2/tx/{transaction.txid}" target="_blank">{transaction.txid}</a></td>
-		</tr>
-		</f:then>
-		</f:if>
-		</f:for>
-	</table>
-</div>
+	<div>
+		<h4>Last transactions</h4>
+		<table style="border-spacing: 0; border-collapse: collapse;">
+			<f:for each="{transactions}" as="transaction" iteration="iterator" reverse="0">
+			<f:if condition="{iterator.index} < 10">
+			<f:then>
+			<tr>
+				<td style="padding: 5px;"><a href="http://www.blockchain-voting.org:9333/BVS_R2/tx/{transaction.txid}" target="_blank">{transaction.txid}</a></td>
+			</tr>
+			</f:then>
+			</f:if>
+			</f:for>
+		</table>
+	</div>
 </f:then>
 <f:else>
-	<f:render partial="User/Menu" arguments="{user : user}" />
-	<h4>Assignments</h4>	
+	<f:render partial="User/Menu" arguments="{user:user}" />
+	<f:render partial="User/Properties" arguments="{user:user, assignments:assignments}" />
 </f:else>
 </f:if>
 </div>

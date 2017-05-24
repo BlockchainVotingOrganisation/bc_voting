@@ -1,5 +1,3 @@
-<!-- Rev. 125 -->
-
 {user.name} <br>
 {user.address}<br>
 {user.zip} {user.city}<br>
@@ -23,7 +21,7 @@
 					<f:link.action action="show" controller="Wallet" arguments="{address:assignment.walletAddress}">{assignment.walletAddress}</f:link.action>
 				</f:then>
 				<f:else>
-					<f:link.action action="importWallet" controller="Wallet" arguments="{assignment:assignment}">Import Paper Wallet</f:link.action>
+					<f:link.action action="import" controller="Wallet" arguments="{assignment:assignment}">Import Paper Wallet</f:link.action>
 				</f:else>
 				</f:if>
 			</td>
