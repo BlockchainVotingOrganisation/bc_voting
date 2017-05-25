@@ -48,6 +48,12 @@ if (!defined('TYPO3_MODE')) {
 		'BVS Wallet'
 		);
 
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+		$_EXTKEY,
+		'BVS_Keys',
+		'BVS PKI'
+		);
+
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript', 'bc_voting');
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addLLrefForTCAdescr('tx_bcvoting_domain_model_project', 'EXT:bc_voting/Resources/Private/Language/locallang_csh_tx_bcvoting_domain_model_project.xlf');

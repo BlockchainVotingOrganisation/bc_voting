@@ -1,5 +1,5 @@
 <?php
-// Rev. 147
+// Rev. 148
 if (!defined('TYPO3_MODE')) {
 	die('Access denied.');
 }
@@ -112,5 +112,17 @@ if (!defined('TYPO3_MODE')) {
 		array(
 				'Wallet' => 'show, import, importPrivKey'
 		)
+);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+	'Goettertz.' . $_EXTKEY,
+	'BVS_Keys',
+	array(
+			'Key' => 'show, list, create, new'
+
+	),
+	array(
+			'Key' => 'show, list, create, new'
+	)
 );
 ?>
