@@ -7,7 +7,8 @@ see: http://www.blockchain-voting.org.
 - Multichain Client
 - GnuPG
 
-##Install
+## Install
 Via Typo3 Extension Manager (EM)
 
-##Configure
+## Configure
+Typo3 plugin flexform
