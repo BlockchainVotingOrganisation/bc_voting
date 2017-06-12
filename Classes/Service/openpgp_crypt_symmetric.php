@@ -1,5 +1,5 @@
 <?php
-
+namespace Goettertz\BcVoting\Service;
 use phpseclib\Crypt\TripleDES as Crypt_TripleDES;
 use phpseclib\Crypt\AES as Crypt_AES;
 use phpseclib\Crypt\Random;

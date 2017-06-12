@@ -1,4 +1,5 @@
 <?php
+namespace Goettertz\BcVoting\Service;
 
 if(function_exists('mcrypt_encrypt') && defined('MCRYPT_MODE_CFB')) {
   class MCryptWrapper {

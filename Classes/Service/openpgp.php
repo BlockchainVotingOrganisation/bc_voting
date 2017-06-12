@@ -1,5 +1,5 @@
 <?php
-
+namespace Goettertz\BcVoting\Service;
 
 // This is free and unencumbered software released into the public domain.
 /**
