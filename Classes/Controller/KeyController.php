@@ -1,7 +1,7 @@
 <?php
 namespace Goettertz\BcVoting\Controller;
 
-// ini_set("display_errors", 1);
+ ini_set("display_errors", 1);
 
 /************************************************************************
  *
@@ -57,10 +57,9 @@ class KeyController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
 		if ($user = $this->userRepository->getCurrentFeUser()) {
 			$this->view->assign ( 'user', $user );
 		}
-		# else die with message or redirect
-		
-		$result = shell_exec('gpg -h');
-		$this->view->assign ( 'result', $result );
+		else die ('Not allowed!');
+		 
+		$this->view->assign ( 'result',  $result);
 	}
 	
 	/**
@@ -85,7 +84,17 @@ class KeyController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
 	 * @return void
 	 */
 	public function newAction() {
-		$this->view->assign('nix', null);
+		if ($user = $this->userRepository->getCurrentFeUser()) {
+			$this->view->assign ( 'user', $user );
+		}
+		else die ('Not allowed!');
+// 		include '/var/www/vhosts/goettertz.de/subdomains/test.goettertz.de/typo3conf/ext/bc_voting/Classes/Service/phpseclib/Crypt/RSA.php';
+
+		$rsa = new \Goettertz\BcVoting\Service\Crypt_RSA();
+		$k = $rsa->createKey(2048);
+		$result = $k['publickey'];
+		 
+		$this->view->assign ( 'result',  $result);
 	}
 	
 	/**
@@ -94,7 +103,16 @@ class KeyController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
 	 * @return void
 	 */
 	public function createAction() {
-		$this->view->assign('nix', null);
+		if ($user = $this->userRepository->getCurrentFeUser()) {
+			$this->view->assign ( 'user', $user );
+		}
+		else die ('Not allowed!');
+		
+		$rsa = new \Goettertz\BcVoting\Service\Crypt_RSA();
+		$k = $rsa->createKey(2048);
+// 		$rsa->loadKey($k['privatekey']);
+		$result = $k['publickey'];
+		$this->view->assign ( 'result', $result );
 	}
 }
 ?>

@@ -24,12 +24,36 @@ namespace Goettertz\BcVoting\Service;
 
 /**
  * 
- * Revision 120
+ * Revision 148
  */
 
+// Only test!
 define('KEY', 'bcb04b7e103a0cd8b54763051cef08bc55abe029fdebae5e1d417e2ffb2a00a3');
 
+/**
+ * @author louis
+ *
+ */
 class MCrypt {
+	
+	/**
+	 * @var unknown
+	 */
+	protected $publicKey = NULL;
+	
+	/**
+	 * @var unknown
+	 */
+	protected $secretKey = NULL;
+	
+	public function pk_encrypt($data = '', $publicKey = '') {
+		
+	}
+	
+	public function pk_decrypt($data = '', $secretKey = '') {
+	
+	}
+	
 	/**
 	 *
 	 * @param string $data
@@ -61,4 +85,6 @@ class MCrypt {
 		return $plaintext_dec = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $key, $ciphertext_dec, MCRYPT_MODE_CBC, $iv_dec);
 	}
 }
+
+
 ?>

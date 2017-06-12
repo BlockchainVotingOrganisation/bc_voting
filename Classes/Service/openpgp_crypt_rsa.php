@@ -7,15 +7,14 @@ namespace Goettertz\BcVoting\Service;
  * @package OpenPGP
  */
 
-// From http://phpseclib.sourceforge.net/
-use phpseclib\Crypt\RSA as Crypt_RSA;
-use phpseclib\Math\BigInteger as Math_BigInteger;
+use Goettertz\BcVoting\Service\Crypt_RSA as Crypt_RSA;
+use Goettertz\BcVoting\Service\Math_BigInteger as Math_BigInteger;
 
-define('CRYPT_RSA_ENCRYPTION_PKCS1', Crypt_RSA::ENCRYPTION_PKCS1);
-define('CRYPT_RSA_SIGNATURE_PKCS1', Crypt_RSA::SIGNATURE_PKCS1);
+define('CRYPT_RSA_ENCRYPTION_PKCS1', 2);
+define('CRYPT_RSA_SIGNATURE_PKCS1', 2);
 
-require_once dirname(__FILE__).'/openpgp.php';
-@include_once dirname(__FILE__).'/openpgp_crypt_symmetric.php'; /* For encrypt/decrypt */
+// require_once dirname(__FILE__).'/openpgp.php';
+// @include_once dirname(__FILE__).'/openpgp_crypt_symmetric.php'; /* For encrypt/decrypt */
 
 class OpenPGP_Crypt_RSA {
   protected $key, $message;
@@ -157,10 +156,10 @@ class OpenPGP_Crypt_RSA {
       $sig->signature_type = 0x13;
       $sig->hashed_subpackets[] = new OpenPGP_SignaturePacket_KeyFlagsPacket(array(0x01 | 0x02));
       $sig->hashed_subpackets[] = new OpenPGP_SignaturePacket_IssuerPacket($keyid);
-      $packet[] = $sig;
+      $packet =  $sig;
     }
 
-    $sig->sign_data(array('RSA' => array($hash => function($data) use($key) {return array($key->sign($data));})));
+//     $sig->sign_data(array('RSA' => array($hash => function($data) use($key) {return array($key->sign($data));})));
 
     return $packet;
   }
