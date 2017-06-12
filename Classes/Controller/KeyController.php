@@ -44,12 +44,23 @@ class KeyController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
 	 */
 	protected $userRepository = NULL;
 	
+	/**
+	 * GnuPG path
+	 */
+	protected $GnuPgHome = '';
+	
 	
 	/**
 	 * action show 
 	 */
 	public function showAction() {
-		$this->view->assign('nix', null);
+		if ($user = $this->userRepository->getCurrentFeUser()) {
+			$this->view->assign ( 'user', $user );
+		}
+		# else die with message or redirect
+		
+		$result = shell_exec('gpg -h');
+		$this->view->assign ( 'result', $result );
 	}
 	
 	/**
@@ -59,10 +70,10 @@ class KeyController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
 	 *
 	 * @return void
 	 */
-	public function listAction(\Goettertz\BcVoting\Domain\Model\Project $project) {
-// 		if ($user = $this->userRepository->getCurrentFeUser()) {
-// 			$this->view->assign ( 'user', $user );
-// 		}
+	public function listAction(\Goettertz\BcVoting\Domain\Model\Project $project=NULL) {
+		if ($user = $this->userRepository->getCurrentFeUser()) {
+			$this->view->assign ( 'user', $user );
+		}
 // 		$ballots = $this->ballotRepository->findByProject ( $project );
 // 		$this->view->assign ( 'ballots', $ballots );
 		$this->view->assign ( 'project', $project );
