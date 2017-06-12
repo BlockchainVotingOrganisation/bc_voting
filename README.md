@@ -1,12 +1,15 @@
 # bc_voting
 Repository for Blockchain Voting System (BVS) Typo3 extension.
 
-see: http://www.blockchain-voting.org.
+for more information go to: 
+https://www.blockchain-voting.org.
 
 ## Prerequisits
-Multichain Node configured connect to a BVS Blockchain.
+- Multichain Client
+- GnuPG
 
-##Install
+## Install
 Via Typo3 Extension Manager (EM)
 
-##Configure
+## Configure
+Typo3 plugin flexform
