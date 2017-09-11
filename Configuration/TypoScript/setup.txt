@@ -1,5 +1,5 @@
 /*
- * Revision 146
+ * Revision 150
  */
 plugin.tx_bcvoting {
 	view {
@@ -18,17 +18,13 @@ plugin.tx_bcvoting {
 
 plugin.tx_bcvoting._CSS_DEFAULT_STYLE (
 	
-	div {
-		background-color: inherit;
-	}
-	
 	table { 
     	border-spacing: 0px;
     	border-collapse: separate;
 	}
 	
 	td {
-		padding: 10px;
+		padding: 5px;
 	}
 	.options {
 		vertical-align: middle; 
@@ -97,11 +93,7 @@ plugin.tx_bcvoting._CSS_DEFAULT_STYLE (
 	input.f3-form-error {
 		background-color:#FF9F9F;
 		border: 1px #FF0000 solid;
-	}
-	
-	h5.tx-bc-voting.section {
-		font-size: 1.2em;
-	}
+	}	
 	
 	div.tx-bc-voting {
 		padding: 5px;
@@ -113,17 +105,23 @@ plugin.tx_bcvoting._CSS_DEFAULT_STYLE (
 		background-color: inherit;
 	}
 	
-	.tx-bc-voting.period {
-		background-color: white;
-		color: black;
+	
+	.tx-bc-voting {
+		
 	}
 	
-	div.tx-bc-voting div.tx-bc-voting.menu {
-		background-color: #999 !important;
-		color: #f1f1f1;
-		padding: 0px 10px;
+	.tx-bc-voting_Header {
+		
 	}
 
+	.tx-bc-voting_Navigation {
+		
+	}
+
+	.tx-bc-voting_Menu {
+		
+	}
+	
 	.tx-bc-voting_Menu input[type="submit"] {
 		min-width: 100px; height: 40px;
 	}
