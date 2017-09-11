@@ -107,29 +107,25 @@ plugin.tx_bcvoting._CSS_DEFAULT_STYLE (
 	
 	
 	.tx-bc-voting {
-		
+		font-family: Verdana, Geneva, sans-serif;
 	}
 	
-	.tx-bc-voting_Header {
+	.tx-bc-voting h1 {
+		font-size: 2em;
+	}
+
+	.tx-bc-voting navigation {
 		
 	}
 
-	.tx-bc-voting_Navigation {
-		
-	}
-
-	.tx-bc-voting_Menu {
-		
+	.tx-bc-voting .menu {
+		font-size: 1.1em;	
 	}
 	
-	.tx-bc-voting_Menu input[type="submit"] {
+	.menu input[type="submit"] {
 		min-width: 100px; height: 40px;
 	}
 	
-	.tx-bc-voting.description {
-		background-color: white;
-		color: black;
-	}
 
 	.tx-bc-voting table {
 		width: 100%;
