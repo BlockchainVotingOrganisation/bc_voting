@@ -127,7 +127,7 @@ plugin.tx_bcvoting._CSS_DEFAULT_STYLE (
 		display: inline;
 	}
 	
-	.menu li {
+	.menu ul li {
 		display: inline;
 	}
 	
