@@ -57,6 +57,12 @@
 			<trans-unit id="tx_bcvoting_domain_model_project.back_to_list">
 				<source>Back to list</source>
 			</trans-unit>
+			<trans-unit id="tx_bcvoting_domain_model_project.seal">
+				<source>Seal</source>
+			</trans-unit>
+			<trans-unit id="tx_bcvoting_domain_model_project.wallet">
+				<source>Wallet</source>
+			</trans-unit>
 			<trans-unit id="tx_bcvoting_domain_model_argument">
 				<source>Argument</source>
 			</trans-unit>
@@ -171,8 +177,8 @@
 			<trans-unit id="tx_bcvoting_execute">
 				<source>Execute votings</source>
 			</trans-unit>
-			<trans-unit id="tx_bcvoting_preview">
-				<source>Preview</source>
+			<trans-unit id="tx_bcvoting_info">
+				<source>Info</source>
 			</trans-unit>
 			<trans-unit id="tx_bcvoting_show">
 				<source>Show</source>
@@ -189,11 +195,8 @@
 			<trans-unit id="copy">
 				<source>Copy</source>
 			</trans-unit>
-			<trans-unit id="download_raw_data">
-				<source>Download Raw Data</source>
-			</trans-unit>
-			<trans-unit id="evaluation">
-				<source>Evaluation</source>
+			<trans-unit id="edit">
+				<source>Edit</source>
 			</trans-unit>
 			<trans-unit id="find">
 				<source>Find</source>
@@ -204,20 +207,35 @@
 			<trans-unit id="list">
 				<source>List</source>
 			</trans-unit>
+			<trans-unit id="save">
+				<source>Save</source>
+			</trans-unit>
 			<trans-unit id="password">
 				<source>Password</source>
 			</trans-unit>
 			<trans-unit id="properties">
 				<source>Properties</source>
 			</trans-unit>
-			<trans-unit id="save">
-				<source>Save</source>
+			<trans-unit id="settings">
+				<source>Settings</source>
+			</trans-unit>
+			<trans-unit id="ballots">
+				<source>Ballots</source>
+			</trans-unit>
+			<trans-unit id="blockchain">
+				<source>Blockchain</source>
+			</trans-unit>
+			<trans-unit id="template">
+				<source>Template</source>
 			</trans-unit>
 			<trans-unit id="save_seal">
 				<source>Save and seal</source>
 			</trans-unit>
-			<trans-unit id="template">
-				<source>Template</source>
+			<trans-unit id="download_raw_data">
+				<source>Download Raw Data</source>
+			</trans-unit>
+			<trans-unit id="evaluation">
+				<source>Evaluation</source>
 			</trans-unit>
 		</body>
 	</file>
