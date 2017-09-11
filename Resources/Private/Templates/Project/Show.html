@@ -3,8 +3,7 @@
 <f:section name="main">
 	<f:render partial="Project/Menu" arguments="{project : project, isAssigned:isAssigned, isAdmin:isAdmin, feuser: feuser}" />
 	<f:flashMessages  />
-	Preview
-	
+	<f:translate key="tx_bcvoting_info" />	
 	<f:render partial="Project/Properties" arguments="{project:project}" />
 	<f:render partial="Blockchain/ShortInfo" arguments="{bcResult:bcResult}" />
 </f:section>
