@@ -63,15 +63,18 @@ plugin.tx_bcvoting._CSS_DEFAULT_STYLE (
 		border: 1px #FF0000 solid;
 	}
 	
-	.typo3-messages .message-error {
+	.typo3-messages {
 		padding: 20px;
+		display:inline;
+	}
+	
+	.typo3-messages .message-error {
 		color: red;
 		background-color: lightgray;
 		border: 1px #FF0000 solid;
 	}
 
 	.typo3-messages .message-ok {
-		padding: 20px;	
 		color:green;
 		background-color:lightgray;
 		border: 1px #FF0000 solid;
@@ -97,12 +100,10 @@ plugin.tx_bcvoting._CSS_DEFAULT_STYLE (
 	
 	div.tx-bc-voting {
 		padding: 5px;
-		background-color: inherit;
 	}
 	
 	div.tx-bc-voting_inner {
 		padding: 10px;
-		background-color: inherit;
 	}
 	
 	
@@ -119,7 +120,33 @@ plugin.tx_bcvoting._CSS_DEFAULT_STYLE (
 	}
 
 	.tx-bc-voting .menu {
-		font-size: 1.1em;	
+		font-size: 1em;	
+	}
+	
+	.menu ul {
+		display: inline;
+	}
+	
+	.menu li {
+		list-style: none;
+	}
+	
+	.menu a {
+		color: black;
+		font-weight: bold;
+	}
+	
+	.menu a:active {
+		color: white;
+		background-color: black;
+	}
+	
+	.menu a:visited {
+		color: black;
+	}
+	
+	.menu a:hover {
+	
 	}
 	
 	.menu input[type="submit"] {
