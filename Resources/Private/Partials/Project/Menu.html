@@ -1,12 +1,13 @@
 <!-- Partial Revision 150 -->
 <div class="menu">
-	<f:link.action action="edit" controller="Project" arguments="{project:project}"><f:translate key="edit" /></f:link.action> |
-	<f:link.action action="settings" controller="Project" arguments="{project:project}"><f:translate key="settings" /></f:link.action> |
-	<f:link.action action="list" controller="Ballot" arguments="{project:project}"><f:translate key="ballots" /> </f:link.action> |
-	<f:link.action action="editbcparams" controller="Project" arguments="{project:project}"><f:translate key="blockchain" /></f:link.action> |
-	<f:link.action action="show" controller="Wallet" arguments="{project:project}"><f:translate key="tx_bcvoting_domain_model_project.wallet" /></f:link.action> |
-	<f:link.action action="list" controller="User" arguments="{project:project}"><f:translate key="tx_bcvoting_domain_model_project.assignments" /></f:link.action> |
-	<f:link.action action="seal" controller="Project" arguments="{project:project}"><f:translate key="tx_bcvoting_domain_model_project.seal" /></f:link.action> |
-	<f:link.action action="show" controller="Project" arguments="{project:project}"><f:translate key="tx_bcvoting_info" /></f:link.action> 	
+	<ul>
+		<li><f:link.action action="edit" controller="Project" arguments="{project:project}"><f:translate key="edit" /></f:link.action></li>
+		<li><f:link.action action="settings" controller="Project" arguments="{project:project}"><f:translate key="settings" /></f:link.action></li>
+		<li><f:link.action action="list" controller="Ballot" arguments="{project:project}"><f:translate key="ballots" /> </f:link.action></li>
+		<li><f:link.action action="editbcparams" controller="Project" arguments="{project:project}"><f:translate key="blockchain" /></f:link.action></li>
+		<li><f:link.action action="show" controller="Wallet" arguments="{project:project}"><f:translate key="tx_bcvoting_domain_model_project.wallet" /></f:link.action></li>
+		<li><f:link.action action="seal" controller="Project" arguments="{project:project}"><f:translate key="tx_bcvoting_domain_model_project.seal" /></f:link.action></li>
+		<li><f:link.action action="show" controller="Project" arguments="{project:project}"><f:translate key="tx_bcvoting_info" /></f:link.action></li>
+	</ul>
+	<f:flashMessages class="typo3-messages" />
 </div>
-<f:flashMessages  />
