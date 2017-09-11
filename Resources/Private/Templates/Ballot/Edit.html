@@ -3,7 +3,7 @@
 <f:section name="main">
 	<!-- Rev. 78 -->
 	<f:render partial="Project/Menu" arguments="{project : ballot.project}" />
-	<f:flashMessages renderMode="div" />
+	<f:flashMessages  />
 	<div style="min-height:400px;">
 		<h4>{ballot.project.name}</h4>	
 		<h5><f:translate key="tx_bcvoting_edit" /> ballot</h5>
@@ -17,6 +17,10 @@
 		<h5>Options</h5>
 		<f:render partial="Ballot/Options" arguments="{ballot:ballot,assigned:assigned,admin:admin}" />
 		</f:form>
+		
+		
+		
+		
 	</div>
 	<f:if condition="{ballot.reference}">
 	<f:then>

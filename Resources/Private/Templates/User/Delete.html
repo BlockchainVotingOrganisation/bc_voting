@@ -2,7 +2,7 @@
 <f:layout name="Default" />
 <f:section name="main">
 <f:render partial="Project/Menu" arguments="{project : project, isAdmin:isAdmin}" />
-<f:flashMessages renderMode="div" />
+<f:flashMessages  />
 
 <f:form action="delete" name="user" arguments="{project:project, user:user.uid}">
 	<fieldset>

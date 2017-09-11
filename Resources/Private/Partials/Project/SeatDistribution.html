@@ -1,0 +1,41 @@
+<!-- 
+<table><tr><td>
+<table cellpadding=3>
+<tr><td colspan=3></td><td colspan=3>Sitze nach</td></tr>
+<tr><td></td><td>Stimmen</td><td>Anteil</td><td>d'Hondt</td><td>Niemeyer</td><td>H.-Bischoff</td><td>5%-Kl.</td></tr>
+<tr><td>1. Partei</td><td><input name="n0" size=10 value="" tabindex=1 onkeyup="calc()"></td><td><input name="p0" size=7 readonly></td><td><input name="sh0" size=7 readonly></td><td><input name="sn0" size=7 readonly></td><td><input name="sb0" size=7 readonly></td><td><input type="checkbox" name="fpk0" checked onclick="calc()"></td></tr>
+<tr><td>2. Partei</td><td><input name="n1" size=10 value="" tabindex=2 onkeyup="calc()"></td><td><input name="p1" size=7 readonly></td><td><input name="sh1" size=7 readonly></td><td><input name="sn1" size=7 readonly></td><td><input name="sb1" size=7 readonly></td><td><input type="checkbox" name="fpk1" checked onclick="calc()"></td></tr>
+<tr><td>3. Partei</td><td><input name="n2" size=10 value="" tabindex=3 onkeyup="calc()"></td><td><input name="p2" size=7 readonly></td><td><input name="sh2" size=7 readonly></td><td><input name="sn2" size=7 readonly></td><td><input name="sb2" size=7 readonly></td><td><input type="checkbox" name="fpk2" checked onclick="calc()"></td></tr>
+<tr><td>4. Partei</td><td><input name="n3" size=10 value="" tabindex=4 onkeyup="calc()"></td><td><input name="p3" size=7 readonly></td><td><input name="sh3" size=7 readonly></td><td><input name="sn3" size=7 readonly></td><td><input name="sb3" size=7 readonly></td><td><input type="checkbox" name="fpk3" checked onclick="calc()"></td></tr>
+<tr><td>5. Partei</td><td><input name="n4" size=10 value="" tabindex=5 onkeyup="calc()"></td><td><input name="p4" size=7 readonly></td><td><input name="sh4" size=7 readonly></td><td><input name="sn4" size=7 readonly></td><td><input name="sb4" size=7 readonly></td><td><input type="checkbox" name="fpk4" checked onclick="calc()"></td></tr>
+<tr><td>6. Partei</td><td><input name="n5" size=10 value="" tabindex=6 onkeyup="calc()"></td><td><input name="p5" size=7 readonly></td><td><input name="sh5" size=7 readonly></td><td><input name="sn5" size=7 readonly></td><td><input name="sb5" size=7 readonly></td><td><input type="checkbox" name="fpk5" checked onclick="calc()"></td></tr>
+<tr><td>7. Partei</td><td><input name="n6" size=10 value="" tabindex=7 onkeyup="calc()"></td><td><input name="p6" size=7 readonly></td><td><input name="sh6" size=7 readonly></td><td><input name="sn6" size=7 readonly></td><td><input name="sb6" size=7 readonly></td><td><input type="checkbox" name="fpk6" checked onclick="calc()"></td></tr>
+<tr><td>8. Partei</td><td><input name="n7" size=10 value="" tabindex=8 onkeyup="calc()"></td><td><input name="p7" size=7 readonly></td><td><input name="sh7" size=7 readonly></td><td><input name="sn7" size=7 readonly></td><td><input name="sb7" size=7 readonly></td><td><input type="checkbox" name="fpk7" checked onclick="calc()"></td></tr>
+<tr><td>9. Partei</td><td><input name="n8" size=10 value="" tabindex=9 onkeyup="calc()"></td><td><input name="p8" size=7 readonly></td><td><input name="sh8" size=7 readonly></td><td><input name="sn8" size=7 readonly></td><td><input name="sb8" size=7 readonly></td><td><input type="checkbox" name="fpk8" checked onclick="calc()"></td></tr>
+<tr><td>10. Partei</td><td><input name="n9" size=10 value="" tabindex=10 onkeyup="calc()"></td><td><input name="p9" size=7 readonly></td><td><input name="sh9" size=7 readonly></td><td><input name="sn9" size=7 readonly></td><td><input name="sb9" size=7 readonly></td><td><input type="checkbox" name="fpk9" checked onclick="calc()"></td></tr>
+<tr><td colspan=3></td><td><input type=button class=button value="Details" onclick="details(0)"></td>
+<td><input type=button class=button value="Details" onclick="details(1)"></td>
+<td><input type=button class=button value="Details" onclick="details(2)"></td>
+</tr>
+</table>
+</td>
+<td>&nbsp;&nbsp;&nbsp;</td>
+<td style="text-align:center">
+<p style="text-align:center">
+<table><tr><td>Gesamtzahl der Sitze:</td><td><input name="S" value=100 size=5 onkeyup="calc()"></td></tr></table>
+</p>
+<p><span class="button" style="text-align:center;font-family:Verdana">
+<input type="button" onclick="calc()" value="Sitzeverteilung berechnen" class=button></span></p>
+<center><p style="text-align:center"><input type=checkbox name="klausel" checked onclick="KlauselKlick();calc()"> <font style="font-family:Verdana;font-size:10pt">5%-Klausel für alle anwenden</font></p></center>
+<p>&nbsp;</p>
+<p><span style="text-align:center;font-family:Verdana"><input type="reset" class="button" value="Eingaben löschen"></span></p>
+<p><span style="text-align:center;font-family:Verdana"><input type="button" class="button" value="Zufallswerte" onclick="init()"></span></p>
+</td></tr></table>
+<br>&nbsp;
+<textarea name="T" rows=20 cols=90 wrap="off">Hier werden Erläuterungen angezeigt, nachdem auf einen [Details]-Button geklickt wurde.</textarea>
+</form>
+
+<h4>Wahlkreise</h4>
+Stehen einer Partei in einem Regierungsbezirk mehr Sitze zu, als sie hier Direktmandate erreicht hat, werden die weiteren Sitze der Partei innerhalb des Regierungsbezirks an unterlegene Wahlkreisbewerber mit den meisten Stimmen innerhalb ihrer Partei zugeteilt. Diese Mandate werden Zweitmandate genannt.
+<hr />
+ -->

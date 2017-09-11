@@ -4,7 +4,7 @@
 <f:section name="main">
 <f:debug>{data}</f:debug>
 <f:render partial="Project/Menu" arguments="{project : project, isAdmin:isAdmin}" />
-<f:flashMessages renderMode="div" />
+<f:flashMessages  />
 <f:render partial="FormErrors" arguments="{object:User}" />
 <h4>Import</h4>
 <f:form action="upload" controller="User" name="file" enctype="multipart/form-data" arguments="{project:project}">

@@ -3,7 +3,7 @@
 <f:section name="main">
 	<f:render partial="FormErrors" arguments="{object:Option}" />
 	<f:render partial="Project/Menu" arguments="{project : option.ballot.project}" />
-	<f:flashMessages renderMode="div" />
+	<f:flashMessages  />
 	
 	<h4>{option.ballot.project.name}</h4>
 	<h5><f:translate key="tx_bcvoting_edit_option" /> "{option.name}"</h5>

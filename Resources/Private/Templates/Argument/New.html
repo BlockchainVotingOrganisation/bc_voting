@@ -1,9 +1,9 @@
 <f:layout name="Default" />
-Rev. 52
+Rev. 54
 <f:section name="main">
 <f:render partial="Project/Menu" arguments="{project : project, assigned : assigned}" />
 <h4>New Argument</h4>
-<f:flashMessages renderMode="div" />
+<f:flashMessages  />
 
 <f:form action="create"  name="newArgument" object="{newArgument}">
 <f:render partial="Argument/FormFields" arguments="{action : 'create', project : project}" />

@@ -2,7 +2,7 @@
 <f:layout name="Default" />
 <f:section name="main">
 <f:render partial="User/Menu" arguments="{project : project, isAdmin:isAdmin}" />
-<f:flashMessages renderMode="div" />
+<f:flashMessages  />
 <f:render partial="FormErrors" arguments="{object:User}" />
 
 <f:form action="update" name="user" object="{user}" arguments="{user:user, project:project}" >

@@ -92,7 +92,7 @@ class KeyController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
 
 		$rsa = new \Goettertz\BcVoting\Service\Crypt_RSA();
 		$k = $rsa->createKey(2048);
-		$result = $k['publickey'];
+		$result = $k;
 		 
 		$this->view->assign ( 'result',  $result);
 	}

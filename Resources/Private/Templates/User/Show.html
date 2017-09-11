@@ -2,8 +2,8 @@
 <!-- Revision 125 -->
 <f:section name="main">
 
-<f:render partial="MenuSelect" arguments="{user:user}" />
+<f:render partial="MenuSelect" arguments="{feuser:user}" />
 <h4>{user.username}</h4>
-<f:flashMessages renderMode="div" />
+<f:flashMessages  />
 <f:render partial="User/Properties" arguments="{user:user, assignments:assignments}" />
 </f:section>

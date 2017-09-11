@@ -4,18 +4,18 @@ Transaction ID: {result.txid}
 Blockchain encrypted: {result.secretBC}
 Datenbank encrypted:  {result.secretDB}
 </pre>
-		<f:if condition="{result.secretBC}">
-			<f:then>
-			<f:if condition="{result.secretDB}=={result.secretBC}">
-				<f:then>
-					<br /><b>Check: OK!</b>
-				</f:then>
-				<f:else>
-					<br /><b>Check: Failed!</b>
-				</f:else>
-			</f:if>
-			</f:then>
-			<f:else>
-				<br />n.n.
-			</f:else>
-		</f:if>
+<f:if condition="{result.secretBC}">
+	<f:then>
+	<f:if condition="{result.secretDB}=={result.secretBC}">
+		<f:then>
+			<br /><b>Check: OK!</b>
+		</f:then>
+		<f:else>
+			<br /><b>Check: Failed!</b>
+		</f:else>
+	</f:if>
+	</f:then>
+	<f:else>
+		<br />n.n.
+	</f:else>
+</f:if>

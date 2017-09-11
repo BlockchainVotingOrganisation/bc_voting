@@ -1,10 +1,11 @@
 <f:layout name="Default" />
-Rev. 32
+Rev. 35
 <f:section name="main">
 <h3>Registration</h3>
 
-<f:flashMessages renderMode="div" />
+<f:flashMessages  />
 <f:form action="create" name="user" object="{user}" >
 <f:render partial="User/FormFields" arguments="{user:user}" />
+<input type="submit" class="tx-srfeuserregister-pi1-submit" name="tx_srfeuserregister_pi1[submit]" value="###LABEL_BUTTON_REGISTER###" />
 </f:form>
 </f:section>

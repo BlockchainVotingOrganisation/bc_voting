@@ -1,9 +1,9 @@
 {namespace bvs=Goettertz\BcVoting\ViewHelpers}
 <f:layout name="Default" />
-Rev. 64
+Rev. 74
 <f:section name="main">
 <f:render partial="Project/Menu" arguments="{project : project}" />
-<f:flashMessages renderMode="div" />
+<f:flashMessages  />
 <h4>{project.name}</h4>
 <h5>Ballots list</h5>
 
@@ -16,7 +16,7 @@ Rev. 64
 		<td><f:link.action action="show" controller="Ballot" arguments="{ballot:ballot}" title="id: {ballot.uid}">{ballot.name}</f:link.action></td>
 		
 		
-		<td width="2%"><f:if condition="{ballot.start}"><f:if condition="{ballot.start} !='01.01.1970'"><f:format.date format="d.m.Y">{ballot.start}</f:format.date></f:if></f:if></td>
+		<td width="2%"><f:if condition="{ballot.start}"><f:format.date format="d.m.Y">{ballot.start}</f:format.date></f:if></td>
 		<td width="1%"><f:if condition="{ballot.start}">-</f:if></td>
 		<td width="2%"><f:if condition="{ballot.end}"><f:format.date format="d.m.Y">{ballot.end}</f:format.date></f:if></td>
 	

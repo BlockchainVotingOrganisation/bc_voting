@@ -1,10 +1,10 @@
 <f:layout name="Default" />
-Rev. 27
+Rev. 80
 <f:section name="main">
 <f:translate key="tx_bcvoting_blockchain" />
 <h3>{project.name}</h3>
-<f:flashMessages renderMode="div" />
-<f:render partial="Menu" arguments="{project : project, user : user, assigned: assigned}" />
+<f:flashMessages  />
+<f:render partial="Menu" arguments="{project : project, isAssigned: isAssigned, isAdmin: isAdmin}" />
 <div margin:0; float:right" class="tx-bc-voting_inner">
 	<f:if condition="{blockchain}">
 		<f:render partial="Blockchain/Parameter" arguments="{project : project, blockchain: blockchain}" />	

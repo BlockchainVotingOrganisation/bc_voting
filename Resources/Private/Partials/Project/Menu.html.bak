@@ -1,8 +1,0 @@
-	<div class="tx-bc-voting_Menu">
-		<form method="post">
-			<input type="submit" value="Basic" title="Basics" />
-			<input type="submit" value="Options" title="Options" />
-			<input type="submit" value="Members" title="Members" />
-			<input type="submit" value="Blockchain" title="Blockchain" />
-		</form>
-	</div>

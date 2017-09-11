@@ -4,10 +4,8 @@ Rev. 148
 
 <f:render partial="Project/Menu" arguments="{project : project, isAssigned: isAssigned, isAdmin: isAdmin, feuser: feuser}" />
 
-<f:flashMessages renderMode="div" />
+<f:flashMessages  />
 <f:render partial="FormErrors" arguments="{object:Project}" />
-
-
 
 Sealing txid: <a href="http://www.blockchain-voting.org:9333/BVS/tx/{ref}">{ref}</a>
 <hr />

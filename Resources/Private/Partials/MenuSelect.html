@@ -7,7 +7,7 @@
 		| <f:render partial="AdminMenu" arguments="{project : project, isAssigned: isAssigned, isAdmin: isAdmin}" />
 	</f:if>
 		
-	<div id="feuser"><f:link.action action="show" controller="User" arguments="{user:feuser}">{feuser.username}</f:link.action></div>
+	<f:render partial="User/Feuser" arguments="{feuser:feuser}" />
 
 </div>
 

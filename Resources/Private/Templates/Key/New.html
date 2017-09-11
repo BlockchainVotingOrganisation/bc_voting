@@ -1,0 +1,17 @@
+<f:layout name="Default" />
+Rev. 148
+<f:section name="main">
+
+<f:flashMessages  />
+<f:render partial="FormErrors" arguments="{object:User}" />
+<h4>Key Administration {user.username}</h4>
+<f:link.action action="show">Show</f:link.action> |
+<f:link.action action="import">Import</f:link.action> |
+<f:link.action action="export">Export</f:link.action>
+<hr /><h5>Public Key</h5>
+<br /><f:form.textarea name="pubkey" value="{result.publickey}" cols="90" rows="10" />
+<br /><f:form.submit value="Copy" />
+<hr /><h5>Private Key</h5>
+<br /><f:form.textarea name="pubkey" value="{result.privatekey}" cols="90" rows="10" />
+<br /><f:form.submit value="Copy" />
+</f:section>

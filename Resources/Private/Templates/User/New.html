@@ -3,7 +3,7 @@
 
 <f:section name="main">
 <f:render partial="Project/Menu" arguments="{project : project, isAdmin:isAdmin}" />
-<f:flashMessages renderMode="div" />
+<f:flashMessages  />
 <f:render partial="FormErrors" arguments="{object:User}" />
 <h3>New User</h3>
 <f:form action="create"  name="newuser" object="{newuser}" arguments="{project : project}">

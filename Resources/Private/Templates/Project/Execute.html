@@ -4,7 +4,7 @@ Rev. 105
 <f:debug>{result}</f:debug>
 <f:render partial="Project/Menu" arguments="{project : project, isAssigned: isAssigned, isAdmin: isAdmin}" />
 
-<f:flashMessages renderMode="div" />
+<f:flashMessages  />
 <f:render partial="FormErrors" arguments="{object:Project}" />
 <h3><f:translate key="tx_bcvoting_execute" /></h3>
 <f:form name="execute" action="execute" method="post" controller="Project" arguments="{project:project}" class="tx-bcvoting">

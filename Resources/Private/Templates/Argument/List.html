@@ -4,7 +4,7 @@ Rev. 54
 <f:section name="main">
 <f:render partial="Project/Menu" arguments="{project : project, assigned : assigned}" />
 <h4>Arguments</h4>
-<f:flashMessages renderMode="div" />
+<f:flashMessages  />
 <f:for each="{project.assignments}" as="myAssignment">
 	<f:if condition="{myAssignment.user.uid} == <bvs:GetUserId/>">
 		<f:then>
