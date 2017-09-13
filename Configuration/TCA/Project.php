@@ -1,13 +1,39 @@
 <?php
 /**
- * Rev.141
+ * Rev.150
  */
 if (!defined ('TYPO3_MODE')) {
 	die ('Access denied.');
 }
 
+$_EXTKEY = 'bc_voting';
+
 $GLOBALS['TCA']['tx_bcvoting_domain_model_project'] = array(
-	'ctrl' => $GLOBALS['TCA']['tx_bcvoting_domain_model_project']['ctrl'],
+	'ctrl' => array(
+			'title'	=> 'LLL:EXT:bc_voting/Resources/Private/Language/locallang_db.xlf:tx_bcvoting_domain_model_project',
+			'label' => 'name',
+			'tstamp' => 'tstamp',
+			'crdate' => 'crdate',
+			'cruser_id' => 'cruser_id',
+			'dividers2tabs' => TRUE,
+	
+			'versioningWS' => 2,
+			'versioning_followPages' => TRUE,
+	
+			'languageField' => 'sys_language_uid',
+			'transOrigPointerField' => 'l10n_parent',
+			'transOrigDiffSourceField' => 'l10n_diffsource',
+			'delete' => 'deleted',
+			'enablecolumns' => array(
+					'disabled' => 'hidden',
+					'starttime' => 'starttime',
+					'endtime' => 'endtime',
+			),
+			'searchFields' => 'name,description,start,end,assignments,reference,anonym,open',
+			// 		'dynamicConfigFile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY) . 'Configuration/TCA/Project.php',
+			'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($_EXTKEY) . 'Resources/Public/Icons/tx_bcvoting_domain_model_project.gif'
+	),
+		
 	'interface' => array(
 		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, name, password, reference, logo, category, description, start, end, open, anonym, ballots, infosite, forum_url, blockchain_explorer, blockchain_name, rpc_server, rpc_password, rpc_user, rpc_port, assignments, wallet_address, public_key, private_key, stream',
 	),
@@ -349,24 +375,24 @@ $GLOBALS['TCA']['tx_bcvoting_domain_model_project'] = array(
 						'eval' => 'trim'
 				),
 		),
-		'category' => array(
-				'exclude' => 1,
-				'label' => 'LLL:EXT:bc_voting/Resources/Private/Language/locallang_db.xlf:tx_bcvoting_domain_model_project.category',
-				'config' => array(
-						'type' => 'select',
-						'renderType' => 'selectSingle',
-						'foreign_table' => 'tx_bcvoting_domain_model_category',
-						'minitems' => 0,
-						'maxitems' => 1,
-						'appearance' => array(
-								'collapseAll' => 0,
-								'levelLinksPosition' => 'top',
-								'showSynchronizationLink' => 1,
-								'showPossibleLocalizationRecords' => 1,
-								'showAllLocalizationLink' => 1
-						),
-				),
-		),
+// 		'category' => array(
+// 				'exclude' => 1,
+// 				'label' => 'LLL:EXT:bc_voting/Resources/Private/Language/locallang_db.xlf:tx_bcvoting_domain_model_project.category',
+// 				'config' => array(
+// 						'type' => 'select',
+// 						'renderType' => 'selectSingle',
+// 						'foreign_table' => 'tx_bcvoting_domain_model_category',
+// 						'minitems' => 0,
+// 						'maxitems' => 1,
+// 						'appearance' => array(
+// 								'collapseAll' => 0,
+// 								'levelLinksPosition' => 'top',
+// 								'showSynchronizationLink' => 1,
+// 								'showPossibleLocalizationRecords' => 1,
+// 								'showAllLocalizationLink' => 1
+// 						),
+// 				),
+// 		),
 		'infosite' => array(
 				'label' => 'LLL:EXT:bc_voting/Resources/Private/Language/locallang_db.xlf:tx_bcvoting_domain_model_project.infosite',
 				'config' => array(

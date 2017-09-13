@@ -1002,7 +1002,7 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 		$this->setStart($data['start']);
 		$this->setEnd($data['end']);
 		$this->setWalletAddress($data['walletaddress']);
-		$this->setCategory($data['category']);
+// 		$this->setCategory($data['category']);
 		$this->setInfosite($data['infosite']);
 		$this->setForumurl($data['forumUrl']);
 		$this->setReference($data['reference']);

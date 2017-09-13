@@ -8,7 +8,31 @@ if (!defined ('TYPO3_MODE')) {
 }
 
 $GLOBALS['TCA']['tx_bcvoting_domain_model_ballot'] = array(
-	'ctrl' => $GLOBALS['TCA']['tx_bcvoting_domain_model_ballot']['ctrl'],
+	'ctrl' => array(
+			'title'	=> 'LLL:EXT:bc_voting/Resources/Private/Language/locallang_db.xlf:tx_bcvoting_domain_model_ballot',
+			'label' => 'name',
+			'tstamp' => 'tstamp',
+			'crdate' => 'crdate',
+			'cruser_id' => 'cruser_id',
+			'dividers2tabs' => TRUE,
+	
+			'versioningWS' => 2,
+			'versioning_followPages' => TRUE,
+	
+			'languageField' => 'sys_language_uid',
+			'transOrigPointerField' => 'l10n_parent',
+			'transOrigDiffSourceField' => 'l10n_diffsource',
+			'delete' => 'deleted',
+			'enablecolumns' => array(
+					'disabled' => 'hidden',
+					'starttime' => 'starttime',
+					'endtime' => 'endtime',
+			),
+			'searchFields' => 'text,footer,project',
+			// 				'dynamicConfigFile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY) . 'Configuration/TCA/Ballot.php',
+			'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($_EXTKEY) . 'Resources/Public/Icons/tx_bcvoting_domain_model_project.gif'
+	),
+	
 	'interface' => array(
 		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, starttime, endtime, name, logo, description, text, footer, options, votes, project, asset, start, end, wallet_address, reference',
 	),
@@ -144,7 +168,7 @@ $GLOBALS['TCA']['tx_bcvoting_domain_model_ballot'] = array(
 
 		'wallet_address' => array(
 				'exclude' => 1,
-				'label' => 'LLL:EXT:bc_voting/Resources/Private/Language/locallang_db.xlf:tx_bcvoting_domain_model_option.wallet_address',
+				'label' => 'LLL:EXT:bc_voting/Resources/Private/Language/locallang_db.xlf:tx_bcvoting_domain_model_ballot.wallet_address',
 				'config' => array(
 						'type' => 'input',
 						'size' => 30,

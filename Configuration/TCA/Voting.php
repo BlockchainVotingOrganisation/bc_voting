@@ -9,7 +9,27 @@ if (!defined ('TYPO3_MODE')) {
 }
 
 $GLOBALS['TCA']['tx_bcvoting_domain_model_voting'] = array(
-	'ctrl' => $GLOBALS['TCA']['tx_bcvoting_domain_model_voting']['ctrl'],
+	'ctrl' => array(
+			'title'	=> 'LLL:EXT:bc_voting/Resources/Private/Language/locallang_db.xlf:tx_bcvoting_domain_model_voting',
+			'label' => 'reference',
+			'tstamp' => 'tstamp',
+			'crdate' => 'crdate',
+			'cruser_id' => 'cruser_id',
+			'versioningWS' => 2,
+			'languageField' => 'sys_language_uid',
+			'transOrigPointerField' => 'l10n_parent',
+			'transOrigDiffSourceField' => 'l10n_diffsource',
+			'delete' => 'deleted',
+			'enablecolumns' => array(
+					'disabled' => 'hidden',
+					'starttime' => 'starttime',
+					'endtime' => 'endtime',
+			),
+			'searchFields' => 'reference,txid,secret',
+			// 				'dynamicConfigFile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY) . 'Configuration/TCA/Voting.php',
+			'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($_EXTKEY) . 'Resources/Public/Icons/tx_bcvoting_domain_model_voting.gif'
+	),
+		
 	'interface' => array(
 		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, reference, txid, hash, candidate',
 	),

@@ -1,13 +1,13 @@
 <?php
 namespace Goettertz\BcVoting\Controller;
-//error_reporting(E_ALL);
+
 ini_set("display_errors", 1);
 
 /***************************************************************
  *
  *  Copyright notice
  *
- *  (c) 2015 - 2016 Louis Göttertz <info2016@goettertz.de>, goettertz.de
+ *  (c) 2015 - 2017 Louis Göttertz <info2017@goettertz.de>, goettertz.de
  *
  *  All rights reserved
  *
@@ -29,7 +29,7 @@ ini_set("display_errors", 1);
  ***************************************************************/
 
 /**
- * Revision 148
+ * Revision 150
  */
 
 use \Goettertz\BcVoting\Property\TypeConverter\UploadedFileReferenceConverter;
@@ -793,9 +793,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		if ($success = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->subscribe($streamName, false)) {
 			$this->addFlashMessage('Stream '.$streamName.' not subscribed! '.$success, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 		}
-		
-		
-		
+				
 		$this->view->assign('isAdmin', $isAdmin);
 		$this->view->assign('isAssigned', $isAssigned);
 		$this->view->assign('ref', $ref);
@@ -837,8 +835,8 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 			
 				# End of checks!!! #####################################################
 				# get data from blockchain
-				$bc = new \Goettertz\BcVoting\Service\Blockchain();
-				$data = $bc::retrieveData($rpcServer, $rpcPort, $rpcUser, $rpcPassword, trim($reference));
+// 				$bc = new \Goettertz\BcVoting\Service\Blockchain();
+				$data = Blockchain::retrieveData($rpcServer, $rpcPort, $rpcUser, $rpcPassword, trim($reference));
 				if (isset($data['error'])) {
 					$this->addFlashMessage($data['error'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 					$this->redirect('list');
