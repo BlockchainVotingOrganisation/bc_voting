@@ -7,11 +7,12 @@
 <f:form action="import" name="project" class="tx-bcvoting">
 	<f:form.submit value="{f:translate(key:'import')}" /> <hr />
 	<f:translate key="tx_bcvoting_domain_model_project.reference" /><br />
-	<f:form.textfield name="reference" size="80"  value="{reference}"/>
-
-	<f:form.select name="streamitems" prependOptionLabel="{f:translate(key: 'select')}">
+	<f:form.textfield id="ref" name="reference" size="80"  value="{reference}"/>
+	
+	<!-- füllt Referenz mit Daten aus Stream -->
+	<f:form.select name="streamitems" prependOptionLabel="{f:translate(key: 'select')}" onclick="">
 		<f:for each="{streams}" as="stream">
-			<option onclick="javascript:window.confirm('Import {stream.name}?')">{stream.name}</option>
+			<option value="{stream.streamref}">{stream.name}</option>
 		</f:for>
 	</f:form.select>
 	<hr />
@@ -28,4 +29,14 @@
 	
 </f:form>
 </div>
+
+<script>
+	/* StreamController->show(stream) */
+	
+	function confirm(streamref) {
+		window.confirm('Import ' + streamref + '?');
+	}
+	
+	/* Fill reference field           */
+</script>
 </f:section>
