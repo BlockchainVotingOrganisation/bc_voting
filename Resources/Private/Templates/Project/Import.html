@@ -9,9 +9,9 @@
 	<f:translate key="tx_bcvoting_domain_model_project.reference" /><br />
 	<f:form.textfield name="reference" size="80"  value="{reference}"/>
 
-	<f:form.select name="streamitems" prependOptionLabel="{f:translate(key: 'select')}" onclick="">
+	<f:form.select name="streamitems" prependOptionLabel="{f:translate(key: 'select')}">
 		<f:for each="{streams}" as="stream">
-			<option>{stream.name}</option>
+			<option onclick="javascript:window.confirm('Import {stream.name}?')">{stream.name}</option>
 		</f:for>
 	</f:form.select>
 	<hr />
