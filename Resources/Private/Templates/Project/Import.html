@@ -1,10 +1,8 @@
-<!-- Rev 121 -->
+<!-- Rev 150 -->
 <f:layout name="Default" />
 <f:section name="main">
-
+<div class="tx-bc-voting">
 <f:flashMessages  />
-<f:debug title="Raw data">{data}</f:debug>
-<f:debug title="New project">{project}</f:debug>
 
 <f:form action="import" name="project" class="tx-bcvoting">
 	<f:translate key="tx_bcvoting_domain_model_project.reference" /><br />
@@ -21,5 +19,9 @@
 	<f:form.textfield name="password" type="password" /><br /> 
 	<f:form.submit value="{f:translate(key:'import')}" /> 
 </f:form>
-
+<h1>Choose from Streams</h1>
+<f:for each="{streams}" as="stream">
+{stream.name}<br />
+</f:for> 
+</div>
 </f:section>

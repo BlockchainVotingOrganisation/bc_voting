@@ -1,4 +1,4 @@
-# Revision 138
+# Revision 150
 
 #
 # Table structure for table 'tx_bcvoting_domain_model_asset'
@@ -271,6 +271,7 @@ CREATE TABLE tx_bcvoting_domain_model_project (
 	sys_language_uid int(11) DEFAULT '0' NOT NULL,
 	l10n_parent int(11) DEFAULT '0' NOT NULL,
 	l10n_diffsource mediumblob,
+	l10n_state text,
 	wallet_address varchar(80) DEFAULT '' NOT NULL,
 	
 	PRIMARY KEY (uid),

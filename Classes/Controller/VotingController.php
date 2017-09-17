@@ -79,15 +79,15 @@ class VotingController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 		# check if project evaluation has started twice: look for stream item.
 		$items = array();
 		
-		if ($items = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->liststreamkeyitems($project->getStream(), substr($ballot->getWalletAddress(), 0, 10))) {
-			if (count($items) > 1) {
-				$this->addFlashMessage('Evaluation started before! ('.count($items).')', get_class($this).': Error (76)', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-			}
-			else {
-				$this->addFlashMessage('Project stream not yet subscribed! Please try again later.', get_class($this).': Error (79)'.get_class($this), \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-			}
-			$this->redirect('show','Project',NULL, array('project' => $project));
-		}
+// 		if ($items = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->liststreamkeyitems($project->getStream(), substr($ballot->getWalletAddress(), 0, 10))) {
+// 			if (count($items) > 1) {
+// 				$this->addFlashMessage('Evaluation started before! ('.count($items).')', get_class($this).': Error (76)', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+// 			}
+// 			else {
+// 				$this->addFlashMessage('Project stream not yet subscribed! Please try again later.', get_class($this).': Error (79)'.get_class($this), \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+// 			}
+// 			$this->redirect('show','Project',NULL, array('project' => $project));
+// 		}
 
 
 		if ($project->getStart() < time() && time() < $project->getEnd()) {

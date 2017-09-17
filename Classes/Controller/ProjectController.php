@@ -1,13 +1,13 @@
 <?php
 namespace Goettertz\BcVoting\Controller;
-//error_reporting(E_ALL);
+
 ini_set("display_errors", 1);
 
 /***************************************************************
  *
  *  Copyright notice
  *
- *  (c) 2015 - 2016 Louis Göttertz <info2016@goettertz.de>, goettertz.de
+ *  (c) 2015 - 2017 Louis Göttertz <info2017@goettertz.de>, goettertz.de
  *
  *  All rights reserved
  *
@@ -29,7 +29,7 @@ ini_set("display_errors", 1);
  ***************************************************************/
 
 /**
- * Revision 148
+ * Revision 150
  */
 
 use \Goettertz\BcVoting\Property\TypeConverter\UploadedFileReferenceConverter;
@@ -793,9 +793,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		if ($success = Blockchain::getRpcResult($project->getRpcServer(), $project->getRpcPort(), $project->getRpcUser(), $project->getRpcPassword())->subscribe($streamName, false)) {
 			$this->addFlashMessage('Stream '.$streamName.' not subscribed! '.$success, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
 		}
-		
-		
-		
+				
 		$this->view->assign('isAdmin', $isAdmin);
 		$this->view->assign('isAssigned', $isAssigned);
 		$this->view->assign('ref', $ref);
@@ -812,89 +810,113 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 	 * @param string $reference
 	 */
 	public function importAction() {
+		$rpcServer = trim($this->settings['rpc_server']);
+		$rpcPort = trim($this->settings['rpc_port']);
+		$rpcUser = trim($this->settings['rpc_user']);
+		$rpcPassword = trim($this->settings['rpc_passwd']);
+		
+		
 		if ($feuser = $this->userRepository->getCurrentFeUser()) {
-			if ($this->request->hasArgument('reference')) {
+			
+			# Empfang der Formulardaten:
+			if ($this->request->hasArgument('reference')) 
+			if ($this->request->getArgument('reference') !== '') {
 				$reference = $this->request->getArgument('reference');
 				
 				# Check connection settings -> should be migrated to method setRpcConnection and checkRpcConnection
-				$rpcServer = trim($this->settings['rpc_server']);
-				if ($this->request->hasArgument('rpcServer')) {
-					$rpcServer = trim($this->request->getArgument('rpcServer'));
+				
+				if ($this->request->hasArgument('rpcServer')) { 
+					// Check non empty
+					if ($this->request->getArgument('rpcServer') !== '')
+						$rpcServer = trim($this->request->getArgument('rpcServer'));
 				}
 				
-				$rpcPort = trim($this->settings['rpc_port']);
+				
 				if ($this->request->hasArgument('rpcPort')) {
-					$rpcPort = trim($this->request->getArgument('rpcPort'));
+					// Check non empty
+					if ($this->request->getArgument('rpcPort') !== '')
+						$rpcPort = trim($this->request->getArgument('rpcPort'));
 				}
-				$rpcUser = trim($this->settings['rpc_user']);
+				
 				if ($this->request->hasArgument('rpcUser')) {
-					$rpcUser = trim($this->request->getArgument('rpcUser'));
+					// Check non empty
+					if ($this->request->getArgument('rpcUser') !== '')					
+						$rpcUser = trim($this->request->getArgument('rpcUser'));
 				}
-				$rpcPassword = trim($this->settings['rpc_passwd']);
+				
+				
 				if ($this->request->hasArgument('rpcPassword')) {
-					$rpcPassword = trim($this->request->getArgument('rpcPassword'));
+					// Check non empty
+					if ($this->request->getArgument('$rpcPassword') !== '')
+						$rpcPassword = trim($this->request->getArgument('rpcPassword'));
 				}
 			
 				# End of checks!!! #####################################################
-				# get data from blockchain
-				$bc = new \Goettertz\BcVoting\Service\Blockchain();
-				$data = $bc::retrieveData($rpcServer, $rpcPort, $rpcUser, $rpcPassword, trim($reference));
-				if (isset($data['error'])) {
-					$this->addFlashMessage($data['error'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-					$this->redirect('list');
+				# get project data from blockchain (json) 
+				if ($data = Blockchain::retrieveData($rpcServer, $rpcPort, $rpcUser, $rpcPassword, trim($reference))) {
+					if (isset($data['error'])) {
+						$this->addFlashMessage($data['error'].'RPC: '.$rpcServer, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+						$this->redirect('list');
+					}
+					
+					# Cast json to stdClass
+					else $data = json_decode($data);
+					
+					# Cast stdClass to array
+					if (is_a($data, 'stdClass', false)) {
+						$data = (array) $data;
+						# make array additions rpc
+						$data['reference'] = $reference;
+						$data['rpcServer'] = $rpcServer;
+						$data['rpcPort'] = $rpcPort;
+						$data['rpcUser'] = $rpcUser;
+						$data['rpcPassword'] = $rpcPassword;
+					}
+					
+					# Import array project data into DB ...
+					$newproject = new \Goettertz\BcVoting\Domain\Model\Project();
+					$newproject->importArray($data);
+					
+					// check result?
+					{
+						$this->projectRepository->add($newproject);
+					}
+					
+					# Assign admin
+					$roles = $this->roleRepository->findByName('admin');
+					
+					if (count($roles) == 0) {
+						$newRole = new \Goettertz\BcVoting\Domain\Model\Role();
+						$newRole->setName('admin');
+						$this->roleRepository->add($newRole);
+						$roles[0] = $newRole;
+					}
+					
+					if ($this->addAssignment($newproject, $feuser, $roles[0])) {
+						$this->addFlashMessage('The project\'s "'.$newproject->getName().'" assignment "'.$newproject->getName().'" was created.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+					}
+					
+					$persistenceManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
+					$persistenceManager->persistAll();
+					
+					# Import ballots with options (for each)
+					foreach ($data['ballots'] AS $ballot) {
+						$this->addFlashMessage($ballot, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+						$newBallot = new \Goettertz\BcVoting\Domain\Model\Ballot();
+						$newBallot->import($ballot, $newproject);
+						$this->ballotRepository->add($newBallot);
+					}
+					$this->view->assign('project',$newproject);
+					$this->view->assign('data', $data);
 				}
-				
-				# Cast json to stdClass
-				else $data = json_decode($data);
-				
-				# Cast stdClass to array
-				if (is_a($data, 'stdClass', false)) {
-					$data = (array) $data;
-					# make array additions rpc
-					$data['reference'] = $reference;
-					$data['rpcServer'] = $rpcServer;
-					$data['rpcPort'] = $rpcPort;
-					$data['rpcUser'] = $rpcUser;
-					$data['rpcPassword'] = $rpcPassword;
-				}
-
-				# Import array project data into DB ... 
-				$newproject = new \Goettertz\BcVoting\Domain\Model\Project();
-				$newproject->importArray($data); 
-				
-				// check result?
-				{
-					$this->projectRepository->add($newproject);
-				}
-				
-				# Assign admin
-				$roles = $this->roleRepository->findByName('admin');
-				
-				if (count($roles) == 0) {
-					$newRole = new \Goettertz\BcVoting\Domain\Model\Role();
-					$newRole->setName('admin');
-					$this->roleRepository->add($newRole);
-					$roles[0] = $newRole;
-				}
-	
-				if ($this->addAssignment($newproject, $feuser, $roles[0])) {
-					$this->addFlashMessage('The project\'s "'.$newproject->getName().'" assignment "'.$newproject->getName().'" was created.', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
-				}
-				
-				$persistenceManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
-				$persistenceManager->persistAll();
-				
-				# Import ballots with options (for each)
-				foreach ($data['ballots'] AS $ballot) {
-					$this->addFlashMessage($ballot, '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-					$newBallot = new \Goettertz\BcVoting\Domain\Model\Ballot();
-					$newBallot->import($ballot, $newproject);
-					$this->ballotRepository->add($newBallot);
-				}
-				$this->view->assign('project',$newproject);
 			}
 			
-			$this->view->assign('data', $data);
+			# Show available streams
+			
+			$streams = Blockchain::getRpcResult($rpcServer, $rpcPort, $rpcUser, $rpcPassword)->liststreams();
+			
+			
+			$this->view->assign('streams', $streams);
 			$this->view->assign('isAssigned', 'true');
 			$this->view->assign('reference', $reference);
 			$this->view->assign('rpc_server', $rpcServer);

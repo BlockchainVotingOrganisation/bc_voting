@@ -1,6 +1,4 @@
-{namespace h=Goettertz\BcVoting\ViewHelpers}
-<!-- Rev. 149 -->
-<h2>{project.name}</h2>
+<!-- Rev. 150 -->
 <div style="width:100%; margin: 30px 0px; display: block;">
 	<label for="name">
 		<f:translate key="tx_bcvoting_domain_model_project.name" /> 
@@ -13,11 +11,11 @@
 	<label for="logo">
 		<f:translate key="tx_bcvoting_domain_model_project.logo" />
 	</label><br />
-	<h:form.upload property="logo">
+	<f:form.upload property="logo">
 			<f:if condition="{resource}">
 			<f:image image="{resource}" alt="" width="50"/><br /><f:link.action action="removeLogo" arguments="{project : project}">Remove first before upload!</f:link.action>
 		</f:if> 
-	</h:form.upload><br /> 
+	</f:form.upload><br /> 
 </div>
 <div style="width:100%;" margin: 10px 0px; display: inline-block;">
 	<div style="width:50%; float:left;">
