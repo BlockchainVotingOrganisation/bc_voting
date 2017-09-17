@@ -10,13 +10,34 @@ plugin.tx_bcvoting {
 	persistence {
 		storagePid = {$plugin.tx_bcvoting.persistence.storagePid}
 	}
+    settings {
+        typeNum = {$plugin.tx_bcvoting.settings.typeNum}
+    }
+  
 	features {
 		# uncomment the following line to enable the new Property Mapper.
 		rewrittenPropertyMapper = 1
 	}
 }
 
-page.cssInline (
+// PAGE object for Ajax call:
+ajax_content = PAGE
+ajax_content {
+    typeNum = 427590
+ 
+    config {
+        disableAllHeaderCode = 1
+        additionalHeaders = Content-type:application/html
+        xhtml_cleaning = 0
+        debug = 0
+        no_cache = 1
+        admPanel = 0
+    }
+ 
+    #10 < tt_content.list.20.ajax_content_selectlist
+}
+
+plugin.tx_bcvoting.cssInline (
 	
 	table { 
     	border-spacing: 0px;
