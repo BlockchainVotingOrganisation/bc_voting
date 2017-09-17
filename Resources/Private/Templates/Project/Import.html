@@ -5,8 +5,16 @@
 <f:flashMessages  />
 
 <f:form action="import" name="project" class="tx-bcvoting">
+	<f:form.submit value="{f:translate(key:'import')}" /> <hr />
 	<f:translate key="tx_bcvoting_domain_model_project.reference" /><br />
-	<f:form.textfield name="reference" size="80"  value="{reference}"/><br /> 
+	<f:form.textfield name="reference" size="80"  value="{reference}"/>
+
+	<f:form.select name="streamitems" prependOptionLabel="{f:translate(key: 'select')}" onclick="">
+		<f:for each="{streams}" as="stream">
+			<option>{stream.name}</option>
+		</f:for>
+	</f:form.select>
+	<hr />
 	RPC-Server:<br />
 	<f:form.textfield name="rpcServer" value="{rpc_server}"/><br /> 
 	RPC-Port:<br />
@@ -14,14 +22,10 @@
 	RPC-User:<br />
 	<f:form.textfield name="rpcUser" value="{rpc_user}" /><br /> 
 	RPC-Password:<br />
-	<f:form.textfield name="rpcPassword"  value="{rpc_password}" size="80" /><br />
+	<f:form.textfield name="rpcPassword" type="password" value="{rpc_password}" size="80" /><br />
 	Project-Password:<br />
 	<f:form.textfield name="password" type="password" /><br /> 
-	<f:form.submit value="{f:translate(key:'import')}" /> 
+	
 </f:form>
-<h1>Choose from Streams</h1>
-<f:for each="{streams}" as="stream">
-{stream.name}<br />
-</f:for> 
 </div>
 </f:section>

@@ -825,6 +825,7 @@ class ProjectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 				
 				# Check connection settings -> should be migrated to method setRpcConnection and checkRpcConnection
 				
+
 				if ($this->request->hasArgument('rpcServer')) { 
 					// Check non empty
 					if ($this->request->getArgument('rpcServer') !== '')

@@ -172,6 +172,37 @@
 			<trans-unit id="Project_Show_Members_Role">
 				<source>Member's role</source>
 			</trans-unit>
+			<trans-unit id="create_new">
+				<source>Create new</source>
+				<target>Neu</target>
+			</trans-unit>
+			<trans-unit id="copy">
+				<source>Copy</source>
+				<target>Kopieren</target>
+			</trans-unit>
+			<trans-unit id="edit">
+				<source>Edit</source>
+				<target>Bearbeiten</target>
+			</trans-unit>
+			<trans-unit id="find">
+				<source>Find</source>
+				<target>Suchen</target>
+			</trans-unit>
+			<trans-unit id="import">
+				<source>Import</source>
+			</trans-unit>
+			<trans-unit id="list">
+				<source>List</source>
+				<target>Auswahl</target>
+			</trans-unit>
+			<trans-unit id="save">
+				<source>Save</source>
+				<target>Speichern</target>
+			</trans-unit>
+			<trans-unit id="select">
+				<source>Please choose</source>
+				<target>Bitte wählen</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>
