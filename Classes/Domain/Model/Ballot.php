@@ -30,7 +30,6 @@ use Goettertz\BcVoting\Service\Blockchain;
 
 /**
  * Revision 200
- 
  */
  
 /**
