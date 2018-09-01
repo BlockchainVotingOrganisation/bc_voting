@@ -7,7 +7,7 @@ use Goettertz\BcVoting\Service\Blockchain;
  *
  *  Copyright notice
  *
- *  (c) 2015-2016 Louis Göttertz <info2015@goettertz.de>, goettertz.de
+ *  (c) 2015-2018 Louis Göttertz <info2015@goettertz.de>, goettertz.de
  *
  *  All rights reserved
  *
@@ -29,7 +29,7 @@ use Goettertz\BcVoting\Service\Blockchain;
  ***************************************************************/
 
 /**
- * Revision 130
+ * Revision 200
  
  */
  
@@ -435,10 +435,10 @@ class Ballot extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 				$result['array'] = json_decode($result['json']);
 				$i = 0;
 				$allBalance = 0;
-				$addresses = array();
+// 				$addresses = array();
 				$options  = (array) $result['array']->options;
 				foreach ($options AS $option) {
-					$addresses[] = $result['ballot'][$i]['walletaddress'];
+// 					$addresses[] = $result['ballot'][$i]['walletaddress'];
 					$result['ballot'][$i] = (array) json_decode($option);
 					
 					if (!empty($result['ballot'][$i]['color']))
@@ -512,7 +512,7 @@ class Ballot extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @param string $reference
 	 * @param \Goettertz\BcVoting\Domain\Model\Project $project
 	 */
-	public static function import($reference, \Goettertz\BcVoting\Domain\Model\Project $project) {
+	public function import($reference, \Goettertz\BcVoting\Domain\Model\Project $project) {
 		
 		# get data from bc
 		$bc = new \Goettertz\BcVoting\Service\Blockchain();
@@ -533,7 +533,7 @@ class Ballot extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 		$this->setText($ballot['text']);
 		$this->setFooter($ballot['footer']);
 		$this->setAsset($ballot['asset']);
-		$this->setWalletAddress($ballot['walletaddress']);		
+		$this->setWalletAddress($ballot['walletaddress']);
 
 		$this->ballotRepository->add($this);
 		
