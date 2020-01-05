@@ -1,0 +1,1 @@
+LLL:EXT:photography/Resources/Private/Language/locallang.xlf:newcontentelement.wizard.unitegallery.description

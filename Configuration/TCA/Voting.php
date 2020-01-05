@@ -27,7 +27,7 @@ $GLOBALS['TCA']['tx_bcvoting_domain_model_voting'] = array(
 			),
 			'searchFields' => 'reference,txid,secret',
 			// 				'dynamicConfigFile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY) . 'Configuration/TCA/Voting.php',
-			'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($_EXTKEY) . 'Resources/Public/Icons/tx_bcvoting_domain_model_voting.gif'
+			//'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($_EXTKEY) . 'Resources/Public/Icons/tx_bcvoting_domain_model_voting.gif'
 	),
 		
 	'interface' => array(

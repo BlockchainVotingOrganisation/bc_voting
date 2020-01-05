@@ -120,7 +120,8 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 	 * @param \Goettertz\BcVoting\Domain\Model\Ballot $newBallot        	
 	 * @param string $redirect        	
 	 */
-	public function newAction(\Goettertz\BcVoting\Domain\Model\Project $project, \Goettertz\BcVoting\Domain\Model\Ballot $newBallot = NULL, $redirect = '') {
+	public function newAction(\Goettertz\BcVoting\Domain\Model\Project $project, 
+	\Goettertz\BcVoting\Domain\Model\Ballot $newBallot = NULL, $redirect = '') {
 		if ($user = $this->userRepository->getCurrentFeUser ()) {
 			$assignment = $user ? $project->getAssignmentForUser ( $user, 'admin' ) : NULL;
 			If ($assignment != NULL) {
@@ -154,7 +155,8 @@ class BallotController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 	 * @param \Goettertz\BcVoting\Domain\Model\Project $project        	
 	 * @param \Goettertz\BcVoting\Domain\Model\Ballot $newBallot        	
 	 */
-	public function createAction(\Goettertz\BcVoting\Domain\Model\Project $project, \Goettertz\BcVoting\Domain\Model\Ballot $newBallot) {
+	public function createAction(\Goettertz\BcVoting\Domain\Model\Project $project, 
+						\Goettertz\BcVoting\Domain\Model\Ballot $newBallot) {
 		if ($user = $this->userRepository->getCurrentFeUser ()) {
 			$assignment = $user ? $project->getAssignmentForUser ( $user, 'admin' ) : NULL;
 			If ($assignment != NULL) {

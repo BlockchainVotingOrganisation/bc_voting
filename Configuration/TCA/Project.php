@@ -31,7 +31,7 @@ $GLOBALS['TCA']['tx_bcvoting_domain_model_project'] = array(
 			),
 			'searchFields' => 'name,description,start,end,assignments,reference,anonym,open',
 			// 		'dynamicConfigFile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY) . 'Configuration/TCA/Project.php',
-			'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($_EXTKEY) . 'Resources/Public/Icons/tx_bcvoting_domain_model_project.gif'
+			//'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($_EXTKEY) . 'Resources/Public/Icons/tx_bcvoting_domain_model_project.gif'
 	),
 		
 	'interface' => array(

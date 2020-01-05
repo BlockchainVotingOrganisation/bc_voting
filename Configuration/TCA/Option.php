@@ -28,7 +28,7 @@ $GLOBALS['TCA']['tx_bcvoting_domain_model_option'] = array(
 			),
 			'searchFields' => 'name,wallet_address,ballot,color',
 			// 		'dynamicConfigFile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY) . 'Configuration/TCA/Option.php',
-			'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($_EXTKEY) . 'Resources/Public/Icons/tx_bcvoting_domain_model_option.gif'
+			//'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($_EXTKEY) . 'Resources/Public/Icons/tx_bcvoting_domain_model_option.gif'
 	),
 		
 	'interface' => array(

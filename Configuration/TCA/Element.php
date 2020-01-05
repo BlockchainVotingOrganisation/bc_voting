@@ -23,7 +23,7 @@ $GLOBALS['TCA']['tx_bcvoting_domain_model_element'] = array(
 
 		),
 		'searchFields' => 'property,description,project',
-		'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($_EXTKEY) . 'Resources/Public/Icons/tx_bcvoting_domain_model_role.gif'
+		//'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($_EXTKEY) . 'Resources/Public/Icons/tx_bcvoting_domain_model_role.gif'
 
 	),
 		

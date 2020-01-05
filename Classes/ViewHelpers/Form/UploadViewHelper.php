@@ -45,6 +45,8 @@ class UploadViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Form\UploadViewHelpe
 	 * @inject
 	 */
 	protected $propertyMapper;
+
+	protected $value;
 	
 	/**
 	 * Render the upload field including possible resource pointer
@@ -85,6 +87,7 @@ class UploadViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Form\UploadViewHelpe
 			return NULL;
 		}
 // 		return NULL;
+		/*
 		$resource = $this->getValue(FALSE);
 		if ($resource instanceof \TYPO3\CMS\Extbase\Domain\Model\FileReference) {
 			return $resource;
@@ -97,6 +100,7 @@ class UploadViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Form\UploadViewHelpe
  			
 		else 
 			return $this->propertyMapper->convert($resource, 'TYPO3\\CMS\\Extbase\\Domain\\Model\\FileReference');
+		*/
 	}
 }
-?>
+
